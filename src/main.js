@@ -111,7 +111,7 @@ function getLandingHTML() {
           </p>
           <div class="hero-buttons">
             <button class="btn btn-gradient btn-large" id="btn-hero-start">Mulai Sekarang</button>
-            <button class="btn btn-outline btn-large" style="border-color: #6b3ef5; color: #6b3ef5;" id="btn-hero-demo">Lihat Demo</button>
+            <button class="btn btn-outline btn-large" style="border-color: #2596be; color: #2596be;" id="btn-hero-demo">Lihat Demo</button>
           </div>
           <div class="hero-stats">
             <div class="hero-stat">
@@ -270,7 +270,7 @@ function getLandingHTML() {
         <div class="cta-box">
           <h2>Siap Memulai Bimbingan Online?</h2>
           <p>Bergabung dengan ratusan mahasiswa yang sudah menggunakan Kavana untuk mengelola bimbingan akademik mereka.</p>
-          <button class="btn btn-gradient btn-large" id="btn-cta-register">Daftar Sekarang - Gratis!</button>
+          <button class="btn btn-white btn-large" id="btn-cta-register">Daftar Sekarang - Gratis!</button>
         </div>
       </section>
 
