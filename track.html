@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Pilih Track - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Pilih Track Proyek atau Internship - Kavana" />
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <div class="track-page">
+        <div class="track-container">
+            <div class="track-header">
+                <div class="track-logo">
+                    <div class="track-logo-circle">K</div>
+                    <div class="track-logo-text">
+                        <div class="track-logo-title">Kavana</div>
+                        <div class="track-logo-subtitle">Bimbingan Online</div>
+                    </div>
+                </div>
+                <h1>Pilih Track Akademik</h1>
+                <p>Silakan pilih track yang ingin Anda ikuti untuk semester ini</p>
+            </div>
+
+            <div class="track-categories">
+                <!-- Proyek Section -->
+                <div class="track-category">
+                    <div class="category-header">
+                        <div class="category-icon">📋</div>
+                        <div class="category-info">
+                            <h2>Proyek</h2>
+                            <p>Pengerjaan proyek dalam kelompok (2 orang)</p>
+                        </div>
+                    </div>
+                    <div class="track-options">
+                        <div class="track-card" data-track="proyek-1" data-type="proyek">
+                            <div class="track-card-header">
+                                <span class="track-badge">Semester 5</span>
+                                <span class="track-team">👥 2 Orang</span>
+                            </div>
+                            <h3>Proyek 1</h3>
+                            <p>Proyek dasar untuk mahasiswa semester 2. Fokus pada pemahaman konsep dan implementasi
+                                sederhana.</p>
+                            <ul class="track-features">
+                                <li>✓ Proposal & Bimbingan</li>
+                                <li>✓ 8x Sesi Bimbingan</li>
+                                <li>✓ Sidang Akhir</li>
+                            </ul>
+                            <button class="btn btn-outline btn-block track-select-btn">Pilih Track Ini</button>
+                        </div>
+
+                        <div class="track-card" data-track="proyek-2" data-type="proyek">
+                            <div class="track-card-header">
+                                <span class="track-badge">Semester 6</span>
+                                <span class="track-team">👥 2 Orang</span>
+                            </div>
+                            <h3>Proyek 2</h3>
+                            <p>Proyek lanjutan dengan kompleksitas lebih tinggi. Membangun aplikasi yang lebih kompleks.
+                            </p>
+                            <ul class="track-features">
+                                <li>✓ Proposal & Bimbingan</li>
+                                <li>✓ 8x Sesi Bimbingan</li>
+                                <li>✓ Sidang Akhir</li>
+                            </ul>
+                            <button class="btn btn-outline btn-block track-select-btn">Pilih Track Ini</button>
+                        </div>
+
+                        <div class="track-card" data-track="proyek-3" data-type="proyek">
+                            <div class="track-card-header">
+                                <span class="track-badge popular">Semester 7</span>
+                                <span class="track-team">👥 2 Orang</span>
+                            </div>
+                            <h3>Proyek 3</h3>
+                            <p>Proyek akhir dengan tingkat kesulitan tertinggi. Capstone project untuk persiapan karir.
+                            </p>
+                            <ul class="track-features">
+                                <li>✓ Proposal & Bimbingan</li>
+                                <li>✓ 8x Sesi Bimbingan</li>
+                                <li>✓ Sidang Akhir</li>
+                            </ul>
+                            <button class="btn btn-outline btn-block track-select-btn">Pilih Track Ini</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Internship Section -->
+                <div class="track-category">
+                    <div class="category-header">
+                        <div class="category-icon">🏢</div>
+                        <div class="category-info">
+                            <h2>Internship</h2>
+                            <p>Magang di perusahaan (individual)</p>
+                        </div>
+                    </div>
+                    <div class="track-options">
+                        <div class="track-card" data-track="internship-1" data-type="internship">
+                            <div class="track-card-header">
+                                <span class="track-badge internship">Semester 6</span>
+                                <span class="track-team">👤 1 Orang</span>
+                            </div>
+                            <h3>Internship 1</h3>
+                            <p>Magang pertama di perusahaan. Pengalaman kerja langsung di industri teknologi.</p>
+                            <ul class="track-features">
+                                <li>✓ 1 Dosen Pembimbing</li>
+                                <li>✓ Laporan Mingguan</li>
+                                <li>✓ Presentasi Akhir</li>
+                            </ul>
+                            <button class="btn btn-outline btn-block track-select-btn">Pilih Track Ini</button>
+                        </div>
+
+                        <div class="track-card" data-track="internship-2" data-type="internship">
+                            <div class="track-card-header">
+                                <span class="track-badge internship">Semester 7</span>
+                                <span class="track-team">👤 1 Orang</span>
+                            </div>
+                            <h3>Internship 2</h3>
+                            <p>Magang lanjutan dengan tanggung jawab lebih besar. Persiapan untuk masuk dunia kerja.</p>
+                            <ul class="track-features">
+                                <li>✓ 2 Dosen Pembimbing</li>
+                                <li>✓ Laporan Mingguan</li>
+                                <li>✓ Presentasi Akhir</li>
+                            </ul>
+                            <button class="btn btn-outline btn-block track-select-btn">Pilih Track Ini</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selected Track Confirmation Modal -->
+            <div class="track-modal" id="track-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modal-title">Konfirmasi Pilihan Track</h2>
+                        <button class="modal-close" id="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="selected-track-info">
+                            <div class="selected-track-icon" id="selected-icon">📋</div>
+                            <div class="selected-track-details">
+                                <h3 id="selected-track-name">Proyek 1</h3>
+                                <p id="selected-track-type">Proyek - 2 Orang per Kelompok</p>
+                            </div>
+                        </div>
+
+                        <!-- Team Member Section (for Proyek) -->
+                        <div class="team-section" id="team-section">
+                            <h4>Anggota Kelompok</h4>
+                            <p class="team-note">Masukkan NPM partner Anda untuk membentuk kelompok</p>
+                            <div class="form-group">
+                                <label for="partner-npm">NPM Partner</label>
+                                <input type="text" id="partner-npm" placeholder="Contoh: 2024001234">
+                                <span class="form-error" id="error-partner-npm"></span>
+                            </div>
+                        </div>
+
+                        <!-- Internship Company Section -->
+                        <div class="company-section" id="company-section" style="display: none;">
+                            <h4>Informasi Magang</h4>
+                            <div class="form-group">
+                                <label for="company-name">Nama Perusahaan</label>
+                                <input type="text" id="company-name" placeholder="Contoh: PT Teknologi Indonesia">
+                                <span class="form-error" id="error-company-name"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="company-address">Alamat Perusahaan</label>
+                                <input type="text" id="company-address" placeholder="Alamat lengkap perusahaan">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" id="btn-cancel">Batal</button>
+                        <button class="btn btn-gradient" id="btn-confirm">Konfirmasi Pilihan</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="track-footer">
+                <a href="/dashboard.html" class="btn btn-outline">← Kembali ke Dashboard</a>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/src/track.js"></script>
+</body>
+
+</html>

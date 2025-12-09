@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Daftar - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Daftar akun di Kavana - Sistem Bimbingan Online" />
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <div class="auth-left">
+                <div class="auth-brand">
+                    <div class="auth-logo">
+                        <div class="auth-logo-circle">K</div>
+                        <div class="auth-logo-text">
+                            <div class="auth-logo-title">Kavana</div>
+                            <div class="auth-logo-subtitle">Bimbingan Online</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-illustration">
+                    <div class="auth-illustration-content">
+                        <h2>Mulai Perjalanan Akademikmu</h2>
+                        <p>Kelola bimbingan Proyek & Internship dengan mudah dan terstruktur.</p>
+                        <div class="auth-features">
+                            <div class="auth-feature">
+                                <span class="auth-feature-icon">📋</span>
+                                <span>Upload & Kelola Proposal</span>
+                            </div>
+                            <div class="auth-feature">
+                                <span class="auth-feature-icon">💬</span>
+                                <span>Bimbingan Online 8x</span>
+                            </div>
+                            <div class="auth-feature">
+                                <span class="auth-feature-icon">🎓</span>
+                                <span>Tracking Nilai Sidang</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="auth-right">
+                <div class="auth-form-container">
+                    <h1>Daftar Akun Mahasiswa</h1>
+                    <p class="auth-form-subtitle">Lengkapi data berikut untuk membuat akun baru</p>
+
+                    <form id="register-form" class="auth-form" novalidate>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="reg-nama">Nama Lengkap <span class="required">*</span></label>
+                                <input type="text" id="reg-nama" name="nama" placeholder="Masukkan nama lengkap"
+                                    required>
+                                <span class="form-error" id="error-nama"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-row-2col">
+                            <div class="form-group">
+                                <label for="reg-npm">NPM <span class="required">*</span></label>
+                                <input type="text" id="reg-npm" name="npm" placeholder="Contoh: 2024001234" required>
+                                <span class="form-error" id="error-npm"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-angkatan">Angkatan <span class="required">*</span></label>
+                                <select id="reg-angkatan" name="angkatan" required>
+                                    <option value="">Pilih Angkatan</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                </select>
+                                <span class="form-error" id="error-angkatan"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="reg-email">Email <span class="required">*</span></label>
+                                <input type="email" id="reg-email" name="email" placeholder="email@kampus.ac.id"
+                                    required>
+                                <span class="form-error" id="error-email"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="reg-whatsapp">Nomor WhatsApp <span class="required">*</span></label>
+                                <input type="tel" id="reg-whatsapp" name="whatsapp" placeholder="Contoh: 08123456789"
+                                    required>
+                                <span class="form-error" id="error-whatsapp"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="reg-password">Password <span class="required">*</span></label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="reg-password" name="password"
+                                        placeholder="Minimal 8 karakter" required>
+                                    <button type="button" class="password-toggle" id="toggle-password">👁</button>
+                                </div>
+                                <span class="form-error" id="error-password"></span>
+                                <div class="password-requirements">
+                                    <span class="requirement" id="req-length">✗ Minimal 8 karakter</span>
+                                    <span class="requirement" id="req-uppercase">✗ Huruf besar</span>
+                                    <span class="requirement" id="req-number">✗ Angka</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="reg-confirm-password">Konfirmasi Password <span
+                                        class="required">*</span></label>
+                                <input type="password" id="reg-confirm-password" name="confirmPassword"
+                                    placeholder="Ulangi password" required>
+                                <span class="form-error" id="error-confirm-password"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="reg-terms" name="terms" required>
+                                <span>Saya menyetujui <a href="#" class="link">Syarat & Ketentuan</a> dan <a href="#"
+                                        class="link">Kebijakan Privasi</a></span>
+                            </label>
+                            <span class="form-error" id="error-terms"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-gradient btn-block" id="btn-submit-register">
+                            Daftar Sekarang
+                        </button>
+                    </form>
+
+                    <div class="auth-form-footer">
+                        <p>Sudah punya akun? <a href="/login.html" class="link">Masuk disini</a></p>
+                        <a href="/" class="btn btn-outline btn-small">← Kembali ke Beranda</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/src/register.js"></script>
+</body>
+
+</html>

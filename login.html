@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Login - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Login ke Kavana - Sistem Bimbingan Online" />
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <div class="auth-page">
+        <div class="auth-container auth-container-login">
+            <div class="auth-left">
+                <div class="auth-brand">
+                    <div class="auth-logo">
+                        <div class="auth-logo-circle">K</div>
+                        <div class="auth-logo-text">
+                            <div class="auth-logo-title">Kavana</div>
+                            <div class="auth-logo-subtitle">Bimbingan Online</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-illustration">
+                    <div class="auth-illustration-content">
+                        <h2>Selamat Datang Kembali!</h2>
+                        <p>Masuk untuk melanjutkan progress bimbingan Proyek & Internship kamu.</p>
+                        <div class="auth-features">
+                            <div class="auth-feature">
+                                <span class="auth-feature-icon">📊</span>
+                                <span>Cek Progress Bimbingan</span>
+                            </div>
+                            <div class="auth-feature">
+                                <span class="auth-feature-icon">📝</span>
+                                <span>Upload Proposal & Laporan</span>
+                            </div>
+                            <div class="auth-feature">
+                                <span class="auth-feature-icon">💬</span>
+                                <span>Komunikasi dengan Dosen</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="auth-right">
+                <div class="auth-form-container">
+                    <h1>Masuk ke Akun</h1>
+                    <p class="auth-form-subtitle">Silakan masukkan kredensial akun Anda</p>
+
+                    <form id="login-form" class="auth-form" novalidate>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="login-identifier">Email atau NPM <span class="required">*</span></label>
+                                <input type="text" id="login-identifier" name="identifier"
+                                    placeholder="Masukkan email atau NPM" required>
+                                <span class="form-hint">Contoh: email@kampus.ac.id atau 2024001234</span>
+                                <span class="form-error" id="error-login-identifier"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="login-password">Password <span class="required">*</span></label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="login-password" name="password"
+                                        placeholder="Masukkan password" required>
+                                    <button type="button" class="password-toggle" id="toggle-login-password">👁</button>
+                                </div>
+                                <span class="form-error" id="error-login-password"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-row-between">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="login-remember" name="remember">
+                                <span>Ingat saya</span>
+                            </label>
+                            <a href="#" class="link" id="link-forgot-password">Lupa password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-gradient btn-block" id="btn-submit-login">
+                            Masuk
+                        </button>
+                    </form>
+
+                    <div class="auth-divider">
+                        <span>atau</span>
+                    </div>
+
+                    <div class="auth-form-footer">
+                        <p>Belum punya akun? <a href="/register.html" class="link">Daftar sekarang</a></p>
+                        <a href="/" class="btn btn-outline btn-small">← Kembali ke Beranda</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/src/login.js"></script>
+</body>
+
+</html>
