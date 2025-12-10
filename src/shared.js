@@ -7,7 +7,7 @@ export function validateEmail(email) {
 }
 
 export function validateNPM(npm) {
-    const re = /^\d{10}$/;
+    const re = /^\d+$/;  // Minimal 1 digit, bebas panjang
     return re.test(npm);
 }
 

@@ -71,14 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
             isValid = false;
         } else if (isNPM && !validateNPM(identifier)) {
             if (identifierErrorEl) {
-                identifierErrorEl.textContent = 'NPM harus 10 digit angka';
+                identifierErrorEl.textContent = 'NPM harus berupa angka';
                 identifierErrorEl.classList.add('visible');
             }
             if (identifierInputEl) identifierInputEl.classList.add('input-error');
             isValid = false;
         } else if (!isEmail && !isNPM) {
             if (identifierErrorEl) {
-                identifierErrorEl.textContent = 'Masukkan email yang valid atau NPM (10 digit angka)';
+                identifierErrorEl.textContent = 'Masukkan email yang valid atau NPM (angka)';
                 identifierErrorEl.classList.add('visible');
             }
             if (identifierInputEl) identifierInputEl.classList.add('input-error');
