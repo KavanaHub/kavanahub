@@ -276,25 +276,26 @@ function bindDashboardEvents() {
       return;
     }
 
+    if (activeMenu === "proposal") {
+      // Redirect to proposal page
+      window.location.href = '/proposal.html';
+      return;
+    }
+
+    if (activeMenu === "laporan") {
+      window.location.href = '/laporan.html';
+      return;
+    }
+
+    if (["bimbingan", "mahasiswa-bimbingan"].includes(activeMenu)) {
+      window.location.href = '/bimbingan.html';
+      return;
+    }
+
     const box = document.createElement("div");
     box.className = "placeholder-box";
 
-    if (activeMenu === "proposal") {
-      box.innerHTML = `
-        <h3>Upload Proposal</h3>
-        <p>Form upload proposal (.pdf) yang akan call endpoint <code>/api/proposal/upload</code>.</p>
-      `;
-    } else if (activeMenu === "laporan") {
-      box.innerHTML = `
-        <h3>Upload Laporan Sidang</h3>
-        <p>Form upload laporan akhir (.pdf) terhubung dengan endpoint <code>/api/report/upload</code>.</p>
-      `;
-    } else if (["bimbingan", "mahasiswa-bimbingan", "bimbingan-approve"].includes(activeMenu)) {
-      box.innerHTML = `
-        <h3>Data Bimbingan Online</h3>
-        <p>Tabel bimbingan mingguan (maks 8x) dari <code>/api/bimbingan</code>.</p>
-      `;
-    } else if (activeMenu === "validasi-proposal") {
+    if (activeMenu === "validasi-proposal") {
       box.innerHTML = `
         <h3>Validasi Proposal</h3>
         <p>Halaman koordinator untuk cek & validasi proposal mahasiswa.</p>

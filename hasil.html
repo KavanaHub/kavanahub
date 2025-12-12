@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Nilai & Hasil - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Nilai dan Hasil Akhir - Kavana" />
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <div class="hasil-page">
+        <div class="hasil-container">
+            <div class="hasil-header">
+                <a href="/dashboard.html" class="back-link">← Kembali ke Dashboard</a>
+                <div class="hasil-title">
+                    <div class="hasil-icon">🎓</div>
+                    <div>
+                        <h1>Nilai & Hasil Akhir</h1>
+                        <p>Lihat nilai dan status kelulusan Anda</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Card -->
+            <div class="status-card" id="status-card">
+                <div class="status-badge" id="status-badge">Menunggu Sidang</div>
+                <h2 id="status-title">Status Proyek/Internship</h2>
+                <p id="status-desc">Selesaikan semua persyaratan untuk melihat nilai akhir</p>
+            </div>
+
+            <!-- Progress Summary -->
+            <div class="summary-section">
+                <h2>Ringkasan Progress</h2>
+                <div class="summary-grid">
+                    <div class="summary-card" id="summary-proposal">
+                        <div class="summary-icon">📝</div>
+                        <div class="summary-info">
+                            <h3>Proposal</h3>
+                            <p id="proposal-status">Belum disubmit</p>
+                        </div>
+                    </div>
+                    <div class="summary-card" id="summary-bimbingan">
+                        <div class="summary-icon">💬</div>
+                        <div class="summary-info">
+                            <h3>Bimbingan</h3>
+                            <p id="bimbingan-status">0 / 8 Sesi</p>
+                        </div>
+                    </div>
+                    <div class="summary-card" id="summary-laporan">
+                        <div class="summary-icon">📄</div>
+                        <div class="summary-info">
+                            <h3>Laporan</h3>
+                            <p id="laporan-status">Belum disubmit</p>
+                        </div>
+                    </div>
+                    <div class="summary-card" id="summary-sidang">
+                        <div class="summary-icon">🎤</div>
+                        <div class="summary-info">
+                            <h3>Sidang</h3>
+                            <p id="sidang-status">Belum dijadwalkan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nilai Section (hidden until completed) -->
+            <div class="nilai-section" id="nilai-section" style="display: none;">
+                <h2>Nilai Akhir</h2>
+                <div class="nilai-grid">
+                    <div class="nilai-card">
+                        <h3>Nilai Pembimbing</h3>
+                        <div class="nilai-score" id="nilai-pembimbing">-</div>
+                    </div>
+                    <div class="nilai-card">
+                        <h3>Nilai Penguji</h3>
+                        <div class="nilai-score" id="nilai-penguji">-</div>
+                    </div>
+                    <div class="nilai-card primary">
+                        <h3>Nilai Akhir</h3>
+                        <div class="nilai-score" id="nilai-akhir">-</div>
+                        <div class="nilai-grade" id="nilai-grade">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pembimbing Info -->
+            <div class="pembimbing-section">
+                <h2>Informasi Pembimbing</h2>
+                <div class="pembimbing-card" id="pembimbing-card">
+                    <p>Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/src/hasil.js"></script>
+</body>
+
+</html>

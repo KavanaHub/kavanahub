@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Upload Laporan - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Upload Laporan Sidang - Kavana" />
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <div class="laporan-page">
+        <div class="laporan-container">
+            <div class="laporan-header">
+                <a href="/dashboard.html" class="back-link">← Kembali ke Dashboard</a>
+                <div class="laporan-title">
+                    <div class="laporan-icon">📄</div>
+                    <div>
+                        <h1>Upload Laporan Sidang</h1>
+                        <p>Submit laporan akhir untuk persetujuan pembimbing</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prerequisites Check -->
+            <div class="prerequisites-section" id="prerequisites">
+                <h2>Persyaratan</h2>
+                <div class="prereq-list">
+                    <div class="prereq-item" id="prereq-proposal">
+                        <span class="prereq-icon">⏳</span>
+                        <span>Proposal disetujui</span>
+                    </div>
+                    <div class="prereq-item" id="prereq-bimbingan">
+                        <span class="prereq-icon">⏳</span>
+                        <span>Minimal 8x bimbingan</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Form -->
+            <form id="laporan-form" class="laporan-form" novalidate>
+                <div class="form-section">
+                    <h2>Detail Laporan</h2>
+
+                    <div class="form-group">
+                        <label for="lap-judul">Judul Laporan <span class="required">*</span></label>
+                        <input type="text" id="lap-judul" name="judul" placeholder="Judul lengkap laporan Anda"
+                            required>
+                        <span class="form-error" id="error-lap-judul"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lap-abstrak">Abstrak</label>
+                        <textarea id="lap-abstrak" name="abstrak" rows="4"
+                            placeholder="Ringkasan singkat laporan..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lap-link">Link Laporan <span class="required">*</span></label>
+                        <input type="url" id="lap-link" name="link" placeholder="https://drive.google.com/..." required>
+                        <span class="form-hint">Link Google Drive atau platform penyimpanan lainnya</span>
+                        <span class="form-error" id="error-lap-link"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="btn-cancel">Batal</button>
+                    <button type="submit" class="btn btn-gradient" id="btn-submit">Submit Laporan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="/src/laporan.js"></script>
+</body>
+
+</html>

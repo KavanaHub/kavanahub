@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Bimbingan Online - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Form Bimbingan Online - Kavana" />
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <div class="bimbingan-page">
+        <div class="bimbingan-container">
+            <div class="bimbingan-header">
+                <a href="/dashboard.html" class="back-link">← Kembali ke Dashboard</a>
+                <div class="bimbingan-title">
+                    <div class="bimbingan-icon">💬</div>
+                    <div>
+                        <h1>Bimbingan Online</h1>
+                        <p>Catat dan pantau sesi bimbingan Anda (maksimal 8 kali)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span>Progress Bimbingan</span>
+                    <span id="progress-text">0 / 8 Sesi</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-dots" id="progress-dots">
+                    <!-- Will be filled by JS -->
+                </div>
+            </div>
+
+            <!-- Current Track & Pembimbing Info -->
+            <div class="info-section">
+                <div class="info-card" id="track-info">
+                    <p>Loading...</p>
+                </div>
+                <div class="info-card" id="pembimbing-info">
+                    <p>Loading...</p>
+                </div>
+            </div>
+
+            <!-- Bimbingan Sessions List -->
+            <div class="sessions-section">
+                <div class="sessions-header">
+                    <h2>Riwayat Bimbingan</h2>
+                    <button class="btn btn-gradient" id="btn-add-session">+ Tambah Bimbingan</button>
+                </div>
+                <div class="sessions-list" id="sessions-list">
+                    <!-- Will be filled by JS -->
+                </div>
+            </div>
+
+            <!-- Add/Edit Session Modal -->
+            <div class="bimbingan-modal" id="session-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modal-title">Tambah Bimbingan</h2>
+                        <button class="modal-close" id="modal-close">&times;</button>
+                    </div>
+                    <form id="session-form">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="session-date">Tanggal Bimbingan <span class="required">*</span></label>
+                                <input type="date" id="session-date" name="date" required>
+                                <span class="form-error" id="error-session-date"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="session-topic">Topik Pembahasan <span class="required">*</span></label>
+                                <input type="text" id="session-topic" name="topic" placeholder="Contoh: Review BAB 1"
+                                    required>
+                                <span class="form-error" id="error-session-topic"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="session-notes">Catatan & Hasil Bimbingan <span
+                                        class="required">*</span></label>
+                                <textarea id="session-notes" name="notes" rows="4"
+                                    placeholder="Tuliskan catatan hasil bimbingan..." required></textarea>
+                                <span class="form-error" id="error-session-notes"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="session-next">Rencana Selanjutnya</label>
+                                <textarea id="session-next" name="next" rows="2"
+                                    placeholder="Apa yang harus dikerjakan sebelum bimbingan berikutnya..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline" id="btn-modal-cancel">Batal</button>
+                            <button type="submit" class="btn btn-gradient">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/src/bimbingan.js"></script>
+</body>
+
+</html>

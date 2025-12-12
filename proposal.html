@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Upload Proposal - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Upload Proposal Proyek atau Internship - Kavana" />
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <div class="proposal-page">
+        <div class="proposal-container">
+            <div class="proposal-header">
+                <a href="/dashboard.html" class="back-link">← Kembali ke Dashboard</a>
+                <div class="proposal-title">
+                    <div class="proposal-icon">📄</div>
+                    <div>
+                        <h1>Upload Proposal</h1>
+                        <p>Lengkapi data dan upload file proposal Anda</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="proposal-form" class="proposal-form" novalidate>
+                <!-- Track Info -->
+                <div class="form-section">
+                    <h2>Informasi Track</h2>
+                    <div class="track-info-box" id="track-info-box">
+                        <p>Loading track info...</p>
+                    </div>
+                </div>
+
+                <!-- Informasi Mahasiswa -->
+                <div class="form-section">
+                    <h2>Informasi Mahasiswa</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="prop-nama">Nama Lengkap <span class="required">*</span></label>
+                            <input type="text" id="prop-nama" name="nama" placeholder="Masukkan nama lengkap" required>
+                            <span class="form-error" id="error-prop-nama"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="prop-npm">NPM <span class="required">*</span></label>
+                            <input type="text" id="prop-npm" name="npm" placeholder="Contoh: 2024001234" required>
+                            <span class="form-error" id="error-prop-npm"></span>
+                        </div>
+                    </div>
+
+                    <!-- Partner info for Proyek -->
+                    <div class="partner-section" id="partner-section" style="display: none;">
+                        <h3>Informasi Partner (Kelompok)</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="prop-partner-nama">Nama Partner <span class="required">*</span></label>
+                                <input type="text" id="prop-partner-nama" name="partnerNama"
+                                    placeholder="Nama lengkap partner">
+                                <span class="form-error" id="error-prop-partner-nama"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="prop-partner-npm">NPM Partner <span class="required">*</span></label>
+                                <input type="text" id="prop-partner-npm" name="partnerNpm" placeholder="NPM partner"
+                                    readonly>
+                                <span class="form-error" id="error-prop-partner-npm"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Proposal -->
+                <div class="form-section">
+                    <h2>Detail Proposal</h2>
+                    <div class="form-group">
+                        <label for="prop-judul">Judul Proposal <span class="required">*</span></label>
+                        <input type="text" id="prop-judul" name="judul" placeholder="Masukkan judul proposal Anda"
+                            required>
+                        <span class="form-hint">Judul harus jelas dan menggambarkan isi proyek/internship</span>
+                        <span class="form-error" id="error-prop-judul"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prop-deskripsi">Deskripsi Singkat</label>
+                        <textarea id="prop-deskripsi" name="deskripsi" rows="4"
+                            placeholder="Jelaskan secara singkat tentang proposal Anda..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Pilih Dosen Pembimbing -->
+                <div class="form-section">
+                    <h2>Dosen Pembimbing</h2>
+                    <div class="form-group">
+                        <label for="prop-dosen">Pilih Dosen Pembimbing <span class="required">*</span></label>
+                        <select id="prop-dosen" name="dosen" required>
+                            <option value="">-- Pilih Dosen Pembimbing --</option>
+                            <option value="dosen-1">Dr. Ahmad Fauzi, M.Kom</option>
+                            <option value="dosen-2">Dr. Budi Santoso, M.T.</option>
+                            <option value="dosen-3">Prof. Citra Dewi, Ph.D</option>
+                            <option value="dosen-4">Dr. Diana Putri, M.Sc</option>
+                            <option value="dosen-5">Dr. Eko Prasetyo, M.Kom</option>
+                        </select>
+                        <span class="form-error" id="error-prop-dosen"></span>
+                    </div>
+
+                    <!-- Dosen Pembimbing 2 for Internship 2 -->
+                    <div class="form-group dosen2-section" id="dosen2-section" style="display: none;">
+                        <label for="prop-dosen2">Pilih Dosen Pembimbing 2 <span class="required">*</span></label>
+                        <select id="prop-dosen2" name="dosen2">
+                            <option value="">-- Pilih Dosen Pembimbing 2 --</option>
+                            <option value="dosen-1">Dr. Ahmad Fauzi, M.Kom</option>
+                            <option value="dosen-2">Dr. Budi Santoso, M.T.</option>
+                            <option value="dosen-3">Prof. Citra Dewi, Ph.D</option>
+                            <option value="dosen-4">Dr. Diana Putri, M.Sc</option>
+                            <option value="dosen-5">Dr. Eko Prasetyo, M.Kom</option>
+                        </select>
+                        <span class="form-hint">Internship 2 memerlukan 2 dosen pembimbing</span>
+                        <span class="form-error" id="error-prop-dosen2"></span>
+                    </div>
+                </div>
+
+                <!-- Link Proposal -->
+                <div class="form-section">
+                    <h2>Link Dokumen Proposal</h2>
+                    <div class="form-group">
+                        <label for="prop-link">Link Proposal <span class="required">*</span></label>
+                        <input type="url" id="prop-link" name="link" placeholder="https://drive.google.com/..."
+                            required>
+                        <span class="form-hint">Masukkan link Google Drive, Dropbox, atau platform penyimpanan
+                            lainnya</span>
+                        <span class="form-error" id="error-prop-link"></span>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="btn-cancel">Batal</button>
+                    <button type="submit" class="btn btn-gradient" id="btn-submit">Upload Proposal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="/src/proposal.js"></script>
+</body>
+
+</html>
