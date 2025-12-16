@@ -1,108 +1,210 @@
 <!doctype html>
-<html lang="id">
+<html class="light" lang="id">
 
 <head>
     <meta charset="UTF-8" />
     <title>Bimbingan Online - Kavana</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Form Bimbingan Online - Kavana" />
-    <link rel="stylesheet" href="/src/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2596be",
+                        "background-light": "#e8f4f8",
+                        "background-dark": "#121c20",
+                        "surface-light": "#ffffff",
+                        "text-main": "#1e2134",
+                        "text-secondary": "#548192"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .bimbingan-modal {
+            display: none;
+        }
+
+        .bimbingan-modal.active {
+            display: flex;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="bimbingan-page">
-        <div class="bimbingan-container">
-            <div class="bimbingan-header">
-                <a href="/dashboard.html" class="back-link">← Kembali ke Dashboard</a>
-                <div class="bimbingan-title">
-                    <div class="bimbingan-icon">💬</div>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main h-screen overflow-hidden flex">
+    <!-- Mobile Header -->
+    <div id="mobile-header"
+        class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-[#7c3aed] to-[#6366f1] px-4 py-3 flex items-center justify-between shadow-lg">
+        <button id="btn-open-sidebar" class="text-white p-2 -ml-2">
+            <span class="material-symbols-outlined text-[28px]">menu</span>
+        </button>
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-white icon-fill">school</span>
+            <span class="text-white font-bold">Kavana</span>
+        </div>
+        <div class="w-10"></div>
+    </div>
+
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0">
+        <div class="max-w-[1000px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-8">
+            <!-- Page Header -->
+            <header class="flex flex-col sm:flex-row sm:flex-wrap justify-between items-start sm:items-end gap-4">
+                <div class="flex items-center gap-3 lg:gap-4">
+                    <div
+                        class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-2xl lg:text-3xl">
+                        💬</div>
                     <div>
-                        <h1>Bimbingan Online</h1>
-                        <p>Catat dan pantau sesi bimbingan Anda (maksimal 8 kali)</p>
+                        <h2
+                            class="text-text-main text-xl sm:text-2xl lg:text-3xl font-black leading-tight tracking-tight">
+                            Bimbingan Online</h2>
+                        <p class="text-text-secondary text-xs sm:text-sm lg:text-base">Catat dan pantau sesi bimbingan
+                            Anda (maksimal 8 kali)</p>
                     </div>
                 </div>
-            </div>
+                <a href="/dashboard.html"
+                    class="flex items-center gap-2 bg-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium text-text-main shadow-sm border border-slate-100 hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_back</span>
+                    Kembali
+                </a>
+            </header>
 
-            <!-- Progress Bar -->
-            <div class="progress-section">
-                <div class="progress-header">
-                    <span>Progress Bimbingan</span>
-                    <span id="progress-text">0 / 8 Sesi</span>
+            <!-- Progress Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                    <h3 class="text-base lg:text-lg font-bold text-text-main">Progress Bimbingan</h3>
+                    <span id="progress-text" class="text-sm lg:text-base font-semibold text-primary">0 / 8 Sesi</span>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                <div class="w-full bg-slate-100 rounded-full h-2 lg:h-3 mb-4 overflow-hidden">
+                    <div id="progress-fill" class="bg-primary h-2 lg:h-3 rounded-full transition-all duration-500"
+                        style="width: 0%"></div>
                 </div>
-                <div class="progress-dots" id="progress-dots">
+                <div id="progress-dots" class="grid grid-cols-8 gap-1 lg:gap-2">
                     <!-- Will be filled by JS -->
                 </div>
             </div>
 
-            <!-- Current Track & Pembimbing Info -->
-            <div class="info-section">
-                <div class="info-card" id="track-info">
-                    <p>Loading...</p>
-                </div>
-                <div class="info-card" id="pembimbing-info">
-                    <p>Loading...</p>
-                </div>
-            </div>
-
-            <!-- Bimbingan Sessions List -->
-            <div class="sessions-section">
-                <div class="sessions-header">
-                    <h2>Riwayat Bimbingan</h2>
-                    <button class="btn btn-gradient" id="btn-add-session">+ Tambah Bimbingan</button>
-                </div>
-                <div class="sessions-list" id="sessions-list">
-                    <!-- Will be filled by JS -->
-                </div>
-            </div>
-
-            <!-- Add/Edit Session Modal -->
-            <div class="bimbingan-modal" id="session-modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 id="modal-title">Tambah Bimbingan</h2>
-                        <button class="modal-close" id="modal-close">&times;</button>
+            <!-- Info Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                <div id="track-info" class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                            <span class="material-symbols-outlined text-[20px] lg:text-[24px]">work</span>
+                        </div>
+                        <h4 class="font-semibold text-text-main text-sm lg:text-base">Track Aktif</h4>
                     </div>
-                    <form id="session-form">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="session-date">Tanggal Bimbingan <span class="required">*</span></label>
-                                <input type="date" id="session-date" name="date" required>
-                                <span class="form-error" id="error-session-date"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="session-topic">Topik Pembahasan <span class="required">*</span></label>
-                                <input type="text" id="session-topic" name="topic" placeholder="Contoh: Review BAB 1"
-                                    required>
-                                <span class="form-error" id="error-session-topic"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="session-notes">Catatan & Hasil Bimbingan <span
-                                        class="required">*</span></label>
-                                <textarea id="session-notes" name="notes" rows="4"
-                                    placeholder="Tuliskan catatan hasil bimbingan..." required></textarea>
-                                <span class="form-error" id="error-session-notes"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="session-next">Rencana Selanjutnya</label>
-                                <textarea id="session-next" name="next" rows="2"
-                                    placeholder="Apa yang harus dikerjakan sebelum bimbingan berikutnya..."></textarea>
-                            </div>
+                    <p class="text-text-secondary text-sm">Loading...</p>
+                </div>
+                <div id="pembimbing-info" class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="p-2 bg-blue-50 text-primary rounded-lg">
+                            <span class="material-symbols-outlined text-[20px] lg:text-[24px]">person</span>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline" id="btn-modal-cancel">Batal</button>
-                            <button type="submit" class="btn btn-gradient">Simpan</button>
-                        </div>
-                    </form>
+                        <h4 class="font-semibold text-text-main text-sm lg:text-base">Dosen Pembimbing</h4>
+                    </div>
+                    <p class="text-text-secondary text-sm">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Sessions Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 lg:mb-6">
+                    <h3 class="text-base lg:text-lg font-bold text-text-main">Riwayat Bimbingan</h3>
+                    <button id="btn-add-session"
+                        class="flex items-center justify-center gap-2 bg-primary px-4 py-2.5 rounded-lg text-sm font-medium text-white shadow-md shadow-primary/20 hover:bg-primary/90 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                        Tambah Bimbingan
+                    </button>
+                </div>
+                <div id="sessions-list" class="flex flex-col gap-3 lg:gap-4">
+                    <!-- Will be filled by JS -->
                 </div>
             </div>
         </div>
+    </main>
+
+    <!-- Add/Edit Session Modal -->
+    <div class="bimbingan-modal fixed inset-0 bg-black/50 z-50 items-center justify-center p-4" id="session-modal">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between p-4 lg:p-6 border-b border-slate-100 sticky top-0 bg-white">
+                <h2 id="modal-title" class="text-base lg:text-lg font-bold text-text-main">Tambah Bimbingan</h2>
+                <button class="modal-close text-slate-400 hover:text-slate-600 text-2xl"
+                    id="modal-close">&times;</button>
+            </div>
+            <form id="session-form">
+                <div class="p-4 lg:p-6 space-y-4">
+                    <div class="form-group">
+                        <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="session-date">
+                            Tanggal Bimbingan <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" id="session-date" name="date" required
+                            class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <span class="form-error text-red-500 text-xs lg:text-sm mt-1 hidden"
+                            id="error-session-date"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="session-topic">
+                            Topik Pembahasan <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="session-topic" name="topic" placeholder="Contoh: Review BAB 1" required
+                            class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <span class="form-error text-red-500 text-xs lg:text-sm mt-1 hidden"
+                            id="error-session-topic"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="session-notes">
+                            Catatan & Hasil Bimbingan <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="session-notes" name="notes" rows="4"
+                            placeholder="Tuliskan catatan hasil bimbingan..." required
+                            class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"></textarea>
+                        <span class="form-error text-red-500 text-xs lg:text-sm mt-1 hidden"
+                            id="error-session-notes"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="session-next">
+                            Rencana Selanjutnya
+                        </label>
+                        <textarea id="session-next" name="next" rows="2"
+                            placeholder="Apa yang harus dikerjakan sebelum bimbingan berikutnya..."
+                            class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"></textarea>
+                    </div>
+                </div>
+                <div class="flex gap-3 p-4 lg:p-6 border-t border-slate-100 sticky bottom-0 bg-white">
+                    <button type="button" id="btn-modal-cancel"
+                        class="flex-1 py-2.5 lg:py-3 px-4 border border-slate-200 text-text-main text-sm lg:text-base font-semibold rounded-lg hover:bg-slate-50 transition-colors">Batal</button>
+                    <button type="submit"
+                        class="flex-1 py-2.5 lg:py-3 px-4 bg-primary text-white text-sm lg:text-base font-semibold rounded-lg hover:bg-primary/90 transition-colors">Simpan</button>
+                </div>
+            </form>
+        </div>
     </div>
+
     <script type="module" src="/src/bimbingan.js"></script>
 </body>
 

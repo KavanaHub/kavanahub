@@ -1,144 +1,266 @@
 <!doctype html>
-<html lang="id">
+<html class="light" lang="id">
 
 <head>
     <meta charset="UTF-8" />
     <title>Upload Proposal - Kavana</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Upload Proposal Proyek atau Internship - Kavana" />
-    <link rel="stylesheet" href="/src/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2596be",
+                        "background-light": "#e8f4f8",
+                        "background-dark": "#121c20",
+                        "surface-light": "#ffffff",
+                        "text-main": "#1e2134",
+                        "text-secondary": "#548192"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="proposal-page">
-        <div class="proposal-container">
-            <div class="proposal-header">
-                <a href="/dashboard.html" class="back-link">← Kembali ke Dashboard</a>
-                <div class="proposal-title">
-                    <div class="proposal-icon">📄</div>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main h-screen overflow-hidden flex">
+    <!-- Mobile Header -->
+    <div id="mobile-header"
+        class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-[#7c3aed] to-[#6366f1] px-4 py-3 flex items-center justify-between shadow-lg">
+        <button id="btn-open-sidebar" class="text-white p-2 -ml-2">
+            <span class="material-symbols-outlined text-[28px]">menu</span>
+        </button>
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-white icon-fill">school</span>
+            <span class="text-white font-bold">Kavana</span>
+        </div>
+        <div class="w-10"></div>
+    </div>
+
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0">
+        <div class="max-w-[900px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-8">
+            <!-- Page Header -->
+            <header class="flex flex-col sm:flex-row sm:flex-wrap justify-between items-start sm:items-end gap-4">
+                <div class="flex items-center gap-3 lg:gap-4">
+                    <div
+                        class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-2xl lg:text-3xl">
+                        📄</div>
                     <div>
-                        <h1>Upload Proposal</h1>
-                        <p>Lengkapi data dan upload file proposal Anda</p>
+                        <h2
+                            class="text-text-main text-xl sm:text-2xl lg:text-3xl font-black leading-tight tracking-tight">
+                            Upload Proposal</h2>
+                        <p class="text-text-secondary text-xs sm:text-sm lg:text-base">Lengkapi data dan upload file
+                            proposal Anda</p>
                     </div>
                 </div>
-            </div>
+                <a href="/dashboard.html"
+                    class="flex items-center gap-2 bg-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium text-text-main shadow-sm border border-slate-100 hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_back</span>
+                    Kembali
+                </a>
+            </header>
 
-            <form id="proposal-form" class="proposal-form" novalidate>
+            <!-- Proposal Form -->
+            <form id="proposal-form" class="flex flex-col gap-6" novalidate>
                 <!-- Track Info -->
-                <div class="form-section">
-                    <h2>Informasi Track</h2>
-                    <div class="track-info-box" id="track-info-box">
-                        <p>Loading track info...</p>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
+                    <h3 class="text-base lg:text-lg font-bold text-text-main mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">work</span>
+                        Informasi Track
+                    </h3>
+                    <div id="track-info-box" class="p-4 bg-slate-50 rounded-lg">
+                        <p class="text-text-secondary text-sm">Loading track info...</p>
                     </div>
                 </div>
 
-                <!-- Informasi Mahasiswa -->
-                <div class="form-section">
-                    <h2>Informasi Mahasiswa</h2>
-                    <div class="form-grid">
+                <!-- Student Info -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
+                    <h3 class="text-base lg:text-lg font-bold text-text-main mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">person</span>
+                        Informasi Mahasiswa
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="form-group">
-                            <label for="prop-nama">Nama Lengkap <span class="required">*</span></label>
-                            <input type="text" id="prop-nama" name="nama" placeholder="Masukkan nama lengkap" required>
-                            <span class="form-error" id="error-prop-nama"></span>
+                            <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="prop-nama">
+                                Nama Lengkap <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="prop-nama" name="nama" placeholder="Masukkan nama lengkap" required
+                                class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <span class="form-error text-red-500 text-xs mt-1 hidden" id="error-prop-nama"></span>
                         </div>
                         <div class="form-group">
-                            <label for="prop-npm">NPM <span class="required">*</span></label>
-                            <input type="text" id="prop-npm" name="npm" placeholder="Contoh: 2024001234" required>
-                            <span class="form-error" id="error-prop-npm"></span>
+                            <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="prop-npm">
+                                NPM <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="prop-npm" name="npm" placeholder="Contoh: 2024001234" required
+                                class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <span class="form-error text-red-500 text-xs mt-1 hidden" id="error-prop-npm"></span>
                         </div>
                     </div>
 
-                    <!-- Partner info for Proyek -->
-                    <div class="partner-section" id="partner-section" style="display: none;">
-                        <h3>Informasi Partner (Kelompok)</h3>
-                        <div class="form-grid">
+                    <!-- Partner Section (for Proyek) -->
+                    <div id="partner-section" class="hidden mt-4 pt-4 border-t border-slate-100">
+                        <h4 class="text-sm lg:text-base font-semibold text-text-main mb-3">Informasi Partner (Kelompok)
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="form-group">
-                                <label for="prop-partner-nama">Nama Partner <span class="required">*</span></label>
+                                <label class="block text-xs lg:text-sm font-medium text-text-main mb-2"
+                                    for="prop-partner-nama">
+                                    Nama Partner <span class="text-red-500">*</span>
+                                </label>
                                 <input type="text" id="prop-partner-nama" name="partnerNama"
-                                    placeholder="Nama lengkap partner">
-                                <span class="form-error" id="error-prop-partner-nama"></span>
+                                    placeholder="Nama lengkap partner"
+                                    class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <span class="form-error text-red-500 text-xs mt-1 hidden"
+                                    id="error-prop-partner-nama"></span>
                             </div>
                             <div class="form-group">
-                                <label for="prop-partner-npm">NPM Partner <span class="required">*</span></label>
+                                <label class="block text-xs lg:text-sm font-medium text-text-main mb-2"
+                                    for="prop-partner-npm">
+                                    NPM Partner <span class="text-red-500">*</span>
+                                </label>
                                 <input type="text" id="prop-partner-npm" name="partnerNpm" placeholder="NPM partner"
-                                    readonly>
-                                <span class="form-error" id="error-prop-partner-npm"></span>
+                                    readonly
+                                    class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg bg-slate-50 text-text-secondary">
+                                <span class="form-error text-red-500 text-xs mt-1 hidden"
+                                    id="error-prop-partner-npm"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Detail Proposal -->
-                <div class="form-section">
-                    <h2>Detail Proposal</h2>
-                    <div class="form-group">
-                        <label for="prop-judul">Judul Proposal <span class="required">*</span></label>
-                        <input type="text" id="prop-judul" name="judul" placeholder="Masukkan judul proposal Anda"
-                            required>
-                        <span class="form-hint">Judul harus jelas dan menggambarkan isi proyek/internship</span>
-                        <span class="form-error" id="error-prop-judul"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="prop-deskripsi">Deskripsi Singkat</label>
-                        <textarea id="prop-deskripsi" name="deskripsi" rows="4"
-                            placeholder="Jelaskan secara singkat tentang proposal Anda..."></textarea>
+                <!-- Proposal Detail -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
+                    <h3 class="text-base lg:text-lg font-bold text-text-main mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">description</span>
+                        Detail Proposal
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="prop-judul">
+                                Judul Proposal <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="prop-judul" name="judul" placeholder="Masukkan judul proposal Anda"
+                                required
+                                class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <p class="text-text-secondary text-xs mt-1">Judul harus jelas dan menggambarkan isi
+                                proyek/internship</p>
+                            <span class="form-error text-red-500 text-xs mt-1 hidden" id="error-prop-judul"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-xs lg:text-sm font-medium text-text-main mb-2"
+                                for="prop-deskripsi">
+                                Deskripsi Singkat
+                            </label>
+                            <textarea id="prop-deskripsi" name="deskripsi" rows="4"
+                                placeholder="Jelaskan secara singkat tentang proposal Anda..."
+                                class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Pilih Dosen Pembimbing -->
-                <div class="form-section">
-                    <h2>Dosen Pembimbing</h2>
-                    <div class="form-group">
-                        <label for="prop-dosen">Pilih Dosen Pembimbing <span class="required">*</span></label>
-                        <select id="prop-dosen" name="dosen" required>
-                            <option value="">-- Pilih Dosen Pembimbing --</option>
-                            <option value="dosen-1">Dr. Ahmad Fauzi, M.Kom</option>
-                            <option value="dosen-2">Dr. Budi Santoso, M.T.</option>
-                            <option value="dosen-3">Prof. Citra Dewi, Ph.D</option>
-                            <option value="dosen-4">Dr. Diana Putri, M.Sc</option>
-                            <option value="dosen-5">Dr. Eko Prasetyo, M.Kom</option>
-                        </select>
-                        <span class="form-error" id="error-prop-dosen"></span>
-                    </div>
+                <!-- Dosen Pembimbing -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
+                    <h3 class="text-base lg:text-lg font-bold text-text-main mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">school</span>
+                        Dosen Pembimbing
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="prop-dosen">
+                                Pilih Dosen Pembimbing <span class="text-red-500">*</span>
+                            </label>
+                            <select id="prop-dosen" name="dosen" required
+                                class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                <option value="">-- Pilih Dosen Pembimbing --</option>
+                                <option value="dosen-1">Dr. Ahmad Fauzi, M.Kom</option>
+                                <option value="dosen-2">Dr. Budi Santoso, M.T.</option>
+                                <option value="dosen-3">Prof. Citra Dewi, Ph.D</option>
+                                <option value="dosen-4">Dr. Diana Putri, M.Sc</option>
+                                <option value="dosen-5">Dr. Eko Prasetyo, M.Kom</option>
+                            </select>
+                            <span class="form-error text-red-500 text-xs mt-1 hidden" id="error-prop-dosen"></span>
+                        </div>
 
-                    <!-- Dosen Pembimbing 2 for Internship 2 -->
-                    <div class="form-group dosen2-section" id="dosen2-section" style="display: none;">
-                        <label for="prop-dosen2">Pilih Dosen Pembimbing 2 <span class="required">*</span></label>
-                        <select id="prop-dosen2" name="dosen2">
-                            <option value="">-- Pilih Dosen Pembimbing 2 --</option>
-                            <option value="dosen-1">Dr. Ahmad Fauzi, M.Kom</option>
-                            <option value="dosen-2">Dr. Budi Santoso, M.T.</option>
-                            <option value="dosen-3">Prof. Citra Dewi, Ph.D</option>
-                            <option value="dosen-4">Dr. Diana Putri, M.Sc</option>
-                            <option value="dosen-5">Dr. Eko Prasetyo, M.Kom</option>
-                        </select>
-                        <span class="form-hint">Internship 2 memerlukan 2 dosen pembimbing</span>
-                        <span class="form-error" id="error-prop-dosen2"></span>
+                        <!-- Dosen 2 for Internship 2 -->
+                        <div id="dosen2-section" class="hidden form-group">
+                            <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="prop-dosen2">
+                                Pilih Dosen Pembimbing 2 <span class="text-red-500">*</span>
+                            </label>
+                            <select id="prop-dosen2" name="dosen2"
+                                class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                <option value="">-- Pilih Dosen Pembimbing 2 --</option>
+                                <option value="dosen-1">Dr. Ahmad Fauzi, M.Kom</option>
+                                <option value="dosen-2">Dr. Budi Santoso, M.T.</option>
+                                <option value="dosen-3">Prof. Citra Dewi, Ph.D</option>
+                                <option value="dosen-4">Dr. Diana Putri, M.Sc</option>
+                                <option value="dosen-5">Dr. Eko Prasetyo, M.Kom</option>
+                            </select>
+                            <p class="text-text-secondary text-xs mt-1">Internship 2 memerlukan 2 dosen pembimbing</p>
+                            <span class="form-error text-red-500 text-xs mt-1 hidden" id="error-prop-dosen2"></span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Link Proposal -->
-                <div class="form-section">
-                    <h2>Link Dokumen Proposal</h2>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
+                    <h3 class="text-base lg:text-lg font-bold text-text-main mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">link</span>
+                        Link Dokumen Proposal
+                    </h3>
                     <div class="form-group">
-                        <label for="prop-link">Link Proposal <span class="required">*</span></label>
-                        <input type="url" id="prop-link" name="link" placeholder="https://drive.google.com/..."
-                            required>
-                        <span class="form-hint">Masukkan link Google Drive, Dropbox, atau platform penyimpanan
-                            lainnya</span>
-                        <span class="form-error" id="error-prop-link"></span>
+                        <label class="block text-xs lg:text-sm font-medium text-text-main mb-2" for="prop-link">
+                            Link Proposal <span class="text-red-500">*</span>
+                        </label>
+                        <input type="url" id="prop-link" name="link" placeholder="https://drive.google.com/..." required
+                            class="w-full px-3 lg:px-4 py-2.5 lg:py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <p class="text-text-secondary text-xs mt-1">Masukkan link Google Drive, Dropbox, atau platform
+                            penyimpanan lainnya</p>
+                        <span class="form-error text-red-500 text-xs mt-1 hidden" id="error-prop-link"></span>
                     </div>
                 </div>
 
-                <!-- Submit -->
-                <div class="form-actions">
-                    <button type="button" class="btn btn-outline" id="btn-cancel">Batal</button>
-                    <button type="submit" class="btn btn-gradient" id="btn-submit">Upload Proposal</button>
+                <!-- Submit Actions -->
+                <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
+                    <button type="button" id="btn-cancel"
+                        class="w-full sm:w-auto px-6 py-3 border border-slate-200 text-text-main text-sm font-semibold rounded-lg hover:bg-slate-50 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="btn-submit"
+                        class="w-full sm:w-auto px-6 py-3 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors shadow-md shadow-primary/20">
+                        <span class="flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">upload</span>
+                            Upload Proposal
+                        </span>
+                    </button>
                 </div>
             </form>
         </div>
-    </div>
+    </main>
+
     <script type="module" src="/src/proposal.js"></script>
 </body>
 

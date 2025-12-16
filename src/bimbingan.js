@@ -1,263 +1,341 @@
-import "./style.css";
+// ========================================
+// BIMBINGAN PAGE (Clean Code Refactored)
+// ========================================
+
+import { mahasiswaAPI } from "./api.js";
+import { initPage, closeSidebar } from "./utils/pageInit.js";
+import { showFieldError, clearAllErrors, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { formatDateShort, getTrackDisplayName, getStatusDisplay } from "./utils/formatUtils.js";
 
 // ---------- STATE ----------
-let sessions = JSON.parse(sessionStorage.getItem('bimbinganSessions')) || [];
+let sessions = [];
 let editingIndex = -1;
 
-// ---------- BIMBINGAN PAGE INIT ----------
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('session-modal');
-    const modalClose = document.getElementById('modal-close');
-    const btnAddSession = document.getElementById('btn-add-session');
-    const btnModalCancel = document.getElementById('btn-modal-cancel');
-    const sessionForm = document.getElementById('session-form');
+// ---------- CONSTANTS ----------
+const MAX_SESSIONS = 8;
 
-    // Load info
-    loadTrackInfo();
-    loadPembimbingInfo();
-    renderSessions();
+// ---------- DOM ELEMENTS ----------
+const getElements = () => ({
+    modal: document.getElementById("session-modal"),
+    modalTitle: document.getElementById("modal-title"),
+    form: document.getElementById("session-form"),
+    btnAddSession: document.getElementById("btn-add-session"),
+    sessionsList: document.getElementById("sessions-list"),
+    trackInfo: document.getElementById("track-info"),
+    pembimbingInfo: document.getElementById("pembimbing-info"),
+    progressText: document.getElementById("progress-text"),
+    progressFill: document.getElementById("progress-fill"),
+    progressDots: document.getElementById("progress-dots"),
+});
+
+// ---------- BIMBINGAN PAGE INIT ----------
+document.addEventListener("DOMContentLoaded", async () => {
+    // Initialize page with sidebar
+    const { isAuthenticated } = initPage({ activeMenu: "bimbingan" });
+    if (!isAuthenticated) return;
+
+    // Setup global closeSidebar
+    window.closeSidebar = closeSidebar;
+
+    const elements = getElements();
+
+    // Load data
+    loadTrackInfo(elements.trackInfo);
+    loadPembimbingInfo(elements.pembimbingInfo);
+    await loadBimbinganFromAPI();
     updateProgress();
 
-    // Modal handlers
-    btnAddSession?.addEventListener('click', () => openModal());
-    modalClose?.addEventListener('click', closeModal);
-    btnModalCancel?.addEventListener('click', closeModal);
+    // Event listeners
+    elements.btnAddSession?.addEventListener("click", () => openModal());
+    document.getElementById("modal-close")?.addEventListener("click", closeModal);
+    document.getElementById("btn-modal-cancel")?.addEventListener("click", closeModal);
+    elements.modal?.addEventListener("click", (e) => e.target === elements.modal && closeModal());
+    elements.form?.addEventListener("submit", handleSubmit);
+});
 
-    modal?.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
+// ---------- DATA LOADING ----------
+function loadTrackInfo(container) {
+    if (!container) return;
 
-    // Form submission
-    sessionForm?.addEventListener('submit', handleSubmit);
+    const trackData = sessionStorage.getItem("selectedTrack");
 
-    // ---------- FUNCTIONS ----------
+    if (!trackData) {
+        container.innerHTML = renderNoTrackWarning();
+        return;
+    }
 
-    function loadTrackInfo() {
-        const trackInfoEl = document.getElementById('track-info');
-        const trackData = sessionStorage.getItem('selectedTrack');
+    const track = JSON.parse(trackData);
+    const isProyek = track.type === "proyek";
 
-        if (!trackData) {
-            trackInfoEl.innerHTML = `
-        <div class="info-warning">
-          <span>⚠️</span>
-          <p>Belum ada track yang dipilih</p>
-          <a href="/track.html" class="link">Pilih Track</a>
-        </div>
-      `;
-            return;
-        }
-
-        const track = JSON.parse(trackData);
-        const isProyek = track.type === 'proyek';
-
-        trackInfoEl.innerHTML = `
-      <div class="info-icon">${isProyek ? '📋' : '🏢'}</div>
-      <div class="info-details">
-        <h3>${getTrackDisplayName(track.track)}</h3>
-        <p>${isProyek ? `Partner: ${track.partnerNpm}` : track.companyName}</p>
+    container.innerHTML = `
+    <div class="flex items-center gap-3 mb-3">
+      <div class="p-2 ${isProyek ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"} rounded-lg text-xl lg:text-2xl">
+        ${isProyek ? "📋" : "🏢"}
       </div>
-    `;
+      <h4 class="font-semibold text-text-main text-sm lg:text-base">Track Aktif</h4>
+    </div>
+    <p class="font-bold text-text-main text-base lg:text-lg">${getTrackDisplayName(track.track)}</p>
+    <p class="text-text-secondary text-xs lg:text-sm mt-1">${isProyek ? `Partner: ${track.partnerNpm}` : track.companyName}</p>
+  `;
+}
+
+function loadPembimbingInfo(container) {
+    if (!container) return;
+
+    const proposalData = sessionStorage.getItem("proposalData");
+
+    if (!proposalData) {
+        container.innerHTML = renderNoPembimbingWarning();
+        return;
     }
 
-    function loadPembimbingInfo() {
-        const pembimbingInfoEl = document.getElementById('pembimbing-info');
-        const proposalData = sessionStorage.getItem('proposalData');
-
-        if (!proposalData) {
-            pembimbingInfoEl.innerHTML = `
-        <div class="info-warning">
-          <span>⚠️</span>
-          <p>Belum ada proposal</p>
-          <a href="/proposal.html" class="link">Upload Proposal</a>
-        </div>
-      `;
-            return;
-        }
-
-        const proposal = JSON.parse(proposalData);
-        const dosenNames = {
-            'dosen-1': 'Dr. Ahmad Fauzi, M.Kom',
-            'dosen-2': 'Dr. Budi Santoso, M.T.',
-            'dosen-3': 'Prof. Citra Dewi, Ph.D',
-            'dosen-4': 'Dr. Diana Putri, M.Sc',
-            'dosen-5': 'Dr. Eko Prasetyo, M.Kom'
-        };
-
-        pembimbingInfoEl.innerHTML = `
-      <div class="info-icon">👨‍🏫</div>
-      <div class="info-details">
-        <h3>Dosen Pembimbing</h3>
-        <p>${dosenNames[proposal.dosen] || 'Belum ditentukan'}</p>
-      </div>
-    `;
-    }
-
-    function updateProgress() {
-        const count = sessions.length;
-        const percentage = (count / 8) * 100;
-
-        document.getElementById('progress-text').textContent = `${count} / 8 Sesi`;
-        document.getElementById('progress-fill').style.width = `${percentage}%`;
-
-        // Update dots
-        const dotsContainer = document.getElementById('progress-dots');
-        dotsContainer.innerHTML = '';
-
-        for (let i = 0; i < 8; i++) {
-            const dot = document.createElement('div');
-            dot.className = `progress-dot ${i < count ? 'completed' : ''}`;
-            dot.textContent = i + 1;
-            dotsContainer.appendChild(dot);
-        }
-
-        // Disable add button if max reached
-        const btnAdd = document.getElementById('btn-add-session');
-        if (count >= 8) {
-            btnAdd.disabled = true;
-            btnAdd.textContent = 'Bimbingan Selesai ✓';
-        }
-    }
-
-    function renderSessions() {
-        const listEl = document.getElementById('sessions-list');
-
-        if (sessions.length === 0) {
-            listEl.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">📝</div>
-          <h3>Belum Ada Bimbingan</h3>
-          <p>Klik tombol "Tambah Bimbingan" untuk mencatat sesi bimbingan pertama Anda</p>
-        </div>
-      `;
-            return;
-        }
-
-        listEl.innerHTML = sessions.map((session, index) => `
-      <div class="session-card">
-        <div class="session-number">${index + 1}</div>
-        <div class="session-content">
-          <div class="session-header">
-            <span class="session-date">${formatDate(session.date)}</span>
-            <span class="session-topic">${session.topic}</span>
-          </div>
-          <p class="session-notes">${session.notes}</p>
-          ${session.next ? `<p class="session-next"><strong>Rencana:</strong> ${session.next}</p>` : ''}
-        </div>
-        <div class="session-actions">
-          <button class="btn btn-small btn-outline" onclick="editSession(${index})">Edit</button>
-          <button class="btn btn-small btn-danger" onclick="deleteSession(${index})">Hapus</button>
-        </div>
-      </div>
-    `).join('');
-    }
-
-    function openModal(index = -1) {
-        editingIndex = index;
-        const modal = document.getElementById('session-modal');
-        const form = document.getElementById('session-form');
-        const title = document.getElementById('modal-title');
-
-        form.reset();
-
-        if (index >= 0 && sessions[index]) {
-            title.textContent = `Edit Bimbingan ke-${index + 1}`;
-            document.getElementById('session-date').value = sessions[index].date;
-            document.getElementById('session-topic').value = sessions[index].topic;
-            document.getElementById('session-notes').value = sessions[index].notes;
-            document.getElementById('session-next').value = sessions[index].next || '';
-        } else {
-            title.textContent = `Tambah Bimbingan ke-${sessions.length + 1}`;
-            document.getElementById('session-date').value = new Date().toISOString().split('T')[0];
-        }
-
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-        const modal = document.getElementById('session-modal');
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-        editingIndex = -1;
-    }
-
-    function handleSubmit(e) {
-        e.preventDefault();
-
-        const date = document.getElementById('session-date').value;
-        const topic = document.getElementById('session-topic').value.trim();
-        const notes = document.getElementById('session-notes').value.trim();
-        const next = document.getElementById('session-next').value.trim();
-
-        let isValid = true;
-
-        if (!date) {
-            showError('session-date', 'Tanggal wajib diisi');
-            isValid = false;
-        }
-        if (!topic) {
-            showError('session-topic', 'Topik wajib diisi');
-            isValid = false;
-        }
-        if (!notes) {
-            showError('session-notes', 'Catatan wajib diisi');
-            isValid = false;
-        }
-
-        if (isValid) {
-            const sessionData = { date, topic, notes, next };
-
-            if (editingIndex >= 0) {
-                sessions[editingIndex] = sessionData;
-            } else {
-                sessions.push(sessionData);
-            }
-
-            sessionStorage.setItem('bimbinganSessions', JSON.stringify(sessions));
-
-            closeModal();
-            renderSessions();
-            updateProgress();
-        }
-    }
-
-    // Global functions for inline handlers
-    window.editSession = (index) => openModal(index);
-    window.deleteSession = (index) => {
-        if (confirm('Apakah Anda yakin ingin menghapus bimbingan ini?')) {
-            sessions.splice(index, 1);
-            sessionStorage.setItem('bimbinganSessions', JSON.stringify(sessions));
-            renderSessions();
-            updateProgress();
-        }
+    const proposal = JSON.parse(proposalData);
+    const dosenNames = {
+        "dosen-1": "Dr. Ahmad Fauzi, M.Kom",
+        "dosen-2": "Dr. Budi Santoso, M.T.",
+        "dosen-3": "Prof. Citra Dewi, Ph.D",
+        "dosen-4": "Dr. Diana Putri, M.Sc",
+        "dosen-5": "Dr. Eko Prasetyo, M.Kom",
     };
 
-    function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('id-ID', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    }
+    container.innerHTML = `
+    <div class="flex items-center gap-3 mb-3">
+      <div class="p-2 bg-blue-50 text-primary rounded-lg">
+        <span class="material-symbols-outlined text-[20px] lg:text-[24px]">person</span>
+      </div>
+      <h4 class="font-semibold text-text-main text-sm lg:text-base">Dosen Pembimbing</h4>
+    </div>
+    <p class="font-bold text-text-main text-base lg:text-lg">${dosenNames[proposal.dosen] || "Belum ditentukan"}</p>
+    <p class="text-text-secondary text-xs lg:text-sm mt-1">Pembimbing Utama</p>
+  `;
+}
 
-    function getTrackDisplayName(track) {
-        const names = {
-            'proyek-1': 'Proyek 1',
-            'proyek-2': 'Proyek 2',
-            'proyek-3': 'Proyek 3',
-            'internship-1': 'Internship 1',
-            'internship-2': 'Internship 2'
-        };
-        return names[track] || track;
-    }
-
-    function showError(fieldId, message) {
-        const errorEl = document.getElementById(`error-${fieldId}`);
-        if (errorEl) {
-            errorEl.textContent = message;
-            errorEl.classList.add('visible');
+async function loadBimbinganFromAPI() {
+    try {
+        const result = await mahasiswaAPI.getMyBimbingan();
+        if (result.ok && result.data) {
+            sessions = result.data.map((b) => ({
+                id: b.id,
+                date: b.tanggal,
+                topic: b.kegiatan,
+                notes: b.catatan || "",
+                next: b.rencana_selanjutnya || "",
+                status: b.status,
+            }));
+            renderSessions();
         }
+    } catch (err) {
+        console.error("Error loading bimbingan:", err);
+        sessions = JSON.parse(sessionStorage.getItem("bimbinganSessions")) || [];
+        renderSessions();
     }
-});
+}
+
+// ---------- RENDERING ----------
+function renderNoTrackWarning() {
+    return `
+    <div class="flex items-center gap-3 mb-3">
+      <div class="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
+        <span class="material-symbols-outlined text-[20px] lg:text-[24px]">warning</span>
+      </div>
+      <h4 class="font-semibold text-text-main text-sm lg:text-base">Track Aktif</h4>
+    </div>
+    <p class="text-yellow-600 text-sm font-medium">Belum ada track dipilih</p>
+    <a href="/track.html" class="text-primary text-xs hover:underline mt-2 inline-block">Pilih Track →</a>
+  `;
+}
+
+function renderNoPembimbingWarning() {
+    return `
+    <div class="flex items-center gap-3 mb-3">
+      <div class="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
+        <span class="material-symbols-outlined text-[20px] lg:text-[24px]">warning</span>
+      </div>
+      <h4 class="font-semibold text-text-main text-sm lg:text-base">Dosen Pembimbing</h4>
+    </div>
+    <p class="text-yellow-600 text-sm font-medium">Belum ada proposal</p>
+    <a href="/proposal.html" class="text-primary text-xs hover:underline mt-2 inline-block">Upload Proposal →</a>
+  `;
+}
+
+function updateProgress() {
+    const count = sessions.length;
+    const percentage = (count / MAX_SESSIONS) * 100;
+
+    document.getElementById("progress-text").textContent = `${count} / ${MAX_SESSIONS} Sesi`;
+    document.getElementById("progress-fill").style.width = `${percentage}%`;
+
+    // Update dots
+    const dotsContainer = document.getElementById("progress-dots");
+    dotsContainer.innerHTML = Array.from({ length: MAX_SESSIONS }, (_, i) => {
+        const isCompleted = i < count;
+        return `<div class="flex items-center justify-center w-full h-8 lg:h-10 rounded-lg text-xs lg:text-sm font-bold transition-colors ${isCompleted ? "bg-primary text-white" : "bg-slate-100 text-slate-400"
+            }">${i + 1}</div>`;
+    }).join("");
+
+    // Disable add button if max reached
+    const btnAdd = document.getElementById("btn-add-session");
+    if (count >= MAX_SESSIONS && btnAdd) {
+        btnAdd.disabled = true;
+        btnAdd.innerHTML = `<span class="material-symbols-outlined text-[18px]">check</span> Bimbingan Selesai`;
+        btnAdd.classList.remove("bg-primary", "hover:bg-primary/90");
+        btnAdd.classList.add("bg-green-500", "cursor-not-allowed");
+    }
+}
+
+function renderSessions() {
+    const listEl = document.getElementById("sessions-list");
+    if (!listEl) return;
+
+    if (sessions.length === 0) {
+        listEl.innerHTML = renderEmptyState();
+        return;
+    }
+
+    listEl.innerHTML = sessions.map((session, index) => renderSessionCard(session, index)).join("");
+}
+
+function renderEmptyState() {
+    return `
+    <div class="text-center py-8 lg:py-12">
+      <span class="material-symbols-outlined text-4xl lg:text-5xl text-slate-300">edit_note</span>
+      <h3 class="text-base lg:text-lg font-bold text-text-main mt-3">Belum Ada Bimbingan</h3>
+      <p class="text-text-secondary text-xs lg:text-sm mt-1">Klik tombol "Tambah Bimbingan" untuk mencatat sesi pertama</p>
+    </div>
+  `;
+}
+
+function renderSessionCard(session, index) {
+    const status = getStatusDisplay(session.status);
+
+    return `
+    <div class="flex gap-3 lg:gap-4 p-3 lg:p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
+      <div class="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-${status.color}-500 text-white flex items-center justify-center font-bold text-sm lg:text-base shrink-0">${index + 1}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <span class="text-xs lg:text-sm text-text-secondary">${formatDateShort(session.date)}</span>
+          <span class="px-2 py-0.5 text-[10px] lg:text-xs font-medium rounded-full bg-${status.color}-100 text-${status.color}-700">${status.text}</span>
+        </div>
+        <p class="font-semibold text-text-main text-sm lg:text-base truncate">${session.topic}</p>
+        <p class="text-text-secondary text-xs lg:text-sm mt-1 line-clamp-2">${session.notes}</p>
+        ${session.next ? `<p class="text-primary text-xs mt-2"><span class="font-medium">Rencana:</span> ${session.next}</p>` : ""}
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2 shrink-0">
+        <button onclick="editSession(${index})" class="p-2 text-slate-400 hover:text-primary hover:bg-white rounded-lg transition-colors">
+          <span class="material-symbols-outlined text-[18px]">edit</span>
+        </button>
+        <button onclick="deleteSession(${index})" class="p-2 text-slate-400 hover:text-red-500 hover:bg-white rounded-lg transition-colors">
+          <span class="material-symbols-outlined text-[18px]">delete</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- MODAL HANDLERS ----------
+function openModal(index = -1) {
+    editingIndex = index;
+    const modal = document.getElementById("session-modal");
+    const form = document.getElementById("session-form");
+    const title = document.getElementById("modal-title");
+
+    form.reset();
+    clearAllErrors();
+
+    if (index >= 0 && sessions[index]) {
+        title.textContent = `Edit Bimbingan ke-${index + 1}`;
+        document.getElementById("session-date").value = sessions[index].date;
+        document.getElementById("session-topic").value = sessions[index].topic;
+        document.getElementById("session-notes").value = sessions[index].notes;
+        document.getElementById("session-next").value = sessions[index].next || "";
+    } else {
+        title.textContent = `Tambah Bimbingan ke-${sessions.length + 1}`;
+        document.getElementById("session-date").value = new Date().toISOString().split("T")[0];
+    }
+
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+    const modal = document.getElementById("session-modal");
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+    editingIndex = -1;
+}
+
+// ---------- FORM SUBMISSION ----------
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    const date = document.getElementById("session-date").value;
+    const topic = document.getElementById("session-topic").value.trim();
+    const notes = document.getElementById("session-notes").value.trim();
+    const next = document.getElementById("session-next").value.trim();
+
+    // Validation
+    let isValid = true;
+    clearAllErrors();
+
+    if (!date) {
+        showFieldError("session-date", "Tanggal wajib diisi");
+        isValid = false;
+    }
+    if (!topic) {
+        showFieldError("session-topic", "Topik wajib diisi");
+        isValid = false;
+    }
+    if (!notes) {
+        showFieldError("session-notes", "Catatan wajib diisi");
+        isValid = false;
+    }
+
+    if (!isValid) return;
+
+    const submitBtn = document.querySelector('#session-form button[type="submit"]');
+    setButtonLoading(submitBtn, "Menyimpan...");
+
+    try {
+        const result = await mahasiswaAPI.createBimbingan({
+            tanggal: date,
+            kegiatan: topic,
+            catatan: notes,
+            rencana_selanjutnya: next,
+        });
+
+        if (result.ok) {
+            closeModal();
+            await loadBimbinganFromAPI();
+            updateProgress();
+        } else {
+            alert("Gagal menyimpan: " + (result.error || "Terjadi kesalahan"));
+        }
+    } catch (err) {
+        console.error("Submit error:", err);
+        // Fallback to sessionStorage
+        const sessionData = { date, topic, notes, next, status: "pending" };
+        if (editingIndex >= 0) {
+            sessions[editingIndex] = sessionData;
+        } else {
+            sessions.push(sessionData);
+        }
+        sessionStorage.setItem("bimbinganSessions", JSON.stringify(sessions));
+        closeModal();
+        renderSessions();
+        updateProgress();
+    } finally {
+        resetButtonLoading(submitBtn);
+    }
+}
+
+// ---------- GLOBAL FUNCTIONS ----------
+window.editSession = (index) => openModal(index);
+
+window.deleteSession = (index) => {
+    if (confirm("Apakah Anda yakin ingin menghapus bimbingan ini?")) {
+        sessions.splice(index, 1);
+        sessionStorage.setItem("bimbinganSessions", JSON.stringify(sessions));
+        renderSessions();
+        updateProgress();
+    }
+};

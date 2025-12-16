@@ -1,129 +1,156 @@
-import "./style.css";
+// ========================================
+// LAPORAN PAGE (Clean Code Refactored)
+// ========================================
+
+import { mahasiswaAPI } from "./api.js";
+import { initPage, closeSidebar } from "./utils/pageInit.js";
+import { showFieldError, clearFieldError, isValidURL, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+
+// ---------- CONSTANTS ----------
+const FORM_FIELDS = ["lap-judul", "lap-link"];
 
 // ---------- LAPORAN PAGE INIT ----------
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('laporan-form');
-    const btnCancel = document.getElementById('btn-cancel');
+document.addEventListener("DOMContentLoaded", async () => {
+    // Initialize page with sidebar
+    const { isAuthenticated } = initPage({ activeMenu: "laporan" });
+    if (!isAuthenticated) return;
 
-    // Check prerequisites
-    checkPrerequisites();
+    // Setup global closeSidebar
+    window.closeSidebar = closeSidebar;
 
-    // Load existing data
+    // Load data
+    await checkPrerequisites();
     loadExistingData();
 
-    // Cancel button
-    btnCancel?.addEventListener('click', () => {
-        window.location.href = '/dashboard.html';
+    // Event listeners
+    document.getElementById("btn-cancel")?.addEventListener("click", () => (window.location.href = "/dashboard.html"));
+    document.getElementById("laporan-form")?.addEventListener("submit", handleSubmit);
+
+    // Setup error clearing
+    FORM_FIELDS.forEach((fieldId) => {
+        document.getElementById(fieldId)?.addEventListener("input", () => clearFieldError(fieldId));
     });
-
-    // Clear errors on input
-    ['lap-judul', 'lap-link'].forEach(fieldId => {
-        document.getElementById(fieldId)?.addEventListener('input', () => {
-            const errorEl = document.getElementById(`error-${fieldId}`);
-            const inputEl = document.getElementById(fieldId);
-            if (errorEl) errorEl.classList.remove('visible');
-            if (inputEl) inputEl.classList.remove('input-error');
-        });
-    });
-
-    // Form submission
-    form?.addEventListener('submit', handleSubmit);
-
-    // ---------- FUNCTIONS ----------
-
-    function checkPrerequisites() {
-        const proposalData = sessionStorage.getItem('proposalData');
-        const sessions = JSON.parse(sessionStorage.getItem('bimbinganSessions') || '[]');
-
-        const prereqProposal = document.getElementById('prereq-proposal');
-        const prereqBimbingan = document.getElementById('prereq-bimbingan');
-
-        // Check proposal
-        if (proposalData) {
-            prereqProposal.querySelector('.prereq-icon').textContent = '✅';
-            prereqProposal.classList.add('completed');
-        } else {
-            prereqProposal.querySelector('.prereq-icon').textContent = '❌';
-            prereqProposal.classList.add('pending');
-        }
-
-        // Check bimbingan
-        if (sessions.length >= 8) {
-            prereqBimbingan.querySelector('.prereq-icon').textContent = '✅';
-            prereqBimbingan.classList.add('completed');
-        } else {
-            prereqBimbingan.querySelector('.prereq-icon').textContent = `${sessions.length}/8`;
-            prereqBimbingan.classList.add('pending');
-        }
-    }
-
-    function loadExistingData() {
-        const proposalData = sessionStorage.getItem('proposalData');
-        if (proposalData) {
-            const proposal = JSON.parse(proposalData);
-            document.getElementById('lap-judul').value = proposal.judul || '';
-        }
-    }
-
-    function validateURL(url) {
-        try {
-            new URL(url);
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    function handleSubmit(e) {
-        e.preventDefault();
-
-        let isValid = true;
-
-        const judul = document.getElementById('lap-judul').value.trim();
-        const abstrak = document.getElementById('lap-abstrak').value.trim();
-        const link = document.getElementById('lap-link').value.trim();
-
-        // Validate judul
-        if (!judul) {
-            showError('lap-judul', 'Judul wajib diisi');
-            isValid = false;
-        }
-
-        // Validate link
-        if (!link) {
-            showError('lap-link', 'Link laporan wajib diisi');
-            isValid = false;
-        } else if (!validateURL(link)) {
-            showError('lap-link', 'Format link tidak valid');
-            isValid = false;
-        }
-
-        if (isValid) {
-            const laporanData = {
-                judul,
-                abstrak,
-                link,
-                submittedAt: new Date().toISOString(),
-                status: 'pending'
-            };
-
-            console.log('Laporan data:', laporanData);
-            sessionStorage.setItem('laporanData', JSON.stringify(laporanData));
-
-            alert('Laporan berhasil disubmit!\n\nLaporan Anda akan direview oleh pembimbing.');
-            window.location.href = '/dashboard.html';
-        }
-    }
-
-    function showError(fieldId, message) {
-        const errorEl = document.getElementById(`error-${fieldId}`);
-        const inputEl = document.getElementById(fieldId);
-        if (errorEl) {
-            errorEl.textContent = message;
-            errorEl.classList.add('visible');
-        }
-        if (inputEl) {
-            inputEl.classList.add('input-error');
-        }
-    }
 });
+
+// ---------- PREREQUISITES CHECK ----------
+async function checkPrerequisites() {
+    const prereqProposal = document.getElementById("prereq-proposal");
+    const prereqBimbingan = document.getElementById("prereq-bimbingan");
+
+    try {
+        // Check proposal from API
+        const profileResult = await mahasiswaAPI.getProfile();
+        updatePrereqCard(
+            prereqProposal,
+            profileResult.ok && profileResult.data.status_proposal === "approved",
+            "✅",
+            "❌",
+            "green",
+            "red"
+        );
+
+        // Check bimbingan from API
+        const bimbinganResult = await mahasiswaAPI.getMyBimbingan();
+        const approvedCount = bimbinganResult.ok ? bimbinganResult.data.filter((b) => b.status === "approved").length : 0;
+        const isComplete = approvedCount >= 8;
+
+        if (isComplete) {
+            updatePrereqCard(prereqBimbingan, true, "✅", "", "green", "");
+        } else {
+            prereqBimbingan.querySelector(".prereq-icon").innerHTML = `<span class="text-yellow-600 font-bold">${approvedCount}/8</span>`;
+            prereqBimbingan.classList.remove("bg-slate-50", "border-slate-100");
+            prereqBimbingan.classList.add("bg-yellow-50", "border-yellow-200");
+        }
+    } catch (err) {
+        console.error("Error checking prerequisites:", err);
+    }
+}
+
+function updatePrereqCard(element, isComplete, successIcon, failIcon, successColor, failColor) {
+    if (!element) return;
+
+    const icon = element.querySelector(".prereq-icon");
+    if (isComplete) {
+        icon.textContent = successIcon;
+        element.classList.remove("bg-slate-50", "border-slate-100");
+        element.classList.add(`bg-${successColor}-50`, `border-${successColor}-200`);
+    } else {
+        icon.textContent = failIcon;
+        element.classList.remove("bg-slate-50", "border-slate-100");
+        element.classList.add(`bg-${failColor}-50`, `border-${failColor}-200`);
+    }
+}
+
+// ---------- DATA LOADING ----------
+function loadExistingData() {
+    const proposalData = sessionStorage.getItem("proposalData");
+    if (proposalData) {
+        const proposal = JSON.parse(proposalData);
+        const judulInput = document.getElementById("lap-judul");
+        if (judulInput) judulInput.value = proposal.judul || "";
+    }
+}
+
+// ---------- FORM SUBMISSION ----------
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    const judul = document.getElementById("lap-judul").value.trim();
+    const abstrak = document.getElementById("lap-abstrak").value.trim();
+    const link = document.getElementById("lap-link").value.trim();
+
+    // Validation
+    if (!validateForm(judul, link)) return;
+
+    const submitBtn = document.getElementById("btn-submit");
+    setButtonLoading(submitBtn, "Mengirim...");
+
+    try {
+        const result = await mahasiswaAPI.submitLaporan({
+            judul,
+            file_laporan: link,
+        });
+
+        if (result.ok) {
+            sessionStorage.setItem(
+                "laporanData",
+                JSON.stringify({
+                    judul,
+                    abstrak,
+                    link,
+                    submittedAt: new Date().toISOString(),
+                    status: "pending",
+                })
+            );
+
+            alert("Laporan berhasil disubmit!\n\nLaporan Anda akan direview oleh pembimbing.");
+            window.location.href = "/dashboard.html";
+        } else {
+            alert("Gagal submit: " + (result.error || "Terjadi kesalahan"));
+        }
+    } catch (err) {
+        console.error("Submit error:", err);
+        alert("Terjadi kesalahan. Silakan coba lagi.");
+    } finally {
+        resetButtonLoading(submitBtn);
+    }
+}
+
+function validateForm(judul, link) {
+    let isValid = true;
+
+    if (!judul) {
+        showFieldError("lap-judul", "Judul wajib diisi");
+        isValid = false;
+    }
+
+    if (!link) {
+        showFieldError("lap-link", "Link laporan wajib diisi");
+        isValid = false;
+    } else if (!isValidURL(link)) {
+        showFieldError("lap-link", "Format link tidak valid");
+        isValid = false;
+    }
+
+    return isValid;
+}

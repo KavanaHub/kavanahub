@@ -2701,3 +2701,227 @@ body {
 }
 
 /* ========== END NEW PAGE STYLES ========== */
+
+/* ========================================
+   DOSEN DASHBOARD STYLES
+   ======================================== */
+
+/* Table Styles */
+.table-container {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.data-table th {
+  background: linear-gradient(135deg, #2596be, #1e82a5);
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.data-table th:first-child {
+  border-radius: 12px 0 0 0;
+}
+
+.data-table th:last-child {
+  border-radius: 0 12px 0 0;
+}
+
+.data-table tbody tr:hover {
+  background: #f8fbfd;
+}
+
+/* Badge Styles */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.badge-track {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+/* Loading & Empty States */
+.loading-spinner {
+  padding: 60px;
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+}
+
+.empty-state {
+  padding: 60px;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.empty-state .empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px;
+  color: #333;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #666;
+}
+
+.error-state {
+  padding: 40px;
+  text-align: center;
+  color: #721c24;
+  background: #f8d7da;
+  border-radius: 12px;
+}
+
+/* Bimbingan Cards */
+.bimbingan-list,
+.laporan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bimbingan-card,
+.laporan-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #2596be;
+}
+
+.bimbingan-header,
+.laporan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.bimbingan-info,
+.laporan-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bimbingan-info strong,
+.laporan-info strong {
+  font-size: 1rem;
+  color: #333;
+}
+
+.bimbingan-date,
+.laporan-npm {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.bimbingan-body,
+.laporan-body {
+  margin-bottom: 16px;
+}
+
+.bimbingan-body p,
+.laporan-body p {
+  margin: 6px 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.bimbingan-actions,
+.laporan-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Button Variants */
+.btn-success {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: #fff;
+  border: none;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #218838, #1e7e34);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: #fff;
+  border: none;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #c82333, #bd2130);
+}
+
+.btn-small {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .data-table {
+    font-size: 0.8rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 10px 12px;
+  }
+
+  .bimbingan-header,
+  .laporan-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bimbingan-actions,
+  .laporan-actions {
+    flex-direction: column;
+  }
+}

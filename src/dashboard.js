@@ -1,337 +1,275 @@
+// ========================================
+// DASHBOARD - Main Entry Point (Responsive)
+// ========================================
+
 import { MENU_CONFIG, ROLE_LABEL, TITLE_MAP } from "./shared.js";
-import "./style.css";
+import { mahasiswaAPI, dosenAPI, koordinatorAPI, kaprodiAPI, getToken, clearToken } from "./api.js";
+import { getSidebarHTML, getMobileHeaderHTML, bindSidebarEvents, updateSidebarUser, updateBimbinganBadge } from "./components/sidebar.js";
+import { renderMahasiswaDashboard } from "./components/mahasiswaDashboard.js";
+import { renderDosenDashboard } from "./components/dosenDashboard.js";
 
 // ---------- STATE ----------
-let currentRole = sessionStorage.getItem('userRole') || 'mahasiswa';
-let activeMenu = 'dashboard';
-
-// ---------- DUMMY DATA ----------
-const proyekCards = [
-  {
-    title: "Proyek 1 - Sistem Bimbingan",
-    description: "Status proposal, pembimbing, dan progres bimbingan untuk Proyek 1.",
-    status: "Proposal disetujui",
-    tag: "Proyek 1",
-  },
-  {
-    title: "Internship 1 - PT Teknologi Kavana",
-    description: "Laporan kegiatan dan bimbingan untuk Internship 1 semester ini.",
-    status: "Bimbingan 5 / 8",
-    tag: "Internship 1",
-  },
-  {
-    title: "Proyek 2 - Aplikasi Mobile",
-    description: "Menunggu pengajuan proposal dan usulan pembimbing.",
-    status: "Belum dimulai",
-    tag: "Proyek 2",
-  },
-];
+let currentRole = sessionStorage.getItem("userRole") || "mahasiswa";
+let activeMenu = "dashboard";
+let userData = null;
 
 // ---------- INIT ----------
-document.addEventListener('DOMContentLoaded', () => {
-  const app = document.getElementById('app');
+document.addEventListener("DOMContentLoaded", async () => {
+  const app = document.getElementById("app");
 
   // Check if user is logged in
-  if (!sessionStorage.getItem('userRole')) {
-    // Set default for demo
-    sessionStorage.setItem('userRole', 'mahasiswa');
-    sessionStorage.setItem('userName', 'Renz Arnando');
-    sessionStorage.setItem('userEmail', 'npm@kampus.ac.id');
+  const authToken = getToken();
+  const userRole = sessionStorage.getItem("userRole");
+
+  if (!authToken || !userRole) {
+    window.location.href = "/login.html";
+    return;
   }
 
-  currentRole = sessionStorage.getItem('userRole') || 'mahasiswa';
+  currentRole = userRole;
 
+  // Render dashboard structure
   app.innerHTML = getDashboardHTML();
   bindDashboardEvents();
+
+  // Fetch user profile and render content
+  await fetchUserProfile();
+  renderContent();
 });
 
-// ---------- DASHBOARD HTML ----------
+// ---------- FETCH USER PROFILE ----------
+async function fetchUserProfile() {
+  try {
+    let result;
+
+    if (currentRole === "mahasiswa") {
+      result = await mahasiswaAPI.getProfile();
+    } else if (currentRole === "dosen" || currentRole === "kaprodi") {
+      result = await dosenAPI.getProfile();
+    } else if (currentRole === "koordinator") {
+      result = await koordinatorAPI.getProfile();
+    }
+
+    if (result && result.ok) {
+      userData = result.data;
+      sessionStorage.setItem("userName", result.data.nama || "User");
+      sessionStorage.setItem("userEmail", result.data.email || "");
+
+      // Update user display
+      updateSidebarUser();
+      updateHeaderUser();
+    }
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+  }
+}
+
+// ---------- UPDATE HEADER USER ----------
+function updateHeaderUser() {
+  const userName = sessionStorage.getItem("userName") || "User";
+  const headerName = document.querySelector(".header-name");
+  if (headerName) headerName.textContent = userName;
+}
+
+// ---------- DASHBOARD HTML (Responsive) ----------
 function getDashboardHTML() {
-  const userName = sessionStorage.getItem('userName') || 'User';
-  const userEmail = sessionStorage.getItem('userEmail') || 'email@kampus.ac.id';
+  const userName = sessionStorage.getItem("userName") || "User";
 
   return `
-  <div class="app-root">
-    <div class="app-container">
-      <aside class="sidebar">
-        <div class="sidebar-header">
-          <div class="logo-circle">K</div>
-          <div>
-            <div class="logo-title">Kavana</div>
-            <div class="logo-subtitle">Bimbingan Online</div>
-          </div>
-        </div>
-        <div class="sidebar-role" id="sidebar-role"></div>
-        <nav class="sidebar-menu" id="sidebar-menu"></nav>
-        <div class="sidebar-footer">
-          <button class="sidebar-settings" id="btn-logout">Logout</button>
-        </div>
-      </aside>
+    ${getMobileHeaderHTML()}
+    ${getSidebarHTML(currentRole, activeMenu)}
 
-      <main class="app-main">
-        <header class="topbar">
-          <div>
-            <h1 class="topbar-title">Dashboard Bimbingan</h1>
-            <p class="topbar-subtitle">Ringkasan aktivitas Proyek & Internship kamu.</p>
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0">
+      <div class="max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-8">
+        <!-- Page Header -->
+        <header class="flex flex-col sm:flex-row sm:flex-wrap justify-between items-start sm:items-end gap-4">
+          <div class="flex flex-col gap-1">
+            <h2 class="text-text-main text-2xl sm:text-3xl font-black leading-tight tracking-tight">
+              Selamat Datang, <span class="header-name">${userName}</span>
+            </h2>
+            <p class="text-text-secondary text-sm sm:text-base" id="topbar-subtitle">Pantau progres dan bimbinganmu di sini.</p>
           </div>
-          <div class="topbar-actions">
-            <select class="role-select" id="role-select">
-              <option value="mahasiswa">Mahasiswa</option>
-              <option value="dosen">Dosen</option>
-              <option value="koordinator">Koordinator</option>
-              <option value="kaprodi">Kaprodi</option>
-            </select>
-            <div class="avatar-wrapper">
-              <div class="avatar-circle">${userName.charAt(0).toUpperCase()}</div>
-              <div class="avatar-info">
-                <div class="avatar-name">${userName}</div>
-                <div class="avatar-email">${userEmail}</div>
-              </div>
-            </div>
+          <div class="flex gap-2 sm:gap-3 w-full sm:w-auto" id="header-actions">
+            <button class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium text-text-main shadow-sm border border-slate-100 hover:bg-slate-50 transition-colors">
+              <span class="material-symbols-outlined text-[18px] sm:text-[20px]">help</span>
+              <span class="hidden sm:inline">Bantuan</span>
+            </button>
+            <a href="/proposal.html" class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-primary px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium text-white shadow-md shadow-primary/20 hover:bg-primary/90 transition-colors">
+              <span class="material-symbols-outlined text-[18px] sm:text-[20px]">add</span>
+              <span class="hidden sm:inline">Ajukan Topik</span>
+            </a>
           </div>
         </header>
 
-        <div class="content-layout">
-          <section class="content-main">
-            <div class="content-header">
-              <h2 id="content-title"></h2>
-              <div class="content-filters">
-                <select>
-                  <option>Semester Ini</option>
-                  <option>Semester Lalu</option>
-                </select>
-                <select>
-                  <option>Semua Track</option>
-                  <option>Proyek 1</option>
-                  <option>Proyek 2</option>
-                  <option>Proyek 3</option>
-                  <option>Internship 1</option>
-                  <option>Internship 2</option>
-                </select>
-              </div>
-            </div>
-
-            <div id="content-body"></div>
-          </section>
-
-          <aside class="content-side">
-            <div class="calendar-card">
-              <div class="calendar-header">
-                <span>Jadwal</span>
-                <span>Nov 2025</span>
-              </div>
-              <div class="calendar-body">
-                <div class="calendar-dots">
-                  <span class="dot filled"></span>
-                  <span class="dot"></span>
-                  <span class="dot"></span>
-                  <span class="dot filled"></span>
-                </div>
-                <p>Bimbingan terdekat: 30 Nov, 14.00 WIB</p>
-              </div>
-            </div>
-
-            <div class="online-card">
-              <div class="online-header">
-                <span>Online Users</span>
-                <button>See all</button>
-              </div>
-              <ul class="online-list">
-                <li>
-                  <div class="online-avatar">A</div>
-                  <div>
-                    <div class="online-name">Itz Aidaa</div>
-                    <div class="online-sub">Dosen Pembimbing</div>
-                  </div>
-                </li>
-                <li>
-                  <div class="online-avatar">R</div>
-                  <div>
-                    <div class="online-name">${userName}</div>
-                    <div class="online-sub">Mahasiswa</div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </aside>
-        </div>
-      </main>
-    </div>
-  </div>
-`;
+        <!-- Dynamic Content Area -->
+        <div id="content-body" class="flex flex-col gap-6 lg:gap-8"></div>
+      </div>
+    </main>
+  `;
 }
 
 // ---------- BIND EVENTS ----------
 function bindDashboardEvents() {
-  const sidebarRoleEl = document.getElementById("sidebar-role");
-  const sidebarMenuEl = document.getElementById("sidebar-menu");
-  const roleSelectEl = document.getElementById("role-select");
-  const contentTitleEl = document.getElementById("content-title");
-  const contentBodyEl = document.getElementById("content-body");
-  const logoutBtn = document.getElementById("btn-logout");
+  // Bind sidebar events with menu click handler
+  bindSidebarEvents(handleMenuClick);
+}
 
-  // Render sidebar
-  function renderSidebar() {
-    const items = MENU_CONFIG[currentRole];
-    sidebarRoleEl.innerHTML = `Role: <span>${ROLE_LABEL[currentRole]}</span>`;
+// ---------- MENU CLICK HANDLER ----------
+function handleMenuClick(menuId) {
+  // Pages that should redirect to separate HTML
+  const redirectPages = {
+    track: "/track.html",
+    proposal: "/proposal.html",
+    bimbingan: "/bimbingan.html",
+    laporan: "/laporan.html",
+    nilai: "/hasil.html",
+    profile: "/profile.html",
+  };
 
-    sidebarMenuEl.innerHTML = "";
-    items.forEach((item) => {
-      const btn = document.createElement("button");
-      btn.className = "sidebar-item" + (activeMenu === item.id ? " sidebar-item-active" : "");
-      btn.innerHTML = `
-        <span class="sidebar-bullet"></span>
-        <span>${item.label}</span>
-      `;
-      btn.addEventListener("click", () => {
-        activeMenu = item.id;
-        renderSidebar();
-        renderContent();
-      });
-      sidebarMenuEl.appendChild(btn);
-    });
+  if (redirectPages[menuId]) {
+    window.location.href = redirectPages[menuId];
+    return;
   }
 
-  // Helper function for track display name
-  function getTrackDisplayName(track) {
-    // This can be expanded if track names need more complex mapping
-    return track;
+  // Update active menu and render content
+  activeMenu = menuId;
+
+  // Refresh sidebar to show active state
+  const sidebarContainer = document.getElementById("sidebar");
+  const overlayContainer = document.getElementById("sidebar-overlay");
+  if (sidebarContainer && overlayContainer) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = getSidebarHTML(currentRole, activeMenu);
+    sidebarContainer.outerHTML = tempDiv.querySelector('.sidebar').outerHTML;
+    bindSidebarEvents(handleMenuClick);
   }
 
-  // Render content
-  function renderContent() {
-    const title = TITLE_MAP[activeMenu] || "Dashboard";
-    contentTitleEl.textContent = title;
-    contentBodyEl.innerHTML = "";
-
-    // Track selection page
-    if (activeMenu === "track") {
-      const selectedTrack = sessionStorage.getItem('selectedTrack');
-      const wrapper = document.createElement("div");
-
-      if (selectedTrack) {
-        // Show current track
-        const trackData = JSON.parse(selectedTrack);
-        wrapper.className = "track-info-container";
-        wrapper.innerHTML = `
-                    <div class="current-track-card">
-                        <div class="track-icon">${trackData.type === 'proyek' ? '📋' : '🏢'}</div>
-                        <div class="track-details">
-                            <h3>${getTrackDisplayName(trackData.track)}</h3>
-                            <p>${trackData.type === 'proyek' ? `Partner NPM: ${trackData.partnerNpm}` : `Perusahaan: ${trackData.companyName}`}</p>
-                        </div>
-                        <button class="btn btn-outline btn-small" id="btn-change-track">Ganti Track</button>
-                    </div>
-                `;
-        contentBodyEl.appendChild(wrapper);
-
-        // Add change track button handler
-        document.getElementById('btn-change-track')?.addEventListener('click', () => {
-          window.location.href = '/track.html';
-        });
-      } else {
-        // No track selected, show prompt
-        wrapper.className = "no-track-container";
-        wrapper.innerHTML = `
-                    <div class="no-track-card">
-                        <div class="no-track-icon">📚</div>
-                        <h3>Belum Ada Track yang Dipilih</h3>
-                        <p>Silakan pilih track Proyek atau Internship untuk memulai bimbingan</p>
-                        <button class="btn btn-gradient" id="btn-select-track">Pilih Track Sekarang</button>
-                    </div>
-                `;
-        contentBodyEl.appendChild(wrapper);
-
-        // Add select track button handler
-        document.getElementById('btn-select-track')?.addEventListener('click', () => {
-          window.location.href = '/track.html';
-        });
-      }
-      return;
-    }
-
-    if (activeMenu === "dashboard") {
-      const wrapper = document.createElement("div");
-      wrapper.className = "cards-grid";
-
-      proyekCards.forEach((card) => {
-        const article = document.createElement("article");
-        article.className = "course-card";
-        article.innerHTML = `
-          <div class="course-card-icon"></div>
-          <div class="course-card-body">
-            <div class="course-card-tag">${card.tag}</div>
-            <h3>${card.title}</h3>
-            <p>${card.description}</p>
-            <div class="course-card-footer">
-              <span class="course-status">${card.status}</span>
-              <button class="course-button">Lihat detail</button>
-            </div>
-          </div>
-        `;
-        wrapper.appendChild(article);
-      });
-
-      contentBodyEl.appendChild(wrapper);
-      return;
-    }
-
-    if (activeMenu === "proposal") {
-      // Redirect to proposal page
-      window.location.href = '/proposal.html';
-      return;
-    }
-
-    if (activeMenu === "laporan") {
-      window.location.href = '/laporan.html';
-      return;
-    }
-
-    if (["bimbingan", "mahasiswa-bimbingan"].includes(activeMenu)) {
-      window.location.href = '/bimbingan.html';
-      return;
-    }
-
-    const box = document.createElement("div");
-    box.className = "placeholder-box";
-
-    if (activeMenu === "validasi-proposal") {
-      box.innerHTML = `
-        <h3>Validasi Proposal</h3>
-        <p>Halaman koordinator untuk cek & validasi proposal mahasiswa.</p>
-      `;
-    } else if (activeMenu === "approve-pembimbing") {
-      box.innerHTML = `
-        <h3>Approve Pembimbing</h3>
-        <p>Koordinator memilih dan meng-ACC dosen pembimbing sesuai pengajuan mahasiswa.</p>
-      `;
-    } else {
-      box.innerHTML = `
-        <h3>${title}</h3>
-        <p>Halaman ini nanti diisi sesuai kebutuhan logic backend kamu.</p>
-      `;
-    }
-
-    contentBodyEl.appendChild(box);
-  }
-
-  // Role select change
-  roleSelectEl.value = currentRole;
-  roleSelectEl.addEventListener("change", (e) => {
-    currentRole = e.target.value;
-    sessionStorage.setItem('userRole', currentRole);
-    activeMenu = "dashboard";
-    renderSidebar();
-    renderContent();
-  });
-
-  // Logout button
-  logoutBtn?.addEventListener("click", () => {
-    sessionStorage.clear();
-    window.location.href = "/";
-  });
-
-  // Initial render
-  renderSidebar();
   renderContent();
+}
+
+// ---------- RENDER CONTENT ----------
+async function renderContent() {
+  const contentBody = document.getElementById("content-body");
+  if (!contentBody) return;
+
+  // Update subtitle based on role/menu
+  const subtitle = document.getElementById("topbar-subtitle");
+
+  if (activeMenu === "dashboard") {
+    if (currentRole === "mahasiswa") {
+      if (subtitle) subtitle.textContent = "Pantau progres dan bimbinganmu di sini.";
+      const result = await renderMahasiswaDashboard(contentBody, userData);
+      if (result?.bimbinganPending) {
+        updateBimbinganBadge(result.bimbinganPending);
+      }
+    } else if (currentRole === "dosen") {
+      if (subtitle) subtitle.textContent = "Kelola bimbingan mahasiswa Anda.";
+      await renderDosenDashboard(contentBody, userData);
+    } else if (currentRole === "koordinator") {
+      if (subtitle) subtitle.textContent = "Kelola proposal dan penugasan dosen.";
+      renderKoordinatorDashboard(contentBody);
+    } else if (currentRole === "kaprodi") {
+      if (subtitle) subtitle.textContent = "Monitor progres mahasiswa dan dosen.";
+      renderKaprodiDashboard(contentBody);
+    }
+  } else {
+    // For menu items that don't redirect, show placeholder
+    renderPlaceholder(contentBody, activeMenu);
+  }
+}
+
+// ---------- PLACEHOLDER CONTENT ----------
+function renderPlaceholder(container, menuId) {
+  const menuItem = MENU_CONFIG[currentRole]?.find((m) => m.id === menuId);
+  const title = menuItem?.label || "Halaman";
+
+  container.innerHTML = `
+    <div class="bg-white rounded-xl shadow-sm p-8 sm:p-12 text-center border border-slate-100">
+      <span class="material-symbols-outlined text-5xl sm:text-6xl text-slate-300 mb-4">construction</span>
+      <h3 class="text-lg sm:text-xl font-bold text-text-main mb-2">${title}</h3>
+      <p class="text-text-secondary text-sm sm:text-base">Halaman ini sedang dalam pengembangan.</p>
+      <button onclick="location.reload()" class="mt-6 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+        Kembali ke Dashboard
+      </button>
+    </div>
+  `;
+}
+
+// ---------- KOORDINATOR DASHBOARD ----------
+function renderKoordinatorDashboard(container) {
+  container.innerHTML = `
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
+      <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+        <div class="p-2 bg-blue-50 text-primary rounded-lg w-fit mb-3 lg:mb-4">
+          <span class="material-symbols-outlined">description</span>
+        </div>
+        <p class="text-text-secondary text-xs sm:text-sm font-medium">Proposal Pending</p>
+        <p class="text-text-main text-xl lg:text-2xl font-bold mt-1">5</p>
+      </div>
+      <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+        <div class="p-2 bg-green-50 text-green-600 rounded-lg w-fit mb-3 lg:mb-4">
+          <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <p class="text-text-secondary text-xs sm:text-sm font-medium">Proposal Disetujui</p>
+        <p class="text-text-main text-xl lg:text-2xl font-bold mt-1">23</p>
+      </div>
+      <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100 sm:col-span-2 lg:col-span-1">
+        <div class="p-2 bg-purple-50 text-purple-600 rounded-lg w-fit mb-3 lg:mb-4">
+          <span class="material-symbols-outlined">person_add</span>
+        </div>
+        <p class="text-text-secondary text-xs sm:text-sm font-medium">Dosen Aktif</p>
+        <p class="text-text-main text-xl lg:text-2xl font-bold mt-1">12</p>
+      </div>
+    </div>
+    <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+      <h3 class="text-base lg:text-lg font-bold text-text-main mb-4 lg:mb-6">Aksi Cepat</h3>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+        <a href="/validasi-proposal.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors">
+          <span class="material-symbols-outlined text-xl lg:text-2xl text-primary">fact_check</span>
+          <span class="text-xs lg:text-sm font-medium text-text-main text-center">Validasi Proposal</span>
+        </a>
+        <a href="/approve-pembimbing.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors">
+          <span class="material-symbols-outlined text-xl lg:text-2xl text-primary">how_to_reg</span>
+          <span class="text-xs lg:text-sm font-medium text-text-main text-center">Assign Dosen</span>
+        </a>
+        <a href="/daftar-dosen.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors">
+          <span class="material-symbols-outlined text-xl lg:text-2xl text-primary">groups</span>
+          <span class="text-xs lg:text-sm font-medium text-text-main text-center">Daftar Dosen</span>
+        </a>
+        <a href="/monitoring-mahasiswa.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors">
+          <span class="material-symbols-outlined text-xl lg:text-2xl text-primary">monitoring</span>
+          <span class="text-xs lg:text-sm font-medium text-text-main text-center">Monitoring</span>
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- KAPRODI DASHBOARD ----------
+function renderKaprodiDashboard(container) {
+  container.innerHTML = `
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
+      <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+        <p class="text-text-secondary text-xs sm:text-sm font-medium">Total Mahasiswa</p>
+        <p class="text-text-main text-xl lg:text-2xl font-bold mt-1">156</p>
+      </div>
+      <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+        <p class="text-text-secondary text-xs sm:text-sm font-medium">Aktif Bimbingan</p>
+        <p class="text-text-main text-xl lg:text-2xl font-bold mt-1">89</p>
+      </div>
+      <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+        <p class="text-text-secondary text-xs sm:text-sm font-medium">Sudah Sidang</p>
+        <p class="text-text-main text-xl lg:text-2xl font-bold mt-1">45</p>
+      </div>
+      <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+        <p class="text-text-secondary text-xs sm:text-sm font-medium">Total Dosen</p>
+        <p class="text-text-main text-xl lg:text-2xl font-bold mt-1">18</p>
+      </div>
+    </div>
+    <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+      <h3 class="text-base lg:text-lg font-bold text-text-main mb-4">Dashboard Kaprodi</h3>
+      <p class="text-text-secondary text-sm">Fitur monitoring lengkap akan segera hadir.</p>
+    </div>
+  `;
 }

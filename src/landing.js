@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.css"; // Landing page uses original CSS
 
 // ---------- LANDING PAGE INIT ----------
 document.addEventListener('DOMContentLoaded', () => {

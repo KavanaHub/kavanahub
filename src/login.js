@@ -1,4 +1,5 @@
 import { validateEmail, validateNPM } from "./shared.js";
+import { authAPI } from "./api.js";
 import "./style.css";
 
 // ---------- LOGIN PAGE INIT ----------
@@ -7,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById('login-password');
     const togglePasswordBtn = document.getElementById('toggle-login-password');
     const forgotPasswordLink = document.getElementById('link-forgot-password');
+    const submitBtn = form?.querySelector('button[type="submit"]');
 
     // Forgot password (placeholder)
     forgotPasswordLink?.addEventListener('click', (e) => {
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Form submission
-    form?.addEventListener('submit', (e) => {
+    form?.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         let isValid = true;
@@ -45,11 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Get form data
         const identifier = document.getElementById('login-identifier').value.trim();
         const password = document.getElementById('login-password').value;
-        const remember = document.getElementById('login-remember').checked;
 
         // Detect if identifier is email or NPM
-        const isEmail = identifier.includes('@');
-        const isNPM = /^\d+$/.test(identifier);
+        const isEmail = validateEmail(identifier);
+        const isNPM = validateNPM(identifier);
 
         // Validate identifier (email or NPM)
         const identifierErrorEl = document.getElementById('error-login-identifier');
@@ -58,20 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!identifier) {
             if (identifierErrorEl) {
                 identifierErrorEl.textContent = 'Email atau NPM wajib diisi';
-                identifierErrorEl.classList.add('visible');
-            }
-            if (identifierInputEl) identifierInputEl.classList.add('input-error');
-            isValid = false;
-        } else if (isEmail && !validateEmail(identifier)) {
-            if (identifierErrorEl) {
-                identifierErrorEl.textContent = 'Format email tidak valid';
-                identifierErrorEl.classList.add('visible');
-            }
-            if (identifierInputEl) identifierInputEl.classList.add('input-error');
-            isValid = false;
-        } else if (isNPM && !validateNPM(identifier)) {
-            if (identifierErrorEl) {
-                identifierErrorEl.textContent = 'NPM harus berupa angka';
                 identifierErrorEl.classList.add('visible');
             }
             if (identifierInputEl) identifierInputEl.classList.add('input-error');
@@ -100,24 +87,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // If valid, proceed with login
         if (isValid) {
-            const loginData = {
-                loginType: isEmail ? 'email' : 'npm',
-                identifier,
-                password,
-                remember
-            };
+            // Show loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Masuk...';
+            }
 
-            console.log('Login data:', loginData);
+            try {
+                // Call login API
+                const result = await authAPI.login(identifier, password);
 
-            // Store user data in sessionStorage
-            sessionStorage.setItem('userRole', 'mahasiswa');
-            sessionStorage.setItem('userName', 'User');
-            sessionStorage.setItem('userEmail', isEmail ? identifier : '');
-            sessionStorage.setItem('userNPM', isNPM ? identifier : '');
+                if (result.ok) {
+                    // Store user data
+                    sessionStorage.setItem('userName', result.data.nama || 'User');
+                    sessionStorage.setItem('userEmail', result.data.email || '');
 
-            // Simulate successful login
-            alert('Login berhasil! Selamat datang di Kavana.');
-            window.location.href = '/dashboard.html';
+                    // Redirect to dashboard (works for all roles: mahasiswa, dosen, koordinator, kaprodi)
+                    window.location.href = '/dashboard.html';
+                } else {
+                    // Show error
+                    alert('Login gagal: ' + (result.error || 'Email/NPM atau password salah'));
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Masuk';
+                }
+            }
         }
     });
 });
