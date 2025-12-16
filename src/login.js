@@ -1,122 +1,110 @@
+// ========================================
+// LOGIN PAGE (Clean Code with Backend API)
+// ========================================
+
 import { validateEmail, validateNPM } from "./shared.js";
 import { authAPI } from "./api.js";
-import "./style.css";
+import { showFieldError, clearFieldError, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
 
 // ---------- LOGIN PAGE INIT ----------
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('login-form');
-    const passwordInput = document.getElementById('login-password');
-    const togglePasswordBtn = document.getElementById('toggle-login-password');
-    const forgotPasswordLink = document.getElementById('link-forgot-password');
-    const submitBtn = form?.querySelector('button[type="submit"]');
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("login-form");
+    const passwordInput = document.getElementById("login-password");
+    const togglePasswordBtn = document.getElementById("toggle-login-password");
+    const forgotPasswordLink = document.getElementById("link-forgot-password");
 
     // Forgot password (placeholder)
-    forgotPasswordLink?.addEventListener('click', (e) => {
+    forgotPasswordLink?.addEventListener("click", (e) => {
         e.preventDefault();
-        alert('Fitur lupa password akan segera hadir. Silakan hubungi admin untuk reset password.');
+        alert("Fitur lupa password akan segera hadir. Silakan hubungi admin untuk reset password.");
     });
 
     // Toggle password visibility
-    togglePasswordBtn?.addEventListener('click', () => {
-        const type = passwordInput.type === 'password' ? 'text' : 'password';
+    togglePasswordBtn?.addEventListener("click", () => {
+        const type = passwordInput.type === "password" ? "text" : "password";
         passwordInput.type = type;
-        togglePasswordBtn.textContent = type === 'password' ? '👁' : '🙈';
+        togglePasswordBtn.textContent = type === "password" ? "👁" : "🙈";
     });
 
     // Clear error on input
-    document.getElementById('login-identifier')?.addEventListener('input', () => {
-        const errorEl = document.getElementById('error-login-identifier');
-        const inputEl = document.getElementById('login-identifier');
-        if (errorEl) errorEl.classList.remove('visible');
-        if (inputEl) inputEl.classList.remove('input-error');
+    document.getElementById("login-identifier")?.addEventListener("input", () => {
+        clearFieldError("login-identifier");
     });
 
-    document.getElementById('login-password')?.addEventListener('input', () => {
-        const errorEl = document.getElementById('error-login-password');
-        const inputEl = document.getElementById('login-password');
-        if (errorEl) errorEl.classList.remove('visible');
-        if (inputEl) inputEl.classList.remove('input-error');
+    document.getElementById("login-password")?.addEventListener("input", () => {
+        clearFieldError("login-password");
     });
 
     // Form submission
-    form?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        let isValid = true;
-
-        // Get form data
-        const identifier = document.getElementById('login-identifier').value.trim();
-        const password = document.getElementById('login-password').value;
-
-        // Detect if identifier is email or NPM
-        const isEmail = validateEmail(identifier);
-        const isNPM = validateNPM(identifier);
-
-        // Validate identifier (email or NPM)
-        const identifierErrorEl = document.getElementById('error-login-identifier');
-        const identifierInputEl = document.getElementById('login-identifier');
-
-        if (!identifier) {
-            if (identifierErrorEl) {
-                identifierErrorEl.textContent = 'Email atau NPM wajib diisi';
-                identifierErrorEl.classList.add('visible');
-            }
-            if (identifierInputEl) identifierInputEl.classList.add('input-error');
-            isValid = false;
-        } else if (!isEmail && !isNPM) {
-            if (identifierErrorEl) {
-                identifierErrorEl.textContent = 'Masukkan email yang valid atau NPM (angka)';
-                identifierErrorEl.classList.add('visible');
-            }
-            if (identifierInputEl) identifierInputEl.classList.add('input-error');
-            isValid = false;
-        }
-
-        // Validate password
-        const passwordErrorEl = document.getElementById('error-login-password');
-        const passwordInputEl = document.getElementById('login-password');
-
-        if (!password) {
-            if (passwordErrorEl) {
-                passwordErrorEl.textContent = 'Password wajib diisi';
-                passwordErrorEl.classList.add('visible');
-            }
-            if (passwordInputEl) passwordInputEl.classList.add('input-error');
-            isValid = false;
-        }
-
-        // If valid, proceed with login
-        if (isValid) {
-            // Show loading state
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Masuk...';
-            }
-
-            try {
-                // Call login API
-                const result = await authAPI.login(identifier, password);
-
-                if (result.ok) {
-                    // Store user data
-                    sessionStorage.setItem('userName', result.data.nama || 'User');
-                    sessionStorage.setItem('userEmail', result.data.email || '');
-
-                    // Redirect to dashboard (works for all roles: mahasiswa, dosen, koordinator, kaprodi)
-                    window.location.href = '/dashboard.html';
-                } else {
-                    // Show error
-                    alert('Login gagal: ' + (result.error || 'Email/NPM atau password salah'));
-                }
-            } catch (err) {
-                console.error('Login error:', err);
-                alert('Terjadi kesalahan. Silakan coba lagi.');
-            } finally {
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Masuk';
-                }
-            }
-        }
-    });
+    form?.addEventListener("submit", handleSubmit);
 });
+
+// ---------- FORM SUBMISSION ----------
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    const identifier = document.getElementById("login-identifier").value.trim();
+    const password = document.getElementById("login-password").value;
+
+    // Validate
+    if (!validateLoginForm(identifier, password)) return;
+
+    // Submit to API
+    const submitBtn = document.querySelector('#login-form button[type="submit"]');
+    setButtonLoading(submitBtn, "Masuk...");
+
+    try {
+        const result = await authAPI.login(identifier, password);
+
+        if (result.ok) {
+            // Store user data
+            sessionStorage.setItem("userName", result.data.nama || "User");
+            sessionStorage.setItem("userEmail", result.data.email || "");
+
+            // Redirect to dashboard (works for all roles)
+            window.location.href = "/dashboard.html";
+        } else {
+            handleLoginError(result.error, result.status);
+        }
+    } catch (err) {
+        console.error("Login error:", err);
+        alert("Terjadi kesalahan jaringan. Silakan coba lagi.");
+    } finally {
+        resetButtonLoading(submitBtn);
+    }
+}
+
+function validateLoginForm(identifier, password) {
+    let isValid = true;
+
+    // Detect if identifier is email or NPM
+    const isEmail = validateEmail(identifier);
+    const isNPM = validateNPM(identifier);
+
+    // Validate identifier
+    if (!identifier) {
+        showFieldError("login-identifier", "Email atau NPM wajib diisi");
+        isValid = false;
+    } else if (!isEmail && !isNPM) {
+        showFieldError("login-identifier", "Masukkan email yang valid atau NPM (angka)");
+        isValid = false;
+    }
+
+    // Validate password
+    if (!password) {
+        showFieldError("login-password", "Password wajib diisi");
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function handleLoginError(error, status) {
+    if (status === 401) {
+        showFieldError("login-password", "Email/NPM atau password salah");
+    } else if (status === 404) {
+        showFieldError("login-identifier", "Akun tidak ditemukan");
+    } else {
+        alert("Login gagal: " + (error || "Email/NPM atau password salah"));
+    }
+}
