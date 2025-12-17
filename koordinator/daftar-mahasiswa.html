@@ -1,0 +1,140 @@
+<!doctype html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Daftar Mahasiswa - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2596be",
+                        "background-light": "#e8f4f8",
+                        "text-main": "#1e2134",
+                        "text-secondary": "#548192"
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .filter-btn {
+            background: white;
+            color: #548192;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .filter-btn.active {
+            background: #2596be;
+            color: white;
+            border-color: #2596be;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light font-display text-text-main h-screen overflow-hidden flex">
+    <!-- Mobile Header -->
+    <div id="mobile-header"
+        class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-[#7c3aed] to-[#6366f1] px-4 py-3 flex items-center justify-between shadow-lg">
+        <button id="btn-open-sidebar" class="text-white p-2 -ml-2">
+            <span class="material-symbols-outlined text-[28px]">menu</span>
+        </button>
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-white icon-fill">school</span>
+            <span class="text-white font-bold">Kavana</span>
+        </div>
+        <div class="w-10"></div>
+    </div>
+
+    <div id="sidebar-placeholder"></div>
+
+    <main class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0">
+        <div class="max-w-[1000px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-8">
+            <!-- Header -->
+            <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="flex items-center gap-3 lg:gap-4">
+                    <div
+                        class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl lg:text-3xl">groups</span>
+                    </div>
+                    <div>
+                        <h2 class="text-text-main text-xl sm:text-2xl lg:text-3xl font-black">Daftar Mahasiswa</h2>
+                        <p class="text-text-secondary text-xs sm:text-sm lg:text-base">Semua mahasiswa proyek &
+                            internship</p>
+                    </div>
+                </div>
+                <div class="relative w-full sm:w-64">
+                    <input id="search-input" type="text" placeholder="Cari nama atau NPM..."
+                        class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <p id="stat-total" class="text-2xl font-bold text-text-main">0</p>
+                    <p class="text-text-secondary text-xs">Total</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <p id="stat-proyek" class="text-2xl font-bold text-purple-600">0</p>
+                    <p class="text-text-secondary text-xs">Track Proyek</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <p id="stat-internship" class="text-2xl font-bold text-blue-600">0</p>
+                    <p class="text-text-secondary text-xs">Track Internship</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <p id="stat-siap" class="text-2xl font-bold text-green-600">0</p>
+                    <p class="text-text-secondary text-xs">Siap Sidang</p>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex gap-2 overflow-x-auto pb-2">
+                <button class="filter-btn active px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap"
+                    data-filter="all">Semua</button>
+                <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap"
+                    data-filter="proyek">🔧 Proyek</button>
+                <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap"
+                    data-filter="internship">💼 Internship</button>
+                <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap"
+                    data-filter="siap">✅ Siap Sidang</button>
+            </div>
+
+            <!-- List -->
+            <div id="mahasiswa-list" class="flex flex-col gap-4">
+                <div class="text-center py-12">
+                    <span class="material-symbols-outlined text-4xl text-slate-300 animate-spin">sync</span>
+                    <p class="text-text-secondary text-sm mt-2">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="/src/daftar-mahasiswa.js"></script>
+</body>
+
+</html>

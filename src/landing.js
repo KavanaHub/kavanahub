@@ -18,7 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById("btn-hero-demo")?.addEventListener("click", () => {
-        window.location.href = "/dashboard.html";
+        const role = sessionStorage.getItem("userRole") || "mahasiswa";
+        const dashboardUrls = {
+            mahasiswa: "/mahasiswa/dashboard.html",
+            dosen: "/dosen/dashboard.html",
+            koordinator: "/koordinator/dashboard.html",
+            kaprodi: "/kaprodi/dashboard.html",
+        };
+        window.location.href = dashboardUrls[role] || dashboardUrls.mahasiswa;
     });
 
     // Tombol CTA

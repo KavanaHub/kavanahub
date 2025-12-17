@@ -8,50 +8,50 @@ import { clearToken } from "../api.js";
 
 // Menu icons mapping
 const MENU_ICONS = {
-    dashboard: "dashboard",
-    track: "work_outline",
-    bimbingan: "chat_bubble_outline",
-    proposal: "upload",
-    laporan: "description",
-    nilai: "star_outline",
-    profile: "person_outline",
-    settings: "settings",
-    "mahasiswa-bimbingan": "groups",
-    "bimbingan-approve": "check_circle",
-    "laporan-approve": "grading",
-    "validasi-proposal": "fact_check",
-    "approve-pembimbing": "how_to_reg",
+  dashboard: "dashboard",
+  track: "work_outline",
+  bimbingan: "chat_bubble_outline",
+  proposal: "upload",
+  laporan: "description",
+  nilai: "star_outline",
+  profile: "person_outline",
+  settings: "settings",
+  "mahasiswa-bimbingan": "groups",
+  "bimbingan-approve": "check_circle",
+  "laporan-approve": "grading",
+  "validasi-proposal": "fact_check",
+  "approve-pembimbing": "how_to_reg",
 };
 
 // Generate sidebar HTML with purple/blue gradient theme (responsive)
 export function getSidebarHTML(currentRole, activeMenu = "dashboard") {
-    const userName = sessionStorage.getItem("userName") || "User";
-    const userEmail = sessionStorage.getItem("userEmail") || "email@kampus.ac.id";
-    const menuItems = MENU_CONFIG[currentRole] || [];
+  const userName = sessionStorage.getItem("userName") || "User";
+  const userEmail = sessionStorage.getItem("userEmail") || "email@kampus.ac.id";
+  const menuItems = MENU_CONFIG[currentRole] || [];
 
-    // Generate menu items HTML
-    const menuHTML = menuItems
-        .map((item) => {
-            const isActive = activeMenu === item.id;
-            const icon = MENU_ICONS[item.id] || "circle";
-            const hasBadge = item.id === "bimbingan";
+  // Generate menu items HTML
+  const menuHTML = menuItems
+    .map((item) => {
+      const isActive = activeMenu === item.id;
+      const icon = item.icon || MENU_ICONS[item.id] || "circle";
+      const hasBadge = item.id === "bimbingan";
 
-            return `
+      return `
       <a href="#" 
          data-menu="${item.id}"
          class="sidebar-menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
-                    ? "bg-white/20 text-white font-semibold shadow-lg backdrop-blur-sm"
-                    : "text-white/80 hover:bg-white/10 hover:text-white"
-                }">
+          ? "bg-white/20 text-white font-semibold shadow-lg backdrop-blur-sm"
+          : "text-white/80 hover:bg-white/10 hover:text-white"
+        }">
         <span class="material-symbols-outlined text-[22px]">${icon}</span>
         <span class="text-sm flex-1">${item.label}</span>
         ${hasBadge ? '<span class="sidebar-badge w-5 h-5 rounded-full bg-pink-500 text-white text-xs font-bold flex items-center justify-center shadow-md">2</span>' : ""}
       </a>
     `;
-        })
-        .join("");
+    })
+    .join("");
 
-    return `
+  return `
     <!-- Mobile Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="closeSidebar()"></div>
     
@@ -95,7 +95,7 @@ export function getSidebarHTML(currentRole, activeMenu = "dashboard") {
 
 // Get mobile header HTML with hamburger menu
 export function getMobileHeaderHTML() {
-    return `
+  return `
     <div id="mobile-header" class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-[#7c3aed] to-[#6366f1] px-4 py-3 flex items-center justify-between shadow-lg">
       <button id="btn-open-sidebar" class="text-white p-2 -ml-2">
         <span class="material-symbols-outlined text-[28px]">menu</span>
@@ -111,55 +111,55 @@ export function getMobileHeaderHTML() {
 
 // Bind sidebar events
 export function bindSidebarEvents(onMenuClick) {
-    // Logout button
-    const logoutBtn = document.getElementById("btn-logout");
-    logoutBtn?.addEventListener("click", () => {
-        clearToken();
-        sessionStorage.clear();
-        window.location.href = "/login.html";
+  // Logout button
+  const logoutBtn = document.getElementById("btn-logout");
+  logoutBtn?.addEventListener("click", () => {
+    clearToken();
+    sessionStorage.clear();
+    window.location.href = "/login.html";
+  });
+
+  // Mobile sidebar toggle
+  const openBtn = document.getElementById("btn-open-sidebar");
+  const closeBtn = document.getElementById("btn-close-sidebar");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+
+  openBtn?.addEventListener("click", () => {
+    sidebar?.classList.remove("-translate-x-full");
+    overlay?.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  });
+
+  closeBtn?.addEventListener("click", closeSidebar);
+  overlay?.addEventListener("click", closeSidebar);
+
+  // Menu item clicks
+  const menuItems = document.querySelectorAll(".sidebar-menu-item");
+  menuItems.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      const menuId = item.dataset.menu;
+
+      // Close sidebar on mobile after menu click
+      if (window.innerWidth < 1024) {
+        closeSidebar();
+      }
+
+      if (onMenuClick) {
+        onMenuClick(menuId);
+      }
     });
-
-    // Mobile sidebar toggle
-    const openBtn = document.getElementById("btn-open-sidebar");
-    const closeBtn = document.getElementById("btn-close-sidebar");
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("sidebar-overlay");
-
-    openBtn?.addEventListener("click", () => {
-        sidebar?.classList.remove("-translate-x-full");
-        overlay?.classList.remove("hidden");
-        document.body.style.overflow = "hidden";
-    });
-
-    closeBtn?.addEventListener("click", closeSidebar);
-    overlay?.addEventListener("click", closeSidebar);
-
-    // Menu item clicks
-    const menuItems = document.querySelectorAll(".sidebar-menu-item");
-    menuItems.forEach((item) => {
-        item.addEventListener("click", (e) => {
-            e.preventDefault();
-            const menuId = item.dataset.menu;
-
-            // Close sidebar on mobile after menu click
-            if (window.innerWidth < 1024) {
-                closeSidebar();
-            }
-
-            if (onMenuClick) {
-                onMenuClick(menuId);
-            }
-        });
-    });
+  });
 }
 
 // Close sidebar function (for mobile)
 function closeSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("sidebar-overlay");
-    sidebar?.classList.add("-translate-x-full");
-    overlay?.classList.add("hidden");
-    document.body.style.overflow = "";
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+  sidebar?.classList.add("-translate-x-full");
+  overlay?.classList.add("hidden");
+  document.body.style.overflow = "";
 }
 
 // Make closeSidebar available globally for onclick
@@ -167,42 +167,42 @@ window.closeSidebar = closeSidebar;
 
 // Update active menu state
 export function updateActiveMenu(activeMenu) {
-    const menuItems = document.querySelectorAll(".sidebar-menu-item");
-    menuItems.forEach((item) => {
-        const isActive = item.dataset.menu === activeMenu;
-        if (isActive) {
-            item.classList.remove("text-white/80", "hover:bg-white/10");
-            item.classList.add("bg-white/20", "text-white", "font-semibold", "shadow-lg");
-        } else {
-            item.classList.add("text-white/80", "hover:bg-white/10");
-            item.classList.remove("bg-white/20", "text-white", "font-semibold", "shadow-lg");
-        }
-    });
+  const menuItems = document.querySelectorAll(".sidebar-menu-item");
+  menuItems.forEach((item) => {
+    const isActive = item.dataset.menu === activeMenu;
+    if (isActive) {
+      item.classList.remove("text-white/80", "hover:bg-white/10");
+      item.classList.add("bg-white/20", "text-white", "font-semibold", "shadow-lg");
+    } else {
+      item.classList.add("text-white/80", "hover:bg-white/10");
+      item.classList.remove("bg-white/20", "text-white", "font-semibold", "shadow-lg");
+    }
+  });
 }
 
 // Update user display in sidebar
 export function updateSidebarUser() {
-    const userName = sessionStorage.getItem("userName") || "User";
-    const userEmail = sessionStorage.getItem("userEmail") || "";
+  const userName = sessionStorage.getItem("userName") || "User";
+  const userEmail = sessionStorage.getItem("userEmail") || "";
 
-    const avatarName = document.querySelector(".avatar-name");
-    const avatarEmail = document.querySelector(".avatar-email");
-    const avatarCircle = document.querySelector(".avatar-circle");
+  const avatarName = document.querySelector(".avatar-name");
+  const avatarEmail = document.querySelector(".avatar-email");
+  const avatarCircle = document.querySelector(".avatar-circle");
 
-    if (avatarName) avatarName.textContent = userName;
-    if (avatarEmail) avatarEmail.textContent = userEmail;
-    if (avatarCircle) avatarCircle.textContent = userName.charAt(0).toUpperCase();
+  if (avatarName) avatarName.textContent = userName;
+  if (avatarEmail) avatarEmail.textContent = userEmail;
+  if (avatarCircle) avatarCircle.textContent = userName.charAt(0).toUpperCase();
 }
 
 // Update bimbingan badge count
 export function updateBimbinganBadge(count) {
-    const badge = document.querySelector(".sidebar-badge");
-    if (badge) {
-        if (count > 0) {
-            badge.textContent = count;
-            badge.classList.remove("hidden");
-        } else {
-            badge.classList.add("hidden");
-        }
+  const badge = document.querySelector(".sidebar-badge");
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count;
+      badge.classList.remove("hidden");
+    } else {
+      badge.classList.add("hidden");
     }
+  }
 }

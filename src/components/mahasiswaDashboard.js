@@ -6,19 +6,19 @@ import { mahasiswaAPI } from "../api.js";
 
 // Helper function to format date
 function formatDate(dateStr) {
-    if (!dateStr) return "-";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-    });
+  if (!dateStr) return "-";
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 // Render mahasiswa dashboard content (responsive)
 export async function renderMahasiswaDashboard(container, userData) {
-    // Show loading state
-    container.innerHTML = `
+  // Show loading state
+  container.innerHTML = `
     <div class="flex items-center justify-center py-12 sm:py-20">
       <div class="text-center">
         <span class="material-symbols-outlined text-3xl sm:text-4xl text-primary animate-spin">sync</span>
@@ -27,57 +27,57 @@ export async function renderMahasiswaDashboard(container, userData) {
     </div>
   `;
 
-    try {
-        // Fetch bimbingan data
-        const bimbinganResult = await mahasiswaAPI.getMyBimbingan();
-        const bimbinganList = bimbinganResult.ok ? bimbinganResult.data || [] : [];
+  try {
+    // Fetch bimbingan data
+    const bimbinganResult = await mahasiswaAPI.getMyBimbingan();
+    const bimbinganList = bimbinganResult.ok ? bimbinganResult.data || [] : [];
 
-        // Count approved bimbingan
-        const bimbinganApproved = bimbinganList.filter((b) => b.status === "approved").length;
-        const bimbinganPending = bimbinganList.filter((b) => b.status === "pending").length;
+    // Count approved bimbingan
+    const bimbinganApproved = bimbinganList.filter((b) => b.status === "approved").length;
+    const bimbinganPending = bimbinganList.filter((b) => b.status === "pending").length;
 
-        // Get data from userData (fetched on init)
-        const proposalStatus = userData?.proposal_status || null;
-        const track = userData?.track || null;
-        const dosenNama = userData?.dosen_nama || null;
-        const dosenNama2 = userData?.dosen_nama_2 || null;
-        const laporanStatus = userData?.laporan_status || null;
-        const sidangStatus = userData?.sidang_status || null;
-        const judul = userData?.judul || null;
+    // Get data from userData (fetched on init)
+    const proposalStatus = userData?.proposal_status || null;
+    const track = userData?.track || null;
+    const dosenNama = userData?.dosen_nama || null;
+    const dosenNama2 = userData?.dosen_nama_2 || null;
+    const laporanStatus = userData?.laporan_status || null;
+    const sidangStatus = userData?.sidang_status || null;
+    const judul = userData?.judul || null;
 
-        // Calculate progress percentage
-        let progress = 0;
-        let progressSteps = { proposal: false, bimbingan: false, laporan: false, sidang: false };
+    // Calculate progress percentage
+    let progress = 0;
+    let progressSteps = { proposal: false, bimbingan: false, laporan: false, sidang: false };
 
-        if (proposalStatus === "approved") {
-            progress += 25;
-            progressSteps.proposal = true;
-        }
-        if (bimbinganApproved >= 8) {
-            progress += 25;
-            progressSteps.bimbingan = true;
-        } else if (bimbinganApproved > 0) {
-            progress += Math.floor((bimbinganApproved / 8) * 25);
-        }
-        if (laporanStatus === "approved") {
-            progress += 25;
-            progressSteps.laporan = true;
-        }
-        if (sidangStatus === "completed") {
-            progress += 25;
-            progressSteps.sidang = true;
-        }
+    if (proposalStatus === "approved") {
+      progress += 25;
+      progressSteps.proposal = true;
+    }
+    if (bimbinganApproved >= 8) {
+      progress += 25;
+      progressSteps.bimbingan = true;
+    } else if (bimbinganApproved > 0) {
+      progress += Math.floor((bimbinganApproved / 8) * 25);
+    }
+    if (laporanStatus === "approved") {
+      progress += 25;
+      progressSteps.laporan = true;
+    }
+    if (sidangStatus === "completed") {
+      progress += 25;
+      progressSteps.sidang = true;
+    }
 
-        // Get proposal status display
-        const getProposalStatusDisplay = (status) => {
-            if (status === "approved") return { text: "Disetujui", color: "green", icon: "check_circle" };
-            if (status === "pending") return { text: "Pending", color: "yellow", icon: "pending" };
-            if (status === "rejected") return { text: "Ditolak", color: "red", icon: "cancel" };
-            return { text: "Belum Submit", color: "slate", icon: "draft" };
-        };
-        const proposalDisplay = getProposalStatusDisplay(proposalStatus);
+    // Get proposal status display
+    const getProposalStatusDisplay = (status) => {
+      if (status === "approved") return { text: "Disetujui", color: "green", icon: "check_circle" };
+      if (status === "pending") return { text: "Pending", color: "yellow", icon: "pending" };
+      if (status === "rejected") return { text: "Ditolak", color: "red", icon: "cancel" };
+      return { text: "Belum Submit", color: "slate", icon: "draft" };
+    };
+    const proposalDisplay = getProposalStatusDisplay(proposalStatus);
 
-        container.innerHTML = `
+    container.innerHTML = `
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         <!-- Card 1: Status Proposal -->
@@ -114,7 +114,7 @@ export async function renderMahasiswaDashboard(container, userData) {
             <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
               <span class="material-symbols-outlined text-[20px] lg:text-[24px]">work</span>
             </div>
-            <a href="/track.html" class="text-xs text-primary hover:underline">Ubah</a>
+            <a href="/mahasiswa/track.html" class="text-xs text-primary hover:underline">Ubah</a>
           </div>
           <div>
             <p class="text-text-secondary text-xs lg:text-sm font-medium">Track Aktif</p>
@@ -165,7 +165,7 @@ export async function renderMahasiswaDashboard(container, userData) {
 
           <!-- Dosen Pembimbing -->
           ${dosenNama
-                ? `
+        ? `
           <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6">
             <h3 class="text-text-main text-base lg:text-lg font-bold mb-3 lg:mb-4">Dosen Pembimbing</h3>
             <div class="flex flex-col gap-3">
@@ -179,7 +179,7 @@ export async function renderMahasiswaDashboard(container, userData) {
                 </div>
               </div>
               ${dosenNama2
-                    ? `
+          ? `
               <div class="flex items-center gap-3 lg:gap-4 p-3 bg-slate-50 rounded-lg">
                 <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-primary/70 text-white flex items-center justify-center font-bold text-base lg:text-lg shrink-0">
                   ${dosenNama2.charAt(0).toUpperCase()}
@@ -190,13 +190,13 @@ export async function renderMahasiswaDashboard(container, userData) {
                 </div>
               </div>
               `
-                    : ""
-                }
+          : ""
+        }
             </div>
           </div>
           `
-                : ""
-            }
+        : ""
+      }
 
           <!-- Quick Actions -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
@@ -229,12 +229,12 @@ export async function renderMahasiswaDashboard(container, userData) {
               <a href="/bimbingan.html" class="text-xs text-primary hover:underline">Lihat Semua</a>
             </div>
             ${bimbinganList.length > 0
-                ? `
+        ? `
             <div class="flex flex-col gap-3 lg:gap-4">
               ${bimbinganList
-                    .slice(0, 5)
-                    .map(
-                        (b, idx) => `
+          .slice(0, 5)
+          .map(
+            (b, idx) => `
               <div class="flex gap-3 lg:gap-4 items-start">
                 <div class="w-7 h-7 lg:w-8 lg:h-8 rounded-full ${b.status === "approved" ? "bg-green-100 text-green-600" : b.status === "pending" ? "bg-yellow-100 text-yellow-600" : "bg-red-100 text-red-600"} flex items-center justify-center shrink-0 text-xs lg:text-sm font-bold">
                   ${idx + 1}
@@ -246,18 +246,18 @@ export async function renderMahasiswaDashboard(container, userData) {
                 <span class="px-2 py-0.5 lg:py-1 text-[10px] lg:text-xs font-medium rounded-full shrink-0 ${b.status === "approved" ? "bg-green-100 text-green-700" : b.status === "pending" ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700"}">${b.status === "approved" ? "ACC" : b.status === "pending" ? "Pending" : "Ditolak"}</span>
               </div>
               `
-                    )
-                    .join("")}
+          )
+          .join("")}
             </div>
             `
-                : `
+        : `
             <div class="text-center py-6 lg:py-8">
               <span class="material-symbols-outlined text-3xl lg:text-4xl text-slate-300">chat_bubble</span>
               <p class="text-text-secondary text-xs lg:text-sm mt-2">Belum ada riwayat bimbingan</p>
               <a href="/bimbingan.html" class="text-primary text-xs lg:text-sm hover:underline mt-2 inline-block">Catat bimbingan pertama</a>
             </div>
             `
-            }
+      }
           </div>
 
           <!-- Tips -->
@@ -276,11 +276,11 @@ export async function renderMahasiswaDashboard(container, userData) {
       </div>
     `;
 
-        // Return bimbingan pending count for badge update
-        return { bimbinganPending };
-    } catch (error) {
-        console.error("Error loading dashboard:", error);
-        container.innerHTML = `
+    // Return bimbingan pending count for badge update
+    return { bimbinganPending };
+  } catch (error) {
+    console.error("Error loading dashboard:", error);
+    container.innerHTML = `
       <div class="bg-red-50 p-6 lg:p-8 rounded-xl border border-red-200 text-center">
         <span class="material-symbols-outlined text-3xl lg:text-4xl text-red-400">error</span>
         <h3 class="text-base lg:text-lg font-bold text-red-700 mt-2">Gagal Memuat Dashboard</h3>
@@ -288,6 +288,6 @@ export async function renderMahasiswaDashboard(container, userData) {
         <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm">Coba Lagi</button>
       </div>
     `;
-        return { bimbinganPending: 0 };
-    }
+    return { bimbinganPending: 0 };
+  }
 }

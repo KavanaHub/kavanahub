@@ -119,12 +119,12 @@ function bindDashboardEvents() {
 function handleMenuClick(menuId) {
   // Pages that should redirect to separate HTML
   const redirectPages = {
-    track: "/track.html",
-    proposal: "/proposal.html",
-    bimbingan: "/bimbingan.html",
-    laporan: "/laporan.html",
-    nilai: "/hasil.html",
-    profile: "/profile.html",
+    track: "/mahasiswa/track.html",
+    proposal: "/mahasiswa/proposal.html",
+    bimbingan: "/mahasiswa/bimbingan.html",
+    laporan: "/mahasiswa/laporan.html",
+    nilai: "/mahasiswa/hasil.html",
+    profile: "/shared/profile.html",
   };
 
   if (redirectPages[menuId]) {

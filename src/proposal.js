@@ -117,7 +117,7 @@ function renderNoTrackWarning() {
         <p class="font-semibold text-yellow-800 text-sm lg:text-base">Belum ada track yang dipilih</p>
         <p class="text-yellow-700 text-xs lg:text-sm">Silakan pilih track terlebih dahulu sebelum mengupload proposal.</p>
       </div>
-      <a href="/track.html" class="px-4 py-2 bg-yellow-500 text-white text-xs lg:text-sm font-semibold rounded-lg hover:bg-yellow-600 transition-colors">Pilih Track</a>
+      <a href="/mahasiswa/track.html" class="px-4 py-2 bg-yellow-500 text-white text-xs lg:text-sm font-semibold rounded-lg hover:bg-yellow-600 transition-colors">Pilih Track</a>
     </div>
   `;
 }
@@ -132,7 +132,7 @@ function renderTrackInfo(track, trackName, isProyek) {
         <p class="font-bold text-text-main text-base lg:text-lg">${trackName}</p>
         <p class="text-text-secondary text-xs lg:text-sm truncate">${isProyek ? `Kelompok - Partner NPM: ${track.partnerNpm}` : `Individual - ${track.companyName}`}</p>
       </div>
-      <a href="/track.html" class="px-3 py-1.5 text-xs lg:text-sm text-primary font-medium border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors shrink-0">
+      <a href="/mahasiswa/track.html" class="px-3 py-1.5 text-xs lg:text-sm text-primary font-medium border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors shrink-0">
         Ganti
       </a>
     </div>
@@ -142,7 +142,7 @@ function renderTrackInfo(track, trackName, isProyek) {
 // ---------- EVENT HANDLERS ----------
 function handleCancel() {
     if (confirm("Apakah Anda yakin ingin membatalkan? Data yang diisi akan hilang.")) {
-        window.location.href = "/dashboard.html";
+        window.location.href = "/mahasiswa/dashboard.html";
     }
 }
 
@@ -152,7 +152,7 @@ async function handleSubmit(e) {
     const trackData = sessionStorage.getItem("selectedTrack");
     if (!trackData) {
         alert("Silakan pilih track terlebih dahulu");
-        window.location.href = "/track.html";
+        window.location.href = "/mahasiswa/track.html";
         return;
     }
 
@@ -176,7 +176,7 @@ async function handleSubmit(e) {
         if (result.ok) {
             saveToSession(formData, track);
             alert("Proposal berhasil disubmit!\n\nProposal Anda akan direview oleh koordinator.");
-            window.location.href = "/dashboard.html";
+            window.location.href = "/mahasiswa/dashboard.html";
         } else {
             alert("Gagal submit proposal: " + (result.error || "Terjadi kesalahan"));
         }

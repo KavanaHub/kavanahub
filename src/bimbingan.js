@@ -16,58 +16,58 @@ const MAX_SESSIONS = 8;
 
 // ---------- DOM ELEMENTS ----------
 const getElements = () => ({
-    modal: document.getElementById("session-modal"),
-    modalTitle: document.getElementById("modal-title"),
-    form: document.getElementById("session-form"),
-    btnAddSession: document.getElementById("btn-add-session"),
-    sessionsList: document.getElementById("sessions-list"),
-    trackInfo: document.getElementById("track-info"),
-    pembimbingInfo: document.getElementById("pembimbing-info"),
-    progressText: document.getElementById("progress-text"),
-    progressFill: document.getElementById("progress-fill"),
-    progressDots: document.getElementById("progress-dots"),
+  modal: document.getElementById("session-modal"),
+  modalTitle: document.getElementById("modal-title"),
+  form: document.getElementById("session-form"),
+  btnAddSession: document.getElementById("btn-add-session"),
+  sessionsList: document.getElementById("sessions-list"),
+  trackInfo: document.getElementById("track-info"),
+  pembimbingInfo: document.getElementById("pembimbing-info"),
+  progressText: document.getElementById("progress-text"),
+  progressFill: document.getElementById("progress-fill"),
+  progressDots: document.getElementById("progress-dots"),
 });
 
 // ---------- BIMBINGAN PAGE INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
-    // Initialize page with sidebar
-    const { isAuthenticated } = initPage({ activeMenu: "bimbingan" });
-    if (!isAuthenticated) return;
+  // Initialize page with sidebar
+  const { isAuthenticated } = initPage({ activeMenu: "bimbingan" });
+  if (!isAuthenticated) return;
 
-    // Setup global closeSidebar
-    window.closeSidebar = closeSidebar;
+  // Setup global closeSidebar
+  window.closeSidebar = closeSidebar;
 
-    const elements = getElements();
+  const elements = getElements();
 
-    // Load data
-    loadTrackInfo(elements.trackInfo);
-    loadPembimbingInfo(elements.pembimbingInfo);
-    await loadBimbinganFromAPI();
-    updateProgress();
+  // Load data
+  loadTrackInfo(elements.trackInfo);
+  loadPembimbingInfo(elements.pembimbingInfo);
+  await loadBimbinganFromAPI();
+  updateProgress();
 
-    // Event listeners
-    elements.btnAddSession?.addEventListener("click", () => openModal());
-    document.getElementById("modal-close")?.addEventListener("click", closeModal);
-    document.getElementById("btn-modal-cancel")?.addEventListener("click", closeModal);
-    elements.modal?.addEventListener("click", (e) => e.target === elements.modal && closeModal());
-    elements.form?.addEventListener("submit", handleSubmit);
+  // Event listeners
+  elements.btnAddSession?.addEventListener("click", () => openModal());
+  document.getElementById("modal-close")?.addEventListener("click", closeModal);
+  document.getElementById("btn-modal-cancel")?.addEventListener("click", closeModal);
+  elements.modal?.addEventListener("click", (e) => e.target === elements.modal && closeModal());
+  elements.form?.addEventListener("submit", handleSubmit);
 });
 
 // ---------- DATA LOADING ----------
 function loadTrackInfo(container) {
-    if (!container) return;
+  if (!container) return;
 
-    const trackData = sessionStorage.getItem("selectedTrack");
+  const trackData = sessionStorage.getItem("selectedTrack");
 
-    if (!trackData) {
-        container.innerHTML = renderNoTrackWarning();
-        return;
-    }
+  if (!trackData) {
+    container.innerHTML = renderNoTrackWarning();
+    return;
+  }
 
-    const track = JSON.parse(trackData);
-    const isProyek = track.type === "proyek";
+  const track = JSON.parse(trackData);
+  const isProyek = track.type === "proyek";
 
-    container.innerHTML = `
+  container.innerHTML = `
     <div class="flex items-center gap-3 mb-3">
       <div class="p-2 ${isProyek ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"} rounded-lg text-xl lg:text-2xl">
         ${isProyek ? "📋" : "🏢"}
@@ -80,25 +80,25 @@ function loadTrackInfo(container) {
 }
 
 function loadPembimbingInfo(container) {
-    if (!container) return;
+  if (!container) return;
 
-    const proposalData = sessionStorage.getItem("proposalData");
+  const proposalData = sessionStorage.getItem("proposalData");
 
-    if (!proposalData) {
-        container.innerHTML = renderNoPembimbingWarning();
-        return;
-    }
+  if (!proposalData) {
+    container.innerHTML = renderNoPembimbingWarning();
+    return;
+  }
 
-    const proposal = JSON.parse(proposalData);
-    const dosenNames = {
-        "dosen-1": "Dr. Ahmad Fauzi, M.Kom",
-        "dosen-2": "Dr. Budi Santoso, M.T.",
-        "dosen-3": "Prof. Citra Dewi, Ph.D",
-        "dosen-4": "Dr. Diana Putri, M.Sc",
-        "dosen-5": "Dr. Eko Prasetyo, M.Kom",
-    };
+  const proposal = JSON.parse(proposalData);
+  const dosenNames = {
+    "dosen-1": "Dr. Ahmad Fauzi, M.Kom",
+    "dosen-2": "Dr. Budi Santoso, M.T.",
+    "dosen-3": "Prof. Citra Dewi, Ph.D",
+    "dosen-4": "Dr. Diana Putri, M.Sc",
+    "dosen-5": "Dr. Eko Prasetyo, M.Kom",
+  };
 
-    container.innerHTML = `
+  container.innerHTML = `
     <div class="flex items-center gap-3 mb-3">
       <div class="p-2 bg-blue-50 text-primary rounded-lg">
         <span class="material-symbols-outlined text-[20px] lg:text-[24px]">person</span>
@@ -111,29 +111,29 @@ function loadPembimbingInfo(container) {
 }
 
 async function loadBimbinganFromAPI() {
-    try {
-        const result = await mahasiswaAPI.getMyBimbingan();
-        if (result.ok && result.data) {
-            sessions = result.data.map((b) => ({
-                id: b.id,
-                date: b.tanggal,
-                topic: b.kegiatan,
-                notes: b.catatan || "",
-                next: b.rencana_selanjutnya || "",
-                status: b.status,
-            }));
-            renderSessions();
-        }
-    } catch (err) {
-        console.error("Error loading bimbingan:", err);
-        sessions = JSON.parse(sessionStorage.getItem("bimbinganSessions")) || [];
-        renderSessions();
+  try {
+    const result = await mahasiswaAPI.getMyBimbingan();
+    if (result.ok && result.data) {
+      sessions = result.data.map((b) => ({
+        id: b.id,
+        date: b.tanggal,
+        topic: b.kegiatan,
+        notes: b.catatan || "",
+        next: b.rencana_selanjutnya || "",
+        status: b.status,
+      }));
+      renderSessions();
     }
+  } catch (err) {
+    console.error("Error loading bimbingan:", err);
+    sessions = JSON.parse(sessionStorage.getItem("bimbinganSessions")) || [];
+    renderSessions();
+  }
 }
 
 // ---------- RENDERING ----------
 function renderNoTrackWarning() {
-    return `
+  return `
     <div class="flex items-center gap-3 mb-3">
       <div class="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
         <span class="material-symbols-outlined text-[20px] lg:text-[24px]">warning</span>
@@ -141,12 +141,12 @@ function renderNoTrackWarning() {
       <h4 class="font-semibold text-text-main text-sm lg:text-base">Track Aktif</h4>
     </div>
     <p class="text-yellow-600 text-sm font-medium">Belum ada track dipilih</p>
-    <a href="/track.html" class="text-primary text-xs hover:underline mt-2 inline-block">Pilih Track →</a>
+    <a href="/mahasiswa/track.html" class="text-primary text-xs hover:underline mt-2 inline-block">Pilih Track →</a>
   `;
 }
 
 function renderNoPembimbingWarning() {
-    return `
+  return `
     <div class="flex items-center gap-3 mb-3">
       <div class="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
         <span class="material-symbols-outlined text-[20px] lg:text-[24px]">warning</span>
@@ -159,44 +159,44 @@ function renderNoPembimbingWarning() {
 }
 
 function updateProgress() {
-    const count = sessions.length;
-    const percentage = (count / MAX_SESSIONS) * 100;
+  const count = sessions.length;
+  const percentage = (count / MAX_SESSIONS) * 100;
 
-    document.getElementById("progress-text").textContent = `${count} / ${MAX_SESSIONS} Sesi`;
-    document.getElementById("progress-fill").style.width = `${percentage}%`;
+  document.getElementById("progress-text").textContent = `${count} / ${MAX_SESSIONS} Sesi`;
+  document.getElementById("progress-fill").style.width = `${percentage}%`;
 
-    // Update dots
-    const dotsContainer = document.getElementById("progress-dots");
-    dotsContainer.innerHTML = Array.from({ length: MAX_SESSIONS }, (_, i) => {
-        const isCompleted = i < count;
-        return `<div class="flex items-center justify-center w-full h-8 lg:h-10 rounded-lg text-xs lg:text-sm font-bold transition-colors ${isCompleted ? "bg-primary text-white" : "bg-slate-100 text-slate-400"
-            }">${i + 1}</div>`;
-    }).join("");
+  // Update dots
+  const dotsContainer = document.getElementById("progress-dots");
+  dotsContainer.innerHTML = Array.from({ length: MAX_SESSIONS }, (_, i) => {
+    const isCompleted = i < count;
+    return `<div class="flex items-center justify-center w-full h-8 lg:h-10 rounded-lg text-xs lg:text-sm font-bold transition-colors ${isCompleted ? "bg-primary text-white" : "bg-slate-100 text-slate-400"
+      }">${i + 1}</div>`;
+  }).join("");
 
-    // Disable add button if max reached
-    const btnAdd = document.getElementById("btn-add-session");
-    if (count >= MAX_SESSIONS && btnAdd) {
-        btnAdd.disabled = true;
-        btnAdd.innerHTML = `<span class="material-symbols-outlined text-[18px]">check</span> Bimbingan Selesai`;
-        btnAdd.classList.remove("bg-primary", "hover:bg-primary/90");
-        btnAdd.classList.add("bg-green-500", "cursor-not-allowed");
-    }
+  // Disable add button if max reached
+  const btnAdd = document.getElementById("btn-add-session");
+  if (count >= MAX_SESSIONS && btnAdd) {
+    btnAdd.disabled = true;
+    btnAdd.innerHTML = `<span class="material-symbols-outlined text-[18px]">check</span> Bimbingan Selesai`;
+    btnAdd.classList.remove("bg-primary", "hover:bg-primary/90");
+    btnAdd.classList.add("bg-green-500", "cursor-not-allowed");
+  }
 }
 
 function renderSessions() {
-    const listEl = document.getElementById("sessions-list");
-    if (!listEl) return;
+  const listEl = document.getElementById("sessions-list");
+  if (!listEl) return;
 
-    if (sessions.length === 0) {
-        listEl.innerHTML = renderEmptyState();
-        return;
-    }
+  if (sessions.length === 0) {
+    listEl.innerHTML = renderEmptyState();
+    return;
+  }
 
-    listEl.innerHTML = sessions.map((session, index) => renderSessionCard(session, index)).join("");
+  listEl.innerHTML = sessions.map((session, index) => renderSessionCard(session, index)).join("");
 }
 
 function renderEmptyState() {
-    return `
+  return `
     <div class="text-center py-8 lg:py-12">
       <span class="material-symbols-outlined text-4xl lg:text-5xl text-slate-300">edit_note</span>
       <h3 class="text-base lg:text-lg font-bold text-text-main mt-3">Belum Ada Bimbingan</h3>
@@ -206,9 +206,9 @@ function renderEmptyState() {
 }
 
 function renderSessionCard(session, index) {
-    const status = getStatusDisplay(session.status);
+  const status = getStatusDisplay(session.status);
 
-    return `
+  return `
     <div class="flex gap-3 lg:gap-4 p-3 lg:p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
       <div class="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-${status.color}-500 text-white flex items-center justify-center font-bold text-sm lg:text-base shrink-0">${index + 1}</div>
       <div class="flex-1 min-w-0">
@@ -234,108 +234,108 @@ function renderSessionCard(session, index) {
 
 // ---------- MODAL HANDLERS ----------
 function openModal(index = -1) {
-    editingIndex = index;
-    const modal = document.getElementById("session-modal");
-    const form = document.getElementById("session-form");
-    const title = document.getElementById("modal-title");
+  editingIndex = index;
+  const modal = document.getElementById("session-modal");
+  const form = document.getElementById("session-form");
+  const title = document.getElementById("modal-title");
 
-    form.reset();
-    clearAllErrors();
+  form.reset();
+  clearAllErrors();
 
-    if (index >= 0 && sessions[index]) {
-        title.textContent = `Edit Bimbingan ke-${index + 1}`;
-        document.getElementById("session-date").value = sessions[index].date;
-        document.getElementById("session-topic").value = sessions[index].topic;
-        document.getElementById("session-notes").value = sessions[index].notes;
-        document.getElementById("session-next").value = sessions[index].next || "";
-    } else {
-        title.textContent = `Tambah Bimbingan ke-${sessions.length + 1}`;
-        document.getElementById("session-date").value = new Date().toISOString().split("T")[0];
-    }
+  if (index >= 0 && sessions[index]) {
+    title.textContent = `Edit Bimbingan ke-${index + 1}`;
+    document.getElementById("session-date").value = sessions[index].date;
+    document.getElementById("session-topic").value = sessions[index].topic;
+    document.getElementById("session-notes").value = sessions[index].notes;
+    document.getElementById("session-next").value = sessions[index].next || "";
+  } else {
+    title.textContent = `Tambah Bimbingan ke-${sessions.length + 1}`;
+    document.getElementById("session-date").value = new Date().toISOString().split("T")[0];
+  }
 
-    modal.classList.add("active");
-    document.body.style.overflow = "hidden";
+  modal.classList.add("active");
+  document.body.style.overflow = "hidden";
 }
 
 function closeModal() {
-    const modal = document.getElementById("session-modal");
-    modal.classList.remove("active");
-    document.body.style.overflow = "";
-    editingIndex = -1;
+  const modal = document.getElementById("session-modal");
+  modal.classList.remove("active");
+  document.body.style.overflow = "";
+  editingIndex = -1;
 }
 
 // ---------- FORM SUBMISSION ----------
 async function handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const date = document.getElementById("session-date").value;
-    const topic = document.getElementById("session-topic").value.trim();
-    const notes = document.getElementById("session-notes").value.trim();
-    const next = document.getElementById("session-next").value.trim();
+  const date = document.getElementById("session-date").value;
+  const topic = document.getElementById("session-topic").value.trim();
+  const notes = document.getElementById("session-notes").value.trim();
+  const next = document.getElementById("session-next").value.trim();
 
-    // Validation
-    let isValid = true;
-    clearAllErrors();
+  // Validation
+  let isValid = true;
+  clearAllErrors();
 
-    if (!date) {
-        showFieldError("session-date", "Tanggal wajib diisi");
-        isValid = false;
+  if (!date) {
+    showFieldError("session-date", "Tanggal wajib diisi");
+    isValid = false;
+  }
+  if (!topic) {
+    showFieldError("session-topic", "Topik wajib diisi");
+    isValid = false;
+  }
+  if (!notes) {
+    showFieldError("session-notes", "Catatan wajib diisi");
+    isValid = false;
+  }
+
+  if (!isValid) return;
+
+  const submitBtn = document.querySelector('#session-form button[type="submit"]');
+  setButtonLoading(submitBtn, "Menyimpan...");
+
+  try {
+    const result = await mahasiswaAPI.createBimbingan({
+      tanggal: date,
+      kegiatan: topic,
+      catatan: notes,
+      rencana_selanjutnya: next,
+    });
+
+    if (result.ok) {
+      closeModal();
+      await loadBimbinganFromAPI();
+      updateProgress();
+    } else {
+      alert("Gagal menyimpan: " + (result.error || "Terjadi kesalahan"));
     }
-    if (!topic) {
-        showFieldError("session-topic", "Topik wajib diisi");
-        isValid = false;
+  } catch (err) {
+    console.error("Submit error:", err);
+    // Fallback to sessionStorage
+    const sessionData = { date, topic, notes, next, status: "pending" };
+    if (editingIndex >= 0) {
+      sessions[editingIndex] = sessionData;
+    } else {
+      sessions.push(sessionData);
     }
-    if (!notes) {
-        showFieldError("session-notes", "Catatan wajib diisi");
-        isValid = false;
-    }
-
-    if (!isValid) return;
-
-    const submitBtn = document.querySelector('#session-form button[type="submit"]');
-    setButtonLoading(submitBtn, "Menyimpan...");
-
-    try {
-        const result = await mahasiswaAPI.createBimbingan({
-            tanggal: date,
-            kegiatan: topic,
-            catatan: notes,
-            rencana_selanjutnya: next,
-        });
-
-        if (result.ok) {
-            closeModal();
-            await loadBimbinganFromAPI();
-            updateProgress();
-        } else {
-            alert("Gagal menyimpan: " + (result.error || "Terjadi kesalahan"));
-        }
-    } catch (err) {
-        console.error("Submit error:", err);
-        // Fallback to sessionStorage
-        const sessionData = { date, topic, notes, next, status: "pending" };
-        if (editingIndex >= 0) {
-            sessions[editingIndex] = sessionData;
-        } else {
-            sessions.push(sessionData);
-        }
-        sessionStorage.setItem("bimbinganSessions", JSON.stringify(sessions));
-        closeModal();
-        renderSessions();
-        updateProgress();
-    } finally {
-        resetButtonLoading(submitBtn);
-    }
+    sessionStorage.setItem("bimbinganSessions", JSON.stringify(sessions));
+    closeModal();
+    renderSessions();
+    updateProgress();
+  } finally {
+    resetButtonLoading(submitBtn);
+  }
 }
 
 // ---------- GLOBAL FUNCTIONS ----------
 window.editSession = (index) => openModal(index);
 
 window.deleteSession = (index) => {
-    if (confirm("Apakah Anda yakin ingin menghapus bimbingan ini?")) {
-        sessions.splice(index, 1);
-        sessionStorage.setItem("bimbinganSessions", JSON.stringify(sessions));
-        renderSessions();
-        updateProgress();
-    }
+  if (confirm("Apakah Anda yakin ingin menghapus bimbingan ini?")) {
+    sessions.splice(index, 1);
+    sessionStorage.setItem("bimbinganSessions", JSON.stringify(sessions));
+    renderSessions();
+    updateProgress();
+  }
 };

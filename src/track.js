@@ -160,5 +160,5 @@ function saveAndRedirect(trackData) {
         trackData.type === "proyek" ? `Partner NPM: ${trackData.partnerNpm}` : `Perusahaan: ${trackData.companyName}`;
 
     alert(`Anda telah memilih ${displayName}.\n${details}`);
-    window.location.href = "/dashboard.html";
+    window.location.href = "/mahasiswa/dashboard.html";
 }

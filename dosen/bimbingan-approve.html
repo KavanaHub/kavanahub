@@ -1,0 +1,191 @@
+<!doctype html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Approve Bimbingan - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Approve Bimbingan Mahasiswa - Kavana" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2596be",
+                        "background-light": "#e8f4f8",
+                        "background-dark": "#121c20",
+                        "surface-light": "#ffffff",
+                        "text-main": "#1e2134",
+                        "text-secondary": "#548192"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main h-screen overflow-hidden flex">
+    <!-- Mobile Header -->
+    <div id="mobile-header"
+        class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-[#7c3aed] to-[#6366f1] px-4 py-3 flex items-center justify-between shadow-lg">
+        <button id="btn-open-sidebar" class="text-white p-2 -ml-2">
+            <span class="material-symbols-outlined text-[28px]">menu</span>
+        </button>
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-white icon-fill">school</span>
+            <span class="text-white font-bold">Kavana</span>
+        </div>
+        <div class="w-10"></div>
+    </div>
+
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0">
+        <div class="max-w-[1000px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-8">
+            <!-- Page Header -->
+            <header class="flex flex-col sm:flex-row sm:flex-wrap justify-between items-start sm:items-center gap-4">
+                <div class="flex items-center gap-3 lg:gap-4">
+                    <div
+                        class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-yellow-100 text-yellow-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl lg:text-3xl">check_circle</span>
+                    </div>
+                    <div>
+                        <h2
+                            class="text-text-main text-xl sm:text-2xl lg:text-3xl font-black leading-tight tracking-tight">
+                            Approve Bimbingan</h2>
+                        <p class="text-text-secondary text-xs sm:text-sm lg:text-base">Review dan approve bimbingan
+                            mahasiswa</p>
+                    </div>
+                </div>
+                <!-- Filter Mahasiswa -->
+                <select id="filter-mahasiswa"
+                    class="w-full sm:w-auto px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="all">Semua Mahasiswa</option>
+                </select>
+            </header>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <p id="stat-pending" class="text-2xl lg:text-3xl font-bold text-yellow-600">0</p>
+                    <p class="text-text-secondary text-xs lg:text-sm">Pending</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <p id="stat-approved" class="text-2xl lg:text-3xl font-bold text-green-600">0</p>
+                    <p class="text-text-secondary text-xs lg:text-sm">Approved</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <p id="stat-rejected" class="text-2xl lg:text-3xl font-bold text-red-600">0</p>
+                    <p class="text-text-secondary text-xs lg:text-sm">Rejected</p>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex gap-2 overflow-x-auto pb-2">
+                <button
+                    class="filter-btn active px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors"
+                    data-filter="pending">
+                    🕐 Pending
+                </button>
+                <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors"
+                    data-filter="approved">
+                    ✅ Approved
+                </button>
+                <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors"
+                    data-filter="rejected">
+                    ❌ Rejected
+                </button>
+                <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors"
+                    data-filter="all">
+                    Semua
+                </button>
+            </div>
+
+            <!-- Bimbingan List -->
+            <div id="bimbingan-list" class="flex flex-col gap-4">
+                <!-- Will be filled by JS -->
+                <div class="text-center py-12">
+                    <span class="material-symbols-outlined text-4xl text-slate-300 animate-spin">sync</span>
+                    <p class="text-text-secondary text-sm mt-2">Memuat data bimbingan...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Approve/Reject Modal -->
+    <div id="action-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <div class="flex items-center justify-between p-4 lg:p-6 border-b border-slate-100">
+                <h3 id="modal-title" class="text-base lg:text-lg font-bold text-text-main">Approve Bimbingan</h3>
+                <button id="modal-close" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+            </div>
+            <form id="action-form" class="p-4 lg:p-6">
+                <input type="hidden" id="action-id" />
+                <input type="hidden" id="action-type" />
+
+                <div class="mb-4">
+                    <p id="modal-desc" class="text-text-secondary text-sm mb-4"></p>
+
+                    <label class="block text-sm font-medium text-text-main mb-2">
+                        Catatan <span class="text-text-secondary">(opsional)</span>
+                    </label>
+                    <textarea id="action-catatan" rows="3" placeholder="Berikan catatan atau feedback..."
+                        class="w-full px-4 py-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+                </div>
+
+                <div class="flex gap-3">
+                    <button type="button" id="btn-modal-cancel"
+                        class="flex-1 py-2.5 text-sm font-semibold border border-slate-200 text-text-main rounded-lg hover:bg-slate-50 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="btn-modal-submit"
+                        class="flex-1 py-2.5 text-sm font-semibold text-white rounded-lg transition-colors">
+                        Konfirmasi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .filter-btn {
+            background: white;
+            color: #548192;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .filter-btn.active {
+            background: #2596be;
+            color: white;
+            border-color: #2596be;
+        }
+    </style>
+
+    <script type="module" src="/src/bimbingan-approve.js"></script>
+</body>
+
+</html>

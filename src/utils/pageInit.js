@@ -30,7 +30,7 @@ export function initPage(options = {}) {
     const sidebarPlaceholder = document.getElementById("sidebar-placeholder");
     if (sidebarPlaceholder) {
         sidebarPlaceholder.outerHTML = getSidebarHTML(currentRole, activeMenu);
-        bindSidebarEvents(createMenuHandler());
+        bindSidebarEvents(createMenuHandler(currentRole));
         updateSidebarUser();
     }
 
@@ -75,31 +75,78 @@ export function closeSidebar() {
 }
 
 /**
- * Create menu click handler with common navigation
+ * Create menu click handler with role-based navigation
+ * @param {string} currentRole - Current user role
  * @returns {Function} - Menu click handler
  */
-export function createMenuHandler() {
-    const redirectPages = {
-        dashboard: "/dashboard.html",
-        track: "/track.html",
-        proposal: "/proposal.html",
-        bimbingan: "/bimbingan.html",
-        laporan: "/laporan.html",
-        nilai: "/hasil.html",
-        profile: "/profile.html",
-        settings: "/settings.html",
-        "mahasiswa-bimbingan": "/mahasiswa-bimbingan.html",
-        "bimbingan-approve": "/bimbingan-approve.html",
-        "laporan-approve": "/laporan-approve.html",
-        "validasi-proposal": "/validasi-proposal.html",
-        "approve-pembimbing": "/approve-pembimbing.html",
+export function createMenuHandler(currentRole = "mahasiswa") {
+    // Role-based redirect pages
+    const rolePages = {
+        mahasiswa: {
+            dashboard: "/mahasiswa/dashboard.html",
+            track: "/mahasiswa/track.html",
+            kelompok: "/mahasiswa/kelompok.html",
+            proposal: "/mahasiswa/proposal.html",
+            bimbingan: "/mahasiswa/bimbingan.html",
+            laporan: "/mahasiswa/laporan.html",
+            nilai: "/mahasiswa/hasil.html",
+        },
+        dosen: {
+            dashboard: "/dosen/dashboard.html",
+            "mahasiswa-bimbingan": "/dosen/mahasiswa-bimbingan.html",
+            "bimbingan-approve": "/dosen/bimbingan-approve.html",
+            "laporan-approve": "/dosen/laporan-approve.html",
+        },
+        koordinator: {
+            dashboard: "/koordinator/dashboard.html",
+            "validasi-proposal": "/koordinator/validasi-proposal.html",
+            "approve-pembimbing": "/koordinator/approve-pembimbing.html",
+            "daftar-mahasiswa": "/koordinator/daftar-mahasiswa.html",
+        },
+        kaprodi: {
+            dashboard: "/kaprodi/dashboard.html",
+            "daftar-dosen": "/kaprodi/daftar-dosen.html",
+            monitoring: "/kaprodi/monitoring.html",
+        },
+    };
+
+    // Shared pages (all roles)
+    const sharedPages = {
+        profile: "/shared/profile.html",
+        settings: "/shared/settings.html",
     };
 
     return function handleMenuClick(menuId) {
-        if (redirectPages[menuId]) {
-            window.location.href = redirectPages[menuId];
+        // Check role-specific pages first
+        const rolePagesMap = rolePages[currentRole] || rolePages.mahasiswa;
+        if (rolePagesMap[menuId]) {
+            window.location.href = rolePagesMap[menuId];
+            return;
         }
+
+        // Check shared pages
+        if (sharedPages[menuId]) {
+            window.location.href = sharedPages[menuId];
+            return;
+        }
+
+        console.warn(`No route found for menu: ${menuId}`);
     };
+}
+
+/**
+ * Get dashboard URL based on role
+ * @param {string} role - User role
+ * @returns {string} - Dashboard URL
+ */
+export function getDashboardURL(role) {
+    const dashboards = {
+        mahasiswa: "/mahasiswa/dashboard.html",
+        dosen: "/dosen/dashboard.html",
+        koordinator: "/koordinator/dashboard.html",
+        kaprodi: "/kaprodi/dashboard.html",
+    };
+    return dashboards[role] || dashboards.mahasiswa;
 }
 
 /**

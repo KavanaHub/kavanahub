@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadExistingData();
 
     // Event listeners
-    document.getElementById("btn-cancel")?.addEventListener("click", () => (window.location.href = "/dashboard.html"));
+    document.getElementById("btn-cancel")?.addEventListener("click", () => (window.location.href = "/mahasiswa/dashboard.html"));
     document.getElementById("laporan-form")?.addEventListener("submit", handleSubmit);
 
     // Setup error clearing
@@ -124,7 +124,7 @@ async function handleSubmit(e) {
             );
 
             alert("Laporan berhasil disubmit!\n\nLaporan Anda akan direview oleh pembimbing.");
-            window.location.href = "/dashboard.html";
+            window.location.href = "/mahasiswa/dashboard.html";
         } else {
             alert("Gagal submit: " + (result.error || "Terjadi kesalahan"));
         }

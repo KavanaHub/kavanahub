@@ -1,0 +1,146 @@
+<!doctype html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Pengaturan - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#2596be", "background-light": "#e8f4f8", "text-main": "#1e2134", "text-secondary": "#548192" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light font-display text-text-main h-screen overflow-hidden flex">
+    <div id="mobile-header"
+        class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-[#7c3aed] to-[#6366f1] px-4 py-3 flex items-center justify-between shadow-lg">
+        <button id="btn-open-sidebar" class="text-white p-2 -ml-2"><span
+                class="material-symbols-outlined text-[28px]">menu</span></button>
+        <div class="flex items-center gap-2"><span
+                class="material-symbols-outlined text-white icon-fill">school</span><span
+                class="text-white font-bold">Kavana</span></div>
+        <div class="w-10"></div>
+    </div>
+
+    <div id="sidebar-placeholder"></div>
+
+    <main class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0">
+        <div class="max-w-[600px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-8">
+            <!-- Header -->
+            <header class="flex items-center gap-3 lg:gap-4">
+                <div
+                    class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-2xl lg:text-3xl">settings</span>
+                </div>
+                <div>
+                    <h2 class="text-text-main text-xl sm:text-2xl lg:text-3xl font-black">Pengaturan</h2>
+                    <p class="text-text-secondary text-xs sm:text-sm lg:text-base">Kelola preferensi akun Anda</p>
+                </div>
+            </header>
+
+            <!-- Change Password -->
+            <div class="bg-white p-6 lg:p-8 rounded-xl shadow-sm border border-slate-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-primary">lock</span>
+                    <h3 class="font-bold text-text-main text-lg">Ganti Password</h3>
+                </div>
+                <form id="password-form" class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-text-main mb-1">Password Lama</label>
+                        <input type="password" id="old-password"
+                            class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                        <p id="error-old-password" class="text-red-500 text-xs mt-1 hidden"></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-main mb-1">Password Baru</label>
+                        <input type="password" id="new-password"
+                            class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                        <p id="error-new-password" class="text-red-500 text-xs mt-1 hidden"></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-main mb-1">Konfirmasi Password Baru</label>
+                        <input type="password" id="confirm-password"
+                            class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                        <p id="error-confirm-password" class="text-red-500 text-xs mt-1 hidden"></p>
+                    </div>
+                    <button type="submit" id="btn-change-password"
+                        class="mt-2 px-6 py-2.5 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary/80 transition-colors">
+                        Ganti Password
+                    </button>
+                </form>
+            </div>
+
+            <!-- Notifications (Placeholder) -->
+            <div class="bg-white p-6 lg:p-8 rounded-xl shadow-sm border border-slate-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-primary">notifications</span>
+                    <h3 class="font-bold text-text-main text-lg">Notifikasi</h3>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-text-main">Notifikasi Email</p>
+                            <p class="text-xs text-text-secondary">Terima update via email</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggle-email" class="sr-only peer" checked>
+                            <div
+                                class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
+                            </div>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-text-main">Notifikasi WhatsApp</p>
+                            <p class="text-xs text-text-secondary">Terima update via WhatsApp</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggle-whatsapp" class="sr-only peer">
+                            <div
+                                class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About -->
+            <div class="bg-white p-6 lg:p-8 rounded-xl shadow-sm border border-slate-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-primary">info</span>
+                    <h3 class="font-bold text-text-main text-lg">Tentang</h3>
+                </div>
+                <div class="text-sm text-text-secondary space-y-2">
+                    <p><span class="font-medium text-text-main">Kavana</span> - Sistem Bimbingan Online</p>
+                    <p>Versi: 1.0.0</p>
+                    <p>© 2024 Kavana. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="/src/settings.js"></script>
+</body>
+
+</html>

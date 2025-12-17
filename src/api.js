@@ -82,6 +82,23 @@ export const authAPI = {
             method: 'POST',
             body: JSON.stringify(data)
         });
+    },
+
+    getProfile: () => apiRequest('/api/auth/profile'),
+
+    updateProfile: (data) => apiRequest('/api/auth/profile', {
+        method: 'PATCH',
+        body: JSON.stringify(data)
+    }),
+
+    changePassword: (oldPassword, newPassword) => apiRequest('/api/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify({ old_password: oldPassword, new_password: newPassword })
+    }),
+
+    logout: () => {
+        clearToken();
+        sessionStorage.clear();
     }
 };
 
@@ -139,7 +156,7 @@ export const mahasiswaAPI = {
 export const dosenAPI = {
     getProfile: () => apiRequest('/api/dosen/profile'),
 
-    getMahasiswaBimbingan: () => apiRequest('/api/dosen/mahasiswa-bimbingan'),
+    getMahasiswaBimbingan: () => apiRequest('/api/dosen/mahasiswa'),
 
     getBimbinganList: () => apiRequest('/api/dosen/bimbingan'),
 

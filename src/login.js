@@ -61,8 +61,15 @@ async function handleSubmit(e) {
             sessionStorage.setItem("userName", result.data.nama || "User");
             sessionStorage.setItem("userEmail", result.data.email || "");
 
-            // Redirect to dashboard (works for all roles)
-            window.location.href = "/dashboard.html";
+            // Redirect to role-based dashboard
+            const role = sessionStorage.getItem("userRole") || "mahasiswa";
+            const dashboardUrls = {
+                mahasiswa: "/mahasiswa/dashboard.html",
+                dosen: "/dosen/dashboard.html",
+                koordinator: "/koordinator/dashboard.html",
+                kaprodi: "/kaprodi/dashboard.html",
+            };
+            window.location.href = dashboardUrls[role] || dashboardUrls.mahasiswa;
         } else {
             handleLoginError(result.error, result.status);
         }
