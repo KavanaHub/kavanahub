@@ -227,7 +227,10 @@ export const koordinatorAPI = {
 
     completeJadwal: (id) => apiRequest(`/api/koordinator/jadwal/${id}/complete`, {
         method: 'POST'
-    })
+    }),
+
+    // Get assigned semester for this koordinator
+    getMySemester: () => apiRequest('/api/koordinator/my-semester')
 };
 
 // ========================================
@@ -241,7 +244,20 @@ export const kaprodiAPI = {
 
     getMahasiswaList: () => apiRequest('/api/kaprodi/mahasiswa'),
 
-    getDosenList: () => apiRequest('/api/kaprodi/dosen')
+    getDosenList: () => apiRequest('/api/kaprodi/dosen'),
+
+    // Koordinator management
+    getKoordinatorList: () => apiRequest('/api/kaprodi/koordinator'),
+
+    assignKoordinatorSemester: (koordinator_id, semester) => apiRequest('/api/kaprodi/koordinator/assign-semester', {
+        method: 'POST',
+        body: JSON.stringify({ koordinator_id, semester })
+    }),
+
+    unassignKoordinatorSemester: (koordinator_id) => apiRequest('/api/kaprodi/koordinator/unassign-semester', {
+        method: 'POST',
+        body: JSON.stringify({ koordinator_id })
+    })
 };
 
 // ========================================
