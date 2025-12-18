@@ -1,0 +1,166 @@
+<!doctype html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Kelola Periode - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#2596be", "background-light": "#e8f4f8", "text-main": "#1e2134", "text-secondary": "#548192" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light font-display text-text-main h-screen overflow-hidden flex">
+    <div id="mobile-header"
+        class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] px-4 py-3 flex items-center justify-between shadow-lg">
+        <button id="btn-open-sidebar" class="text-white p-2 -ml-2"><span
+                class="material-symbols-outlined text-[28px]">menu</span></button>
+        <div class="flex items-center gap-2"><span
+                class="material-symbols-outlined text-white icon-fill">school</span><span
+                class="text-white font-bold">Kavana</span></div>
+        <div class="w-10"></div>
+    </div>
+
+    <div id="sidebar-placeholder"></div>
+
+    <main class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0">
+        <div class="max-w-[1000px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-8">
+            <!-- Header -->
+            <header class="flex items-center justify-between">
+                <div class="flex items-center gap-3 lg:gap-4">
+                    <div
+                        class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-lg">
+                        <span class="material-symbols-outlined text-2xl lg:text-3xl">event</span>
+                    </div>
+                    <div>
+                        <h2 class="text-text-main text-xl sm:text-2xl lg:text-3xl font-black">Kelola Periode</h2>
+                        <p class="text-text-secondary text-xs sm:text-sm lg:text-base">Mulai periode Proyek/Internship
+                            per semester</p>
+                    </div>
+                </div>
+                <button id="btn-new-periode"
+                    class="px-4 py-2.5 text-sm font-medium bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 shadow-lg">
+                    <span class="material-symbols-outlined text-[20px]">add</span>
+                    <span class="hidden sm:inline">Mulai Periode Baru</span>
+                </button>
+            </header>
+
+            <!-- Active Periods -->
+            <div class="bg-white p-6 lg:p-8 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-text-main text-lg flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-green-500">play_circle</span>
+                    Periode Aktif
+                </h3>
+                <div id="active-periods" class="flex flex-col gap-3">
+                    <div class="text-center py-6 text-text-secondary">
+                        <span class="material-symbols-outlined text-4xl mb-2">hourglass_empty</span>
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Periods -->
+            <div class="bg-white p-6 lg:p-8 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-text-main text-lg flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-blue-500">history</span>
+                    Riwayat Periode
+                </h3>
+                <div id="all-periods" class="flex flex-col gap-3">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Create Periode -->
+    <div id="modal-create" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+            <div class="p-6 border-b border-slate-100">
+                <h3 class="text-lg font-bold text-text-main">Mulai Periode Baru</h3>
+            </div>
+            <form id="form-create" class="p-6 flex flex-col gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-text-main mb-1">Nama Periode</label>
+                    <input type="text" id="input-nama" placeholder="Contoh: Proyek 1 Semester Ganjil 2024"
+                        class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        required />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-text-main mb-1">Tipe</label>
+                        <select id="input-tipe"
+                            class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            required>
+                            <option value="proyek">Proyek</option>
+                            <option value="internship">Internship</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-main mb-1">Semester</label>
+                        <select id="input-semester"
+                            class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            required>
+                            <option value="2">Semester 2 (Proyek 1)</option>
+                            <option value="3">Semester 3 (Proyek 2)</option>
+                            <option value="5">Semester 5 (Proyek 3)</option>
+                            <option value="7">Semester 7 (Internship 1)</option>
+                            <option value="8">Semester 8 (Internship 2)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-text-main mb-1">Tanggal Mulai</label>
+                        <input type="date" id="input-start"
+                            class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            required />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-main mb-1">Tanggal Selesai</label>
+                        <input type="date" id="input-end"
+                            class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            required />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-main mb-1">Deskripsi (opsional)</label>
+                    <textarea id="input-deskripsi" rows="2" placeholder="Deskripsi periode..."
+                        class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                </div>
+                <div class="flex gap-3 mt-2">
+                    <button type="button" id="btn-cancel"
+                        class="flex-1 px-4 py-2.5 text-sm font-medium bg-slate-100 text-text-main rounded-lg hover:bg-slate-200 transition-colors">Batal</button>
+                    <button type="submit" id="btn-submit"
+                        class="flex-1 px-4 py-2.5 text-sm font-medium bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:opacity-90 transition-opacity">Mulai
+                        Periode</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="/src/kelola-periode.js"></script>
+</body>
+
+</html>

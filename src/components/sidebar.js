@@ -24,10 +24,14 @@ const MENU_ICONS = {
 };
 
 // Generate sidebar HTML with purple/blue gradient theme (responsive)
-export function getSidebarHTML(currentRole, activeMenu = "dashboard") {
+// hiddenMenus: array of menu IDs to hide (e.g., ['track', 'kelompok'] if no active period)
+export function getSidebarHTML(currentRole, activeMenu = "dashboard", hiddenMenus = []) {
   const userName = sessionStorage.getItem("userName") || "User";
   const userEmail = sessionStorage.getItem("userEmail") || "email@kampus.ac.id";
-  const menuItems = MENU_CONFIG[currentRole] || [];
+  const allMenuItems = MENU_CONFIG[currentRole] || [];
+
+  // Filter out hidden menus
+  const menuItems = allMenuItems.filter(item => !hiddenMenus.includes(item.id));
 
   // Generate menu items HTML
   const menuHTML = menuItems

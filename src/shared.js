@@ -88,6 +88,7 @@ export const MENU_CONFIG = {
     ],
     koordinator: [
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
+        { id: "kelola-periode", label: "Kelola Periode", icon: "event" },
         { id: "validasi-proposal", label: "Validasi Proposal", icon: "fact_check" },
         { id: "approve-pembimbing", label: "Assign Pembimbing", icon: "how_to_reg" },
         { id: "daftar-mahasiswa", label: "Daftar Mahasiswa", icon: "groups" },

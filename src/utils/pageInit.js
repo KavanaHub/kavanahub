@@ -12,10 +12,11 @@ import { getSidebarHTML, bindSidebarEvents, updateSidebarUser } from "../compone
  * @param {string} options.activeMenu - Current active menu item ID
  * @param {Function} options.onInit - Callback after initialization
  * @param {boolean} options.requireAuth - Whether authentication is required (default: true)
+ * @param {Array} options.hiddenMenus - Menu IDs to hide (for conditional menus)
  * @returns {Object} - { currentRole, isAuthenticated }
  */
 export function initPage(options = {}) {
-    const { activeMenu = "dashboard", onInit = null, requireAuth = true } = options;
+    const { activeMenu = "dashboard", onInit = null, requireAuth = true, hiddenMenus = [] } = options;
 
     const currentRole = sessionStorage.getItem("userRole") || "mahasiswa";
     const authToken = getToken();
@@ -29,7 +30,7 @@ export function initPage(options = {}) {
     // Inject sidebar
     const sidebarPlaceholder = document.getElementById("sidebar-placeholder");
     if (sidebarPlaceholder) {
-        sidebarPlaceholder.outerHTML = getSidebarHTML(currentRole, activeMenu);
+        sidebarPlaceholder.outerHTML = getSidebarHTML(currentRole, activeMenu, hiddenMenus);
         bindSidebarEvents(createMenuHandler(currentRole));
         updateSidebarUser();
     }
@@ -46,6 +47,66 @@ export function initPage(options = {}) {
     }
 
     return { currentRole, isAuthenticated: true };
+}
+
+/**
+ * Initialize page with async periode check for mahasiswa
+ * Menu track, kelompok, bimbingan, proposal, laporan hidden jika tidak ada periode aktif
+ * @param {Object} options - Same as initPage
+ * @returns {Promise<Object>} - { currentRole, isAuthenticated, periodeAktif }
+ */
+export async function initPageWithPeriode(options = {}) {
+    const { activeMenu = "dashboard", onInit = null, requireAuth = true } = options;
+
+    const currentRole = sessionStorage.getItem("userRole") || "mahasiswa";
+    const authToken = getToken();
+
+    // Check authentication
+    if (requireAuth && !authToken) {
+        window.location.href = "/login.html";
+        return { currentRole: null, isAuthenticated: false, periodeAktif: null };
+    }
+
+    // For mahasiswa, check periode aktif
+    let hiddenMenus = [];
+    let periodeAktif = null;
+
+    if (currentRole === "mahasiswa") {
+        try {
+            const { mahasiswaAPI } = await import("../api.js");
+            const result = await mahasiswaAPI.getPeriodeAktif();
+            if (result.ok && result.data.active) {
+                periodeAktif = result.data.periode;
+                // Store in session for other pages
+                sessionStorage.setItem("periodeAktif", JSON.stringify(result.data));
+            } else {
+                // No active period, hide proyek/internship related menus
+                hiddenMenus = ["track", "kelompok", "bimbingan", "proposal", "laporan"];
+                sessionStorage.setItem("periodeAktif", JSON.stringify({ active: false }));
+            }
+        } catch (err) {
+            console.warn("Could not check periode aktif:", err);
+            // On error, show all menus (fallback)
+        }
+    }
+
+    // Inject sidebar with hidden menus
+    const sidebarPlaceholder = document.getElementById("sidebar-placeholder");
+    if (sidebarPlaceholder) {
+        sidebarPlaceholder.outerHTML = getSidebarHTML(currentRole, activeMenu, hiddenMenus);
+        bindSidebarEvents(createMenuHandler(currentRole));
+        updateSidebarUser();
+    }
+
+    // Setup mobile sidebar toggle
+    setupMobileSidebar();
+    window.closeSidebar = closeSidebar;
+
+    if (onInit && typeof onInit === "function") {
+        onInit();
+    }
+
+    return { currentRole, isAuthenticated: true, periodeAktif };
 }
 
 /**
@@ -99,6 +160,7 @@ export function createMenuHandler(currentRole = "mahasiswa") {
         },
         koordinator: {
             dashboard: "/koordinator/dashboard.html",
+            "kelola-periode": "/koordinator/kelola-periode.html",
             "validasi-proposal": "/koordinator/validasi-proposal.html",
             "approve-pembimbing": "/koordinator/approve-pembimbing.html",
             "daftar-mahasiswa": "/koordinator/daftar-mahasiswa.html",

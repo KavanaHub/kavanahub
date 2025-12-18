@@ -27,6 +27,7 @@ export default defineConfig({
 
                 // Koordinator pages
                 'koordinator-dashboard': resolve(__dirname, 'koordinator/dashboard.html'),
+                'koordinator-kelola-periode': resolve(__dirname, 'koordinator/kelola-periode.html'),
                 'koordinator-validasi-proposal': resolve(__dirname, 'koordinator/validasi-proposal.html'),
                 'koordinator-approve-pembimbing': resolve(__dirname, 'koordinator/approve-pembimbing.html'),
                 'koordinator-daftar-mahasiswa': resolve(__dirname, 'koordinator/daftar-mahasiswa.html'),

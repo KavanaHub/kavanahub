@@ -146,7 +146,10 @@ export const mahasiswaAPI = {
 
     getMyKelompok: () => apiRequest('/api/mahasiswa/kelompok'),
 
-    getAvailableKelompok: () => apiRequest('/api/mahasiswa/kelompok/available')
+    getAvailableKelompok: () => apiRequest('/api/mahasiswa/kelompok/available'),
+
+    // Periode Aktif - cek apakah mahasiswa eligible untuk proyek/internship
+    getPeriodeAktif: () => apiRequest('/api/mahasiswa/periode-aktif')
 };
 
 // ========================================
@@ -205,6 +208,25 @@ export const koordinatorAPI = {
     scheduleSidang: (data) => apiRequest('/api/koordinator/sidang/schedule', {
         method: 'POST',
         body: JSON.stringify(data)
+    }),
+
+    // Jadwal/Periode API
+    getJadwalList: () => apiRequest('/api/koordinator/jadwal'),
+
+    getJadwalActive: () => apiRequest('/api/koordinator/jadwal/active'),
+
+    createJadwal: (data) => apiRequest('/api/koordinator/jadwal', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    }),
+
+    updateJadwal: (id, data) => apiRequest(`/api/koordinator/jadwal/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data)
+    }),
+
+    completeJadwal: (id) => apiRequest(`/api/koordinator/jadwal/${id}/complete`, {
+        method: 'POST'
     })
 };
 
