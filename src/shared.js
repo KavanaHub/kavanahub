@@ -97,6 +97,7 @@ export const MENU_CONFIG = {
     ],
     kaprodi: [
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
+        { id: "kelola-koordinator", label: "Kelola Koordinator", icon: "assignment_ind" },
         { id: "daftar-dosen", label: "Daftar Dosen", icon: "group" },
         { id: "monitoring", label: "Monitoring Mahasiswa", icon: "monitoring" },
         { id: "profile", label: "Profil Saya", icon: "person" },

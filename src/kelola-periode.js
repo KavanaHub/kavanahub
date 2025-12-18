@@ -8,6 +8,8 @@ import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
 
 // ---------- STATE ----------
 let allPeriodes = [];
+let assignedSemester = null;
+let assignedSemesterLabel = null;
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
@@ -15,11 +17,52 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!isAuthenticated) return;
     window.closeSidebar = closeSidebar;
 
+    // Load assigned semester first
+    await loadAssignedSemester();
     await loadData();
     setupEventListeners();
 });
 
 // ---------- DATA LOADING ----------
+async function loadAssignedSemester() {
+    try {
+        const result = await koordinatorAPI.getMySemester();
+        if (result.ok && result.data.assigned) {
+            assignedSemester = result.data.semester;
+            assignedSemesterLabel = result.data.semester_label;
+
+            // Show info banner
+            const header = document.querySelector('header');
+            if (header) {
+                const banner = document.createElement('div');
+                banner.className = 'mt-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2';
+                banner.innerHTML = `
+                    <span class="material-symbols-outlined text-green-600">verified</span>
+                    <span class="text-sm text-green-700">Anda di-assign untuk <strong>${assignedSemesterLabel}</strong></span>
+                `;
+                header.after(banner);
+            }
+        } else {
+            // No assignment, show warning
+            const header = document.querySelector('header');
+            if (header) {
+                const banner = document.createElement('div');
+                banner.className = 'mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-2';
+                banner.innerHTML = `
+                    <span class="material-symbols-outlined text-yellow-600">warning</span>
+                    <span class="text-sm text-yellow-700">Anda belum di-assign ke semester manapun. Hubungi Kaprodi untuk assignment.</span>
+                `;
+                header.after(banner);
+            }
+        }
+    } catch (err) {
+        console.error('Could not load assigned semester:', err);
+        // Demo mode - assume semester 2
+        assignedSemester = 2;
+        assignedSemesterLabel = 'Proyek 1 (Semester 2)';
+    }
+}
+
 async function loadData() {
     try {
         const result = await koordinatorAPI.getJadwalList();
@@ -127,6 +170,21 @@ function setupEventListeners() {
         const endDate = new Date(today);
         endDate.setMonth(endDate.getMonth() + 4);
         document.getElementById("input-end").value = endDate.toISOString().split('T')[0];
+
+        // Auto-fill semester if assigned
+        if (assignedSemester) {
+            const semesterSelect = document.getElementById("input-semester");
+            semesterSelect.value = assignedSemester;
+            semesterSelect.disabled = true; // Koordinator tidak bisa pilih semester lain
+
+            // Auto-set tipe based on semester
+            const tipeSelect = document.getElementById("input-tipe");
+            if (assignedSemester >= 7) {
+                tipeSelect.value = 'internship';
+            } else {
+                tipeSelect.value = 'proyek';
+            }
+        }
     });
 
     document.getElementById("btn-cancel").addEventListener("click", closeModal);

@@ -34,6 +34,7 @@ export default defineConfig({
 
                 // Kaprodi pages
                 'kaprodi-dashboard': resolve(__dirname, 'kaprodi/dashboard.html'),
+                'kaprodi-kelola-koordinator': resolve(__dirname, 'kaprodi/kelola-koordinator.html'),
                 'kaprodi-daftar-dosen': resolve(__dirname, 'kaprodi/daftar-dosen.html'),
                 'kaprodi-monitoring': resolve(__dirname, 'kaprodi/monitoring.html'),
 

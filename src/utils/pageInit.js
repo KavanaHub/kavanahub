@@ -167,6 +167,7 @@ export function createMenuHandler(currentRole = "mahasiswa") {
         },
         kaprodi: {
             dashboard: "/kaprodi/dashboard.html",
+            "kelola-koordinator": "/kaprodi/kelola-koordinator.html",
             "daftar-dosen": "/kaprodi/daftar-dosen.html",
             monitoring: "/kaprodi/monitoring.html",
         },
