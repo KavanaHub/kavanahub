@@ -164,6 +164,10 @@ export function createMenuHandler(currentRole = "mahasiswa") {
             "validasi-proposal": "/koordinator/validasi-proposal.html",
             "approve-pembimbing": "/koordinator/approve-pembimbing.html",
             "daftar-mahasiswa": "/koordinator/daftar-mahasiswa.html",
+            // Dosen pembimbing pages (koordinator juga dosen)
+            "mahasiswa-bimbingan": "/dosen/mahasiswa-bimbingan.html",
+            "bimbingan-approve": "/dosen/bimbingan-approve.html",
+            "laporan-approve": "/dosen/laporan-approve.html",
         },
         kaprodi: {
             dashboard: "/kaprodi/dashboard.html",
