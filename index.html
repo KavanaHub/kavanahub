@@ -1,265 +1,547 @@
-<!doctype html>
-<html lang="id">
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="id">
 
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Kavana - Sistem Bimbingan Online</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
     content="Kavana - Sistem Bimbingan Online untuk mahasiswa, dosen pembimbing, dan koordinator. Kelola proses bimbingan Proyek & Internship secara digital." />
-  <link rel="stylesheet" href="/src/style.css">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2596be",
+            "primary-dark": "#1d7a9b",
+            "text-primary": "#1e2134",
+            "background-light": "#ffffff",
+            "background-dark": "#0f111a",
+            "surface-light": "#f8f9fa",
+            "surface-dark": "#1a1d2d",
+            "border-light": "#e5e7eb",
+            "border-dark": "#2d3245"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "Segoe UI", "sans-serif"],
+            display: ["Inter", "system-ui", "Segoe UI", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    .hero-pattern {
+      background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAnaO8hzynJa4t7I2DhasQRhpyYEJv01VSztNqMRcYwBNvFPOfvOoi-4One4yapCmzxQmgcYWwli2jDPV90ifj1t7AEWQZ4NohggDS-Y0fJNGojXoei_vKT6GLaYQqKCvzxlcKWMuBL9Ory7BuWvCnRHA5Ydty4vzQEPvdanAYCRqUK5Tav_B48ABOhfwBSisrL8uMhsKL7tCPbmPGQjcdrQ7aawvmGj7ZEqJCorDJK_GpqFcTbmzU6fdvNwmvbv2pCLJylAUuSG62o);
+      background-size: cover;
+      background-position: center;
+    }
+
+    .text-shadow {
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+  </style>
 </head>
 
-<body>
-  <div class="landing-page">
-    <!-- Header -->
-    <header class="landing-header">
-      <div class="landing-logo">
-        <div class="landing-logo-circle">K</div>
-        <div class="landing-logo-text">
-          <div class="landing-logo-title">Kavana</div>
-          <div class="landing-logo-subtitle">Bimbingan Online</div>
+<body class="font-sans bg-background-light text-text-primary antialiased">
+
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 bg-background-light/95 backdrop-blur-md border-b border-border-light">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-20">
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+          <span class="material-icons text-primary text-3xl">school</span>
+          <div>
+            <span class="text-2xl font-bold text-text-primary tracking-tight">Kavana</span>
+            <p class="text-xs text-gray-500 -mt-1">Bimbingan Online</p>
+          </div>
+        </div>
+
+        <!-- Desktop Nav Links -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a class="text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#">Beranda</a>
+          <a class="text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#features">Fitur</a>
+          <a class="text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#roles">Pengguna</a>
+          <a class="text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#how">Cara Kerja</a>
+          <a class="text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#contact">Kontak</a>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center gap-4">
+          <button class="hidden md:inline-flex text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+            id="btn-login">
+            Masuk
+          </button>
+          <button
+            class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium rounded-full shadow-sm text-white bg-primary hover:bg-primary-dark transition-colors"
+            id="btn-register">
+            Daftar Sekarang
+          </button>
+          <!-- Mobile menu button -->
+          <button class="md:hidden p-2" id="mobile-menu-btn">
+            <span class="material-icons">menu</span>
+          </button>
         </div>
       </div>
-      <!-- Mobile menu button -->
-      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <nav class="landing-nav" id="landing-nav">
-        <ul class="landing-nav-links">
-          <li><a href="#features">Fitur</a></li>
-          <li><a href="#roles">Pengguna</a></li>
-          <li><a href="#how">Cara Kerja</a></li>
-          <li><a href="#contact">Kontak</a></li>
-        </ul>
-        <div class="landing-nav-buttons">
-          <button class="btn btn-outline" id="btn-login">Masuk</button>
-          <button class="btn btn-primary" id="btn-register">Daftar</button>
-        </div>
-      </nav>
-    </header>
+    </div>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="hero-content">
-        <h1>Kelola Bimbingan <span>Proyek & Internship</span> Dengan Mudah</h1>
-        <p>
-          Kavana adalah sistem bimbingan online yang memudahkan mahasiswa, dosen pembimbing,
-          dan koordinator untuk mengelola proses bimbingan akademik secara digital dan terstruktur.
+    <!-- Mobile Menu -->
+    <div class="hidden md:hidden bg-white border-t border-gray-100 py-4 px-4" id="mobile-menu">
+      <div class="flex flex-col space-y-4">
+        <a class="text-base font-medium text-gray-600 hover:text-primary py-2" href="#features">Fitur</a>
+        <a class="text-base font-medium text-gray-600 hover:text-primary py-2" href="#roles">Pengguna</a>
+        <a class="text-base font-medium text-gray-600 hover:text-primary py-2" href="#how">Cara Kerja</a>
+        <a class="text-base font-medium text-gray-600 hover:text-primary py-2" href="#contact">Kontak</a>
+        <hr class="border-gray-200">
+        <button class="text-base font-semibold text-primary py-2 text-left" id="btn-login-mobile">Masuk</button>
+        <button class="w-full bg-primary text-white font-medium py-3 rounded-full" id="btn-register-mobile">Daftar
+          Sekarang</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="relative min-h-screen flex items-center justify-center hero-pattern pt-20">
+    <div class="absolute inset-0 bg-gray-900/60"></div>
+    <div class="relative z-10 max-w-5xl mx-auto px-4 text-center sm:px-6 lg:px-8 py-20">
+      <p
+        class="text-primary font-semibold tracking-wider uppercase mb-4 text-sm md:text-base bg-white/10 backdrop-blur-sm inline-block px-4 py-1 rounded-full border border-white/20">
+        Sistem Bimbingan Proyek & Internship
+      </p>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 text-shadow leading-tight">
+        Kelola Bimbingan<br class="hidden sm:block" />Akademik Dengan Mudah
+      </h1>
+      <p class="mt-4 text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-10 leading-relaxed font-light">
+        Platform terintegrasi untuk mahasiswa, dosen pembimbing, dan koordinator.
+        Pantau progress, kelola dokumen, dan jadwalkan bimbingan dalam satu tempat.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button
+          class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-full shadow-lg text-white bg-primary hover:bg-primary-dark transition-all transform hover:-translate-y-1"
+          id="btn-hero-start">
+          Mulai Sekarang
+          <span class="material-icons ml-2 text-sm">arrow_forward</span>
+        </button>
+        <button
+          class="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-semibold rounded-full shadow-lg text-white hover:bg-white hover:text-gray-900 transition-all backdrop-blur-sm bg-white/10"
+          id="btn-hero-demo">
+          Lihat Demo
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto">
+        <div class="text-center">
+          <div class="text-3xl md:text-4xl font-bold text-white">500+</div>
+          <div class="text-sm text-gray-300 mt-1">Mahasiswa Aktif</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl md:text-4xl font-bold text-white">50+</div>
+          <div class="text-sm text-gray-300 mt-1">Dosen Pembimbing</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl md:text-4xl font-bold text-white">1000+</div>
+          <div class="text-sm text-gray-300 mt-1">Sesi Bimbingan</div>
+        </div>
+      </div>
+
+      <div class="mt-12 animate-bounce">
+        <span class="material-icons text-white/70 text-4xl">expand_more</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Why Choose Kavana Section -->
+  <section class="py-20 md:py-24 bg-surface-light" id="about">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <p class="text-primary font-semibold tracking-wider uppercase mb-2 text-sm">Tentang Platform</p>
+        <h2 class="text-3xl font-bold text-text-primary sm:text-4xl mb-4">Mengapa Memilih Kavana?</h2>
+        <p class="text-lg text-gray-600">
+          Kami menjembatani komunikasi antara mahasiswa dan dosen pembimbing, membuat administrasi akademik
+          menjadi lebih efisien, transparan, dan dapat diakses dari mana saja.
         </p>
-        <div class="hero-buttons">
-          <button class="btn btn-gradient btn-large" id="btn-hero-start">Mulai Sekarang</button>
-          <button class="btn btn-outline btn-large" style="border-color: #2596be; color: #2596be;"
-            id="btn-hero-demo">Lihat Demo</button>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="relative">
+          <div class="absolute -top-4 -left-4 w-24 h-24 bg-primary/20 rounded-full blur-xl"></div>
+          <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-purple-500/20 rounded-full blur-xl"></div>
+          <img alt="Mahasiswa berkolaborasi"
+            class="relative rounded-2xl shadow-2xl w-full h-auto object-cover border border-gray-100"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAImSy69-KrH2CB-LvAikuvz15UP4jcTZi-7bH4z7JyeVt7m79FFETa20o1FnLxo4Y8-5QaBaiybzlALHpGY8AtiE7h8TG17dyQys3ogSD0y3_Sn-xKNLPVSamUPLKCxOtvQ4WEusI5fQ25jd6Gdn3YMpLXwyZEjmwOFTojQIVZS9R0y7eCOWE_bRTRcfzuFznLB7138-FuQxbq6UV2pV2K4NBXG_VjJXPYs_Ma1PDj-Vb9jXE5fOdJRjiTGkqKXIElXzFmmRxPM5jm" />
         </div>
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="hero-stat-number">500+</div>
-            <div class="hero-stat-label">Mahasiswa Aktif</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-number">50+</div>
-            <div class="hero-stat-label">Dosen Pembimbing</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-number">1000+</div>
-            <div class="hero-stat-label">Sesi Bimbingan</div>
-          </div>
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-lg border border-border-light">
+          <span class="text-primary font-semibold text-sm tracking-wider uppercase mb-2 block">Platform Overview</span>
+          <h3 class="text-3xl font-bold text-text-primary mb-6">Bimbingan Akademik Terintegrasi</h3>
+          <p class="text-gray-600 mb-6 leading-relaxed">
+            Kavana menyediakan hub terpusat untuk manajemen proyek dan internship. Baik Anda mahasiswa yang
+            melacak milestone atau dosen yang mereview draft, interface intuitif kami menyederhanakan
+            kompleksitas koordinasi akademik.
+          </p>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start">
+              <span class="material-icons text-primary mr-3 mt-1">check_circle</span>
+              <span class="text-gray-700">Tracking progress real-time untuk mahasiswa dan pembimbing</span>
+            </li>
+            <li class="flex items-start">
+              <span class="material-icons text-primary mr-3 mt-1">check_circle</span>
+              <span class="text-gray-700">Pengajuan dokumen digital dengan feedback langsung</span>
+            </li>
+            <li class="flex items-start">
+              <span class="material-icons text-primary mr-3 mt-1">check_circle</span>
+              <span class="text-gray-700">Penjadwalan otomatis untuk sesi bimbingan</span>
+            </li>
+          </ul>
+          <a class="inline-flex items-center text-primary font-semibold hover:text-primary-dark transition-colors group"
+            href="#features">
+            Pelajari lebih lanjut
+            <span
+              class="material-icons ml-1 transform group-hover:translate-x-1 transition-transform text-sm">arrow_forward</span>
+          </a>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="hero-dashboard-preview">
-          <div class="preview-header">
-            <span class="preview-dot red"></span>
-            <span class="preview-dot yellow"></span>
-            <span class="preview-dot green"></span>
-          </div>
-          <div class="preview-body">
-            <div class="preview-sidebar">
-              <div class="preview-sidebar-item active"></div>
-              <div class="preview-sidebar-item"></div>
-              <div class="preview-sidebar-item"></div>
-              <div class="preview-sidebar-item"></div>
-            </div>
-            <div class="preview-content">
-              <div class="preview-card">
-                <div class="preview-card-title"></div>
-                <div class="preview-card-text"></div>
-              </div>
-              <div class="preview-card">
-                <div class="preview-card-title"></div>
-                <div class="preview-card-text"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Features Section -->
-    <section class="features-section" id="features">
-      <div class="section-header">
-        <span class="section-tag">Fitur Unggulan</span>
-        <h2>Semua yang Kamu Butuhkan</h2>
-        <p>Fitur lengkap untuk mengelola seluruh proses bimbingan akademik dari awal hingga sidang</p>
+  <!-- Features Section -->
+  <section class="py-20 md:py-24 bg-background-light" id="features">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
+        <div class="max-w-2xl">
+          <p class="text-primary font-semibold tracking-wider uppercase mb-2 text-sm">Fitur Unggulan</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-text-primary leading-tight">
+            Mendukung Setiap Peran dalam<br class="hidden md:block" />Ekosistem Akademik
+          </h2>
+        </div>
       </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">📋</div>
-          <h3>Manajemen Proposal</h3>
-          <p>Upload dan kelola proposal dengan mudah. Koordinator dapat memvalidasi dan memberikan feedback langsung.
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Feature 1 -->
+        <div
+          class="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-border-light">
+          <div class="h-48 overflow-hidden">
+            <img alt="Submit proposal"
+              class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_ceK60aky1IMxXKnYjIj1ARLbdRaG8c6gfVyijWO3jtb4NnII4JP8rcYzGk8fVgRwg1xq9qzwMHfiuMj9bvoSc35JbcD6No8GqfZajzlY6PnxnXXFQvmB0NVK0CYz8y6KuV2rpUQPkdz_v0-GRPiCUWMPtcz0iA3Cgdfkp4pki6SNrU-P09G03IkBwvQ3D9p6kKmwliFvKz3wXgRT8IS_ROIel0IzQ5cIAGnPD0nTCyNTlBpM5XT41j6UbPdkplqNey59RWKrlg6q" />
+          </div>
+          <div class="p-6">
+            <div class="text-6xl font-bold text-gray-100 absolute top-36 right-4 z-0 pointer-events-none">01</div>
+            <h3 class="text-xl font-bold text-text-primary mb-2 relative z-10">Manajemen Proposal</h3>
+            <p class="text-gray-600 text-sm mb-4 relative z-10">
+              Upload proposal secara digital. Dapatkan notifikasi status dan feedback langsung dari koordinator.
+            </p>
+          </div>
+        </div>
+        <!-- Feature 2 -->
+        <div
+          class="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-border-light">
+          <div class="h-48 overflow-hidden">
+            <img alt="Dosen membimbing"
+              class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjzE_BSZk6Sn09jj-OT1YnB2OTponv0uiLNzWhT3eMCjUJdkdVrETFqnKkhySTNF6mzBfikfTZMdhST2YFA840fXii7FsffygmVvCmcX_GoLEjA515jjR4D6qTFQM985dFFPSkAXHeNeqMkEA0xlepLkGl_pwXp3Hw2UGEBtQ5YLJrw_VtmCejZbchc0PMsbKx4zFD6VO-iC2d50SOvKd_A1qnLiHcCJiZOK5gnZDoB1BbGgSniqbbi6X53N-SQwHnJhA3oh_Nuyuz" />
+          </div>
+          <div class="p-6">
+            <div class="text-6xl font-bold text-gray-100 absolute top-36 right-4 z-0 pointer-events-none">02</div>
+            <h3 class="text-xl font-bold text-text-primary mb-2 relative z-10">Bimbingan Online</h3>
+            <p class="text-gray-600 text-sm mb-4 relative z-10">
+              Dashboard khusus untuk dosen mereview, memberikan komentar, dan approve pekerjaan mahasiswa.
+            </p>
+          </div>
+        </div>
+        <!-- Feature 3 -->
+        <div
+          class="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-border-light">
+          <div class="h-48 overflow-hidden">
+            <img alt="Koordinasi tim"
+              class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAf8y-_kN2sdpo2VyWuTDJ1_NAhN9Kw0uwBYCot1lSbWwyyWZ4E1hGNQRNSAwxpdgYnRfn8V2Uzh9LTyMaRveSt1m8PBbT_YiqE107EqGk7L9CklFudJs6qND6PB_d2pmZdGV32MIlvn8IzT004fQ1b0TW93jiHgHBKV8LLAuLEDAurQ_9t-HtuSywT7qrnk8zl-vfhyJM0s-i4aa1CFJyw4sf_SLGYrTopY7xEH5aGmNnfjnMqZp6vSenpQS8uEbVlNA1QhYBD7KJP" />
+          </div>
+          <div class="p-6">
+            <div class="text-6xl font-bold text-gray-100 absolute top-36 right-4 z-0 pointer-events-none">03</div>
+            <h3 class="text-xl font-bold text-text-primary mb-2 relative z-10">Koordinasi Terpusat</h3>
+            <p class="text-gray-600 text-sm mb-4 relative z-10">
+              Koordinator dapat memantau progress seluruh mahasiswa dan mengelola resource dengan efisien.
+            </p>
+          </div>
+        </div>
+        <!-- Feature 4 -->
+        <div
+          class="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-border-light">
+          <div class="h-48 overflow-hidden">
+            <img alt="Jadwal kalender"
+              class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-Xh-Lp9Wc7IZ4KG0RfEp3yzViHE0MF4plG-Iv2_S1HUec1kfpGXyCtzXrGKCObzBNcmR_OxrHGQuQBm3rrl8c4s4JzM2Ve29JmEI_XUwplHaXw6DThvyiTQQHPIHSCFxg-hQq3HS4iF3DC3SIll81UxWyr1aeXZ5JO8vz7S8cxZjUqpUMkW-DHG6HD6zpZl7JZrLmhpzjK0SP8a2ytchYqCPr5DYWgh0G148mfX7mEfR5JLIswfdYBWPS_fO1UGBK4VZvAJA_ezLn" />
+          </div>
+          <div class="p-6">
+            <div class="text-6xl font-bold text-gray-100 absolute top-36 right-4 z-0 pointer-events-none">04</div>
+            <h3 class="text-xl font-bold text-text-primary mb-2 relative z-10">Penjadwalan Cerdas</h3>
+            <p class="text-gray-600 text-sm mb-4 relative z-10">
+              Sistem kalender terintegrasi untuk booking slot konsultasi tanpa bentrok jadwal.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roles Section -->
+  <section class="py-20 md:py-24 bg-surface-light" id="roles">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <p class="text-primary font-semibold tracking-wider uppercase mb-2 text-sm">Multi-Role</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-text-primary">Untuk Semua Pengguna</h2>
+        <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
+          Setiap pengguna memiliki dashboard dan fitur yang disesuaikan dengan perannya
+        </p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Mahasiswa -->
+        <div
+          class="bg-white p-6 rounded-2xl shadow-md border border-border-light hover:shadow-lg hover:-translate-y-1 transition-all">
+          <div
+            class="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white text-2xl font-bold mb-4">
+            M
+          </div>
+          <h3 class="text-xl font-bold text-text-primary mb-2">Mahasiswa</h3>
+          <p class="text-gray-600 text-sm">
+            Upload proposal, pilih pembimbing, catat bimbingan, dan ajukan sidang.
           </p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">👨‍🏫</div>
-          <h3>Pemilihan Pembimbing</h3>
-          <p>Ajukan dosen pembimbing pilihan dan dapatkan persetujuan dari koordinator secara online.</p>
+        <!-- Dosen -->
+        <div
+          class="bg-white p-6 rounded-2xl shadow-md border border-border-light hover:shadow-lg hover:-translate-y-1 transition-all">
+          <div
+            class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-2xl font-bold mb-4">
+            D
+          </div>
+          <h3 class="text-xl font-bold text-text-primary mb-2">Dosen Pembimbing</h3>
+          <p class="text-gray-600 text-sm">
+            Approve bimbingan, review laporan, dan berikan nilai sidang.
+          </p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">💬</div>
-          <h3>Bimbingan Online</h3>
-          <p>Catat setiap sesi bimbingan hingga 8 kali pertemuan dengan tracking progress yang jelas.</p>
+        <!-- Koordinator -->
+        <div
+          class="bg-white p-6 rounded-2xl shadow-md border border-border-light hover:shadow-lg hover:-translate-y-1 transition-all">
+          <div
+            class="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-white text-2xl font-bold mb-4">
+            K
+          </div>
+          <h3 class="text-xl font-bold text-text-primary mb-2">Koordinator</h3>
+          <p class="text-gray-600 text-sm">
+            Validasi proposal, approve pembimbing, dan jadwalkan sidang.
+          </p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h3>Tracking Progress</h3>
-          <p>Pantau perkembangan proyek dan internship dengan dashboard yang informatif.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📄</div>
-          <h3>Upload Laporan</h3>
-          <p>Submit laporan akhir untuk mendapatkan persetujuan pembimbing sebelum sidang.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🎓</div>
-          <h3>Penilaian Sidang</h3>
-          <p>Sistem penilaian terintegrasi dari pembimbing dan penguji untuk hasil akhir yang transparan.</p>
+        <!-- Kaprodi -->
+        <div
+          class="bg-white p-6 rounded-2xl shadow-md border border-border-light hover:shadow-lg hover:-translate-y-1 transition-all">
+          <div
+            class="w-16 h-16 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white text-2xl font-bold mb-4">
+            P
+          </div>
+          <h3 class="text-xl font-bold text-text-primary mb-2">Kaprodi</h3>
+          <p class="text-gray-600 text-sm">
+            Pilih koordinator, monitoring mahasiswa, dan kelola daftar dosen.
+          </p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Roles Section -->
-    <section class="roles-section" id="roles">
-      <div class="section-header">
-        <span class="section-tag">Multi-Role</span>
-        <h2>Untuk Semua Pengguna</h2>
-        <p>Setiap pengguna memiliki dashboard dan fitur yang disesuaikan dengan perannya</p>
-      </div>
-      <div class="roles-grid">
-        <div class="role-card">
-          <div class="role-avatar">M</div>
-          <h3>Mahasiswa</h3>
-          <p>Upload proposal, pilih pembimbing, catat bimbingan, dan ajukan sidang.</p>
-        </div>
-        <div class="role-card">
-          <div class="role-avatar">D</div>
-          <h3>Dosen Pembimbing</h3>
-          <p>Approve bimbingan, review laporan, dan berikan nilai sidang.</p>
-        </div>
-        <div class="role-card">
-          <div class="role-avatar">K</div>
-          <h3>Koordinator</h3>
-          <p>Validasi proposal, approve pembimbing, dan jadwalkan sidang.</p>
-        </div>
-        <div class="role-card">
-          <div class="role-avatar">P</div>
-          <h3>Kaprodi</h3>
-          <p>Pilih koordinator, monitoring mahasiswa, dan kelola daftar dosen.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- How it Works Section -->
-    <section class="how-section" id="how">
-      <div class="section-header">
-        <span class="section-tag">Alur Sistem</span>
-        <h2>Cara Kerja Kavana</h2>
-        <p>Proses bimbingan yang terstruktur dari awal hingga kelulusan</p>
-      </div>
-      <div class="steps-container">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <h3>Registrasi</h3>
-          <p>Daftar akun dengan data lengkap</p>
-        </div>
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <h3>Pilih Track</h3>
-          <p>Proyek 1/2/3 atau Internship 1/2</p>
-        </div>
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <h3>Upload Proposal</h3>
-          <p>Ajukan judul dan pembimbing</p>
-        </div>
-        <div class="step-card">
-          <div class="step-number">4</div>
-          <h3>Bimbingan</h3>
-          <p>Lakukan 8x sesi bimbingan</p>
-        </div>
-        <div class="step-card">
-          <div class="step-number">5</div>
-          <h3>Sidang</h3>
-          <p>Presentasi dan dapatkan nilai</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section" id="contact">
-      <div class="cta-box">
-        <h2>Siap Memulai Bimbingan Online?</h2>
-        <p>Bergabung dengan ratusan mahasiswa yang sudah menggunakan Kavana untuk mengelola bimbingan akademik mereka.
+  <!-- How it Works Section -->
+  <section class="py-20 md:py-24 bg-gradient-to-br from-primary to-primary-dark" id="how">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <p class="text-white/80 font-semibold tracking-wider uppercase mb-2 text-sm">Alur Sistem</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-white">Cara Kerja Kavana</h2>
+        <p class="text-lg text-white/80 mt-4 max-w-2xl mx-auto">
+          Proses bimbingan yang terstruktur dari awal hingga kelulusan
         </p>
-        <button class="btn btn-white btn-large" id="btn-cta-register">Daftar Sekarang - Gratis!</button>
       </div>
-    </section>
+      <div class="grid md:grid-cols-5 gap-6">
+        <!-- Step 1 -->
+        <div
+          class="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/20 text-center hover:bg-white/15 transition-all">
+          <div
+            class="w-12 h-12 rounded-full bg-white text-primary font-bold text-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            1
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Registrasi</h3>
+          <p class="text-white/70 text-sm">Daftar akun dengan data lengkap</p>
+        </div>
+        <!-- Step 2 -->
+        <div
+          class="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/20 text-center hover:bg-white/15 transition-all">
+          <div
+            class="w-12 h-12 rounded-full bg-white text-primary font-bold text-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            2
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Pilih Track</h3>
+          <p class="text-white/70 text-sm">Proyek 1/2/3 atau Internship 1/2</p>
+        </div>
+        <!-- Step 3 -->
+        <div
+          class="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/20 text-center hover:bg-white/15 transition-all">
+          <div
+            class="w-12 h-12 rounded-full bg-white text-primary font-bold text-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            3
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Upload Proposal</h3>
+          <p class="text-white/70 text-sm">Ajukan judul dan pembimbing</p>
+        </div>
+        <!-- Step 4 -->
+        <div
+          class="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/20 text-center hover:bg-white/15 transition-all">
+          <div
+            class="w-12 h-12 rounded-full bg-white text-primary font-bold text-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            4
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Bimbingan</h3>
+          <p class="text-white/70 text-sm">Lakukan 8x sesi bimbingan</p>
+        </div>
+        <!-- Step 5 -->
+        <div
+          class="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/20 text-center hover:bg-white/15 transition-all">
+          <div
+            class="w-12 h-12 rounded-full bg-white text-primary font-bold text-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            5
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Sidang</h3>
+          <p class="text-white/70 text-sm">Presentasi dan dapatkan nilai</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer class="landing-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="landing-logo">
-            <div class="landing-logo-circle">K</div>
-            <div class="landing-logo-text">
-              <div class="landing-logo-title">Kavana</div>
-              <div class="landing-logo-subtitle">Bimbingan Online</div>
+  <!-- CTA Section -->
+  <section class="relative bg-background-light py-20 md:py-24 overflow-hidden">
+    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-primary/10 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-purple-500/10 blur-3xl"></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="bg-gradient-to-br from-primary to-primary-dark rounded-3xl shadow-2xl p-8 md:p-12 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+          Siap Memulai Bimbingan Online?
+        </h2>
+        <p class="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
+          Bergabung dengan ratusan mahasiswa yang sudah menggunakan Kavana untuk mengelola bimbingan akademik mereka.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            class="inline-flex items-center justify-center px-8 py-4 text-base font-bold rounded-full shadow-lg bg-white text-primary hover:bg-gray-100 transition-all"
+            id="btn-cta-register">
+            Daftar Sekarang - Gratis!
+          </button>
+        </div>
+
+        <!-- Testimonial -->
+        <div class="mt-10 bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-xl mx-auto border border-white/20">
+          <div class="flex items-center justify-center space-x-4">
+            <img alt="User avatar" class="w-12 h-12 rounded-full border-2 border-white"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuBrJx8IO4-0Vpvj-8dOVdGgBgawdvPntZiygm-1pP0vb7pBf4xAh5MROMvBVRUPudmB_6QnyCwnFmtJhlwzkcfyhiF_4kof9K10CBJl4T9Hor-6QmMYTW-W1pZPldN_AoNircflLve76DIwDRFel7lBZL9mhvquiG1cRW1tfsaVE9QdOvSAv-JD4iK6lRgTClz-zdCNMf3WqWLD_nB7LfHix3M6bgM4gFSJuIKKYNHa04CxMPNk8pU0P_UCQycw6CAzX0LpS5q1Ai" />
+            <div class="text-left">
+              <p class="text-sm text-white font-semibold">"Kavana menghemat banyak waktu administrasi saya."</p>
+              <p class="text-xs text-white/70 mt-1">Dr. Alan Grant, Kepala Prodi</p>
+            </div>
+            <div class="hidden sm:flex items-center px-3 py-1 rounded-full bg-white/20 text-xs font-bold text-white">
+              <span class="text-yellow-400 mr-1">★</span> 4.9/5
             </div>
           </div>
-          <p>Sistem bimbingan online untuk mahasiswa Proyek & Internship. Kelola proses akademik dengan lebih mudah dan
-            terstruktur.</p>
         </div>
-        <div class="footer-links">
-          <h4>Produk</h4>
-          <ul>
-            <li><a href="#features">Fitur</a></li>
-            <li><a href="#roles">Pengguna</a></li>
-            <li><a href="#how">Cara Kerja</a></li>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-surface-dark text-white pt-20 pb-10 border-t border-gray-800" id="contact">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <!-- Brand -->
+        <div>
+          <div class="flex items-center gap-2 mb-6">
+            <span class="material-icons text-primary text-3xl">school</span>
+            <span class="text-2xl font-bold">Kavana</span>
+          </div>
+          <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+            Transformasi pengalaman bimbingan akademik melalui inovasi dan konektivitas.
+          </p>
+          <div class="flex space-x-4">
+            <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#">
+              <span class="material-icons text-lg">facebook</span>
+            </a>
+            <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
+                </path>
+              </svg>
+            </a>
+            <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#">
+              <span class="material-icons text-lg">alternate_email</span>
+            </a>
+          </div>
+        </div>
+        <!-- Platform -->
+        <div>
+          <h4 class="text-lg font-bold mb-6">Platform</h4>
+          <ul class="space-y-3 text-gray-400 text-sm">
+            <li><a class="hover:text-primary transition-colors" href="#">Portal Mahasiswa</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">Dashboard Dosen</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">Panel Koordinator</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">Panel Kaprodi</a></li>
           </ul>
         </div>
-        <div class="footer-links">
-          <h4>Dukungan</h4>
-          <ul>
-            <li><a href="#">Bantuan</a></li>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Kontak</a></li>
+        <!-- Resources -->
+        <div>
+          <h4 class="text-lg font-bold mb-6">Sumber Daya</h4>
+          <ul class="space-y-3 text-gray-400 text-sm">
+            <li><a class="hover:text-primary transition-colors" href="#">Pusat Bantuan</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">Panduan Proyek</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">Forum Komunitas</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">FAQ</a></li>
           </ul>
         </div>
-        <div class="footer-links">
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="#">Kebijakan Privasi</a></li>
-            <li><a href="#">Syarat & Ketentuan</a></li>
+        <!-- Contact -->
+        <div>
+          <h4 class="text-lg font-bold mb-6">Hubungi Kami</h4>
+          <ul class="space-y-4 text-gray-400 text-sm">
+            <li class="flex items-start">
+              <span class="material-icons text-primary mr-3 text-lg">location_on</span>
+              <span>Jl. Pendidikan No. 123, Kampus Digital, Jakarta 12345</span>
+            </li>
+            <li class="flex items-center">
+              <span class="material-icons text-primary mr-3 text-lg">phone</span>
+              <span>+62 21 555 0199</span>
+            </li>
+            <li class="flex items-center">
+              <span class="material-icons text-primary mr-3 text-lg">email</span>
+              <span>support@kavana.ac.id</span>
+            </li>
           </ul>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 Kavana - Bimbingan Online. All rights reserved.</p>
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-500 text-sm text-center md:text-left mb-4 md:mb-0">
+          © 2025 Kavana Bimbingan Online. All rights reserved.
+        </p>
+        <div class="flex space-x-6 text-sm text-gray-500">
+          <a class="hover:text-white transition-colors" href="#">Kebijakan Privasi</a>
+          <a class="hover:text-white transition-colors" href="#">Syarat & Ketentuan</a>
+        </div>
       </div>
-    </footer>
-  </div>
+      <div class="flex justify-center mt-10">
+        <div class="bg-primary p-4 rounded-full -mb-14 shadow-lg ring-4 ring-surface-dark">
+          <span class="material-icons text-white text-3xl">school</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
   <script type="module" src="/src/landing.js"></script>
 </body>
 
