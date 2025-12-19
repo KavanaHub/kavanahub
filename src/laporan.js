@@ -5,6 +5,7 @@
 import { mahasiswaAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { showFieldError, clearFieldError, isValidURL, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- CONSTANTS ----------
 const FORM_FIELDS = ["lap-judul", "lap-link"];
@@ -123,14 +124,14 @@ async function handleSubmit(e) {
                 })
             );
 
-            alert("Laporan berhasil disubmit!\n\nLaporan Anda akan direview oleh pembimbing.");
+            await showModal.success("Laporan Terkirim!", "Laporan Anda akan direview oleh pembimbing.");
             window.location.href = "/mahasiswa/dashboard.html";
         } else {
-            alert("Gagal submit: " + (result.error || "Terjadi kesalahan"));
+            showModal.error("Gagal Submit", result.error || "Terjadi kesalahan");
         }
     } catch (err) {
         console.error("Submit error:", err);
-        alert("Terjadi kesalahan. Silakan coba lagi.");
+        showModal.error("Error", "Terjadi kesalahan. Silakan coba lagi.");
     } finally {
         resetButtonLoading(submitBtn);
     }

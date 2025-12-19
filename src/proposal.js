@@ -14,6 +14,7 @@ import {
     resetButtonLoading,
 } from "./utils/formUtils.js";
 import { getTrackDisplayName } from "./utils/formatUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let dosenList = [];
@@ -140,8 +141,14 @@ function renderTrackInfo(track, trackName, isProyek) {
 }
 
 // ---------- EVENT HANDLERS ----------
-function handleCancel() {
-    if (confirm("Apakah Anda yakin ingin membatalkan? Data yang diisi akan hilang.")) {
+async function handleCancel() {
+    const confirmed = await showModal.confirm(
+        "Batalkan?",
+        "Apakah Anda yakin ingin membatalkan? Data yang diisi akan hilang.",
+        "Ya, Batalkan",
+        "Tidak"
+    );
+    if (confirmed) {
         window.location.href = "/mahasiswa/dashboard.html";
     }
 }
@@ -151,7 +158,7 @@ async function handleSubmit(e) {
 
     const trackData = sessionStorage.getItem("selectedTrack");
     if (!trackData) {
-        alert("Silakan pilih track terlebih dahulu");
+        showToast.warning("Silakan pilih track terlebih dahulu");
         window.location.href = "/mahasiswa/track.html";
         return;
     }
@@ -175,14 +182,14 @@ async function handleSubmit(e) {
 
         if (result.ok) {
             saveToSession(formData, track);
-            alert("Proposal berhasil disubmit!\n\nProposal Anda akan direview oleh koordinator.");
+            await showModal.success("Proposal Terkirim!", "Proposal Anda akan direview oleh koordinator.");
             window.location.href = "/mahasiswa/dashboard.html";
         } else {
-            alert("Gagal submit proposal: " + (result.error || "Terjadi kesalahan"));
+            showModal.error("Gagal Submit", result.error || "Terjadi kesalahan saat mengirim proposal");
         }
     } catch (err) {
         console.error("Submit error:", err);
-        alert("Terjadi kesalahan. Silakan coba lagi.");
+        showModal.error("Error", "Terjadi kesalahan. Silakan coba lagi.");
     } finally {
         resetButtonLoading(submitBtn);
     }

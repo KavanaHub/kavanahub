@@ -6,6 +6,7 @@ import { mahasiswaAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
 import { getInitials } from "./utils/formatUtils.js";
+import { showToast, showModal, animate } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let myKelompok = null;
@@ -220,7 +221,7 @@ async function handleCreateKelompok(e) {
     const nama = document.getElementById("kelompok-nama").value.trim();
 
     if (!nama) {
-        alert("Nama kelompok wajib diisi");
+        showToast.warning("Nama kelompok wajib diisi");
         return;
     }
 
@@ -230,15 +231,15 @@ async function handleCreateKelompok(e) {
     try {
         const result = await mahasiswaAPI.createKelompok(nama);
         if (result.ok) {
-            showToast("Kelompok berhasil dibuat!");
+            showToast.success("Kelompok berhasil dibuat!");
             await loadData();
         } else {
-            alert("Gagal: " + (result.error || "Error"));
+            showModal.error("Gagal", result.error || "Gagal membuat kelompok");
         }
     } catch (err) {
         console.error(err);
         // Demo: simulate success
-        showToast("Kelompok berhasil dibuat!");
+        showToast.success("Kelompok berhasil dibuat!");
         myKelompok = {
             kelompok: { id: 1, nama, track: userTrack },
             anggota: [{ id: 1, nama: sessionStorage.getItem("userName") || "Anda", npm: "2023xxxxx" }]
@@ -250,20 +251,24 @@ async function handleCreateKelompok(e) {
 }
 
 window.joinKelompok = async function (kelompokId) {
-    if (!confirm("Yakin ingin bergabung ke kelompok ini?")) return;
+    const confirmed = await showModal.confirm(
+        "Gabung Kelompok?",
+        "Yakin ingin bergabung ke kelompok ini?"
+    );
+    if (!confirmed) return;
 
     try {
         const result = await mahasiswaAPI.joinKelompok(kelompokId);
         if (result.ok) {
-            showToast("Berhasil bergabung ke kelompok!");
+            showToast.success("Berhasil bergabung ke kelompok!");
             await loadData();
         } else {
-            alert("Gagal: " + (result.error || "Error"));
+            showModal.error("Gagal", result.error || "Gagal bergabung ke kelompok");
         }
     } catch (err) {
         console.error(err);
         // Demo: simulate success
-        showToast("Berhasil bergabung ke kelompok!");
+        showToast.success("Berhasil bergabung ke kelompok!");
         const joined = availableKelompok.find(k => k.id === kelompokId);
         if (joined) {
             myKelompok = {
@@ -278,10 +283,4 @@ window.joinKelompok = async function (kelompokId) {
     }
 };
 
-function showToast(msg) {
-    const t = document.createElement("div");
-    t.className = "fixed bottom-4 left-1/2 -translate-x-1/2 bg-text-main text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50";
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-}
+// showToast is now imported from alerts.js

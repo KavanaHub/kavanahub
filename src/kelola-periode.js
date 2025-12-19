@@ -5,6 +5,7 @@
 import { koordinatorAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { showToast, showModal, showLoading, animate, animateList } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let allPeriodes = [];
@@ -211,7 +212,7 @@ async function handleCreatePeriode(e) {
     const deskripsi = document.getElementById("input-deskripsi").value.trim();
 
     if (!nama || !start_date || !end_date) {
-        alert("Nama, tanggal mulai, dan tanggal selesai wajib diisi");
+        showToast.warning("Nama, tanggal mulai, dan tanggal selesai wajib diisi");
         return;
     }
 
@@ -223,16 +224,21 @@ async function handleCreatePeriode(e) {
             nama, tipe, semester, start_date, end_date, deskripsi
         });
         if (result.ok) {
-            showToast("Periode berhasil dibuat!");
+            showToast.success("Periode berhasil dibuat!");
             closeModal();
             await loadData();
+            // Animate the new period card
+            setTimeout(() => {
+                const firstCard = document.querySelector('#active-periods .card');
+                if (firstCard) animate.bounceIn(firstCard);
+            }, 100);
         } else {
-            alert("Gagal: " + (result.error || "Error"));
+            showModal.error("Gagal Membuat Periode", result.error || "Terjadi kesalahan saat membuat periode");
         }
     } catch (err) {
         console.error(err);
         // Demo: simulate success
-        showToast("Periode berhasil dibuat!");
+        showToast.success("Periode berhasil dibuat!");
         closeModal();
         allPeriodes.unshift({
             id: Date.now(),
@@ -246,20 +252,28 @@ async function handleCreatePeriode(e) {
 }
 
 window.completePeriode = async function (id) {
-    if (!confirm("Yakin ingin mengakhiri periode ini? Data bimbingan akan direset.")) return;
+    const confirmed = await showModal.confirmDelete(
+        "Akhiri Periode?",
+        "Yakin ingin mengakhiri periode ini? Role koordinator akan dihapus setelah periode diakhiri."
+    );
+    if (!confirmed) return;
+
+    showLoading.start("Mengakhiri periode...");
 
     try {
         const result = await koordinatorAPI.completeJadwal(id);
+        showLoading.stop();
         if (result.ok) {
-            showToast("Periode berhasil diakhiri");
+            await showModal.success("Periode Diakhiri", result.message || "Periode berhasil diakhiri");
             await loadData();
         } else {
-            alert("Gagal: " + (result.error || "Error"));
+            showModal.error("Gagal", result.error || "Terjadi kesalahan");
         }
     } catch (err) {
+        showLoading.stop();
         console.error(err);
         // Demo: simulate
-        showToast("Periode berhasil diakhiri");
+        await showModal.success("Periode Diakhiri", "Periode berhasil diakhiri");
         const idx = allPeriodes.findIndex(p => p.id === id);
         if (idx !== -1) {
             allPeriodes[idx].status = 'completed';
@@ -268,10 +282,4 @@ window.completePeriode = async function (id) {
     }
 };
 
-function showToast(msg) {
-    const t = document.createElement("div");
-    t.className = "fixed bottom-4 left-1/2 -translate-x-1/2 bg-text-main text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50";
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-}
+// showToast function is now imported from alerts.js

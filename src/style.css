@@ -2925,3 +2925,144 @@ body {
     flex-direction: column;
   }
 }
+
+/* ========== SWEETALERT2 CUSTOM STYLES ========== */
+
+.swal-custom-popup {
+  border-radius: 16px !important;
+  padding: 24px !important;
+  background: linear-gradient(145deg, #ffffff, #f8fafc) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.swal-custom-title {
+  color: #1e2134 !important;
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+}
+
+.swal-custom-confirm {
+  padding: 12px 28px !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal-custom-confirm:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.swal-custom-cancel {
+  padding: 12px 28px !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal-custom-cancel:hover {
+  transform: translateY(-2px) !important;
+}
+
+.swal-custom-actions {
+  gap: 12px !important;
+}
+
+/* Toast custom styles */
+.swal2-toast {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+.swal2-toast .swal2-title {
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+}
+
+/* Loading spinner */
+.swal2-loading .swal2-loader {
+  border-color: #7C3AED transparent #7C3AED transparent !important;
+}
+
+/* Icon animations */
+.swal2-icon.swal2-success {
+  border-color: #10B981 !important;
+  color: #10B981 !important;
+}
+
+.swal2-icon.swal2-error {
+  border-color: #EF4444 !important;
+  color: #EF4444 !important;
+}
+
+.swal2-icon.swal2-warning {
+  border-color: #F59E0B !important;
+  color: #F59E0B !important;
+}
+
+.swal2-icon.swal2-info {
+  border-color: #3B82F6 !important;
+  color: #3B82F6 !important;
+}
+
+.swal2-icon.swal2-question {
+  border-color: #7C3AED !important;
+  color: #7C3AED !important;
+}
+
+/* Dark overlay */
+.swal2-container {
+  backdrop-filter: blur(4px) !important;
+}
+
+/* ========== ANIMATE.CSS HELPERS ========== */
+
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger animation delay classes */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Hover animations */
+.hover-bounce:hover {
+  animation: bounce 0.5s ease;
+}
+
+.hover-pulse:hover {
+  animation: pulse 0.5s ease;
+}
+
+.hover-float {
+  transition: transform 0.3s ease;
+}
+
+.hover-float:hover {
+  transform: translateY(-5px);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}

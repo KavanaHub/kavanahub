@@ -5,6 +5,7 @@
 
 import { kaprodiAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
+import { showToast, showModal, showLoading, animate } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let allKoordinators = [];
@@ -164,7 +165,7 @@ function setupEventListeners() {
 window.showAssignOptions = function (semester) {
     const unassigned = allKoordinators.filter(k => !k.assigned_semester);
     if (unassigned.length === 0) {
-        showToast("Semua koordinator sudah di-assign");
+        showToast.warning("Semua koordinator sudah di-assign");
         return;
     }
 
@@ -192,10 +193,10 @@ window.assignKoordinator = async function (koordinatorId, semester) {
     try {
         const result = await kaprodiAPI.assignKoordinatorSemester(koordinatorId, semester);
         if (result.ok) {
-            showToast(result.data.message || "Berhasil assign koordinator");
+            showToast.success(result.data.message || "Berhasil assign koordinator");
             await loadData();
         } else {
-            showToast("Gagal: " + (result.error || "Error"));
+            showToast.error("Gagal: " + (result.error || "Error"));
         }
     } catch (err) {
         console.error(err);
@@ -205,7 +206,7 @@ window.assignKoordinator = async function (koordinatorId, semester) {
             allKoordinators[idx].assigned_semester = semester;
             allKoordinators[idx].semester_label = SEMESTER_LABELS[semester];
             render();
-            showToast("Berhasil assign koordinator");
+            showToast.success("Berhasil assign koordinator");
         }
     }
 };
@@ -216,17 +217,25 @@ window.quickAssign = async function (koordinatorId, semester) {
 };
 
 window.unassignKoordinator = async function (koordinatorId) {
-    if (!confirm("Yakin ingin menghapus assignment koordinator ini?")) return;
+    const confirmed = await showModal.confirmDelete(
+        "Hapus Assignment?",
+        "Yakin ingin menghapus assignment koordinator ini?"
+    );
+    if (!confirmed) return;
+
+    showLoading.start("Menghapus assignment...");
 
     try {
         const result = await kaprodiAPI.unassignKoordinatorSemester(koordinatorId);
+        showLoading.stop();
         if (result.ok) {
-            showToast("Assignment berhasil dihapus");
+            showToast.success("Assignment berhasil dihapus");
             await loadData();
         } else {
-            showToast("Gagal: " + (result.error || "Error"));
+            showToast.error("Gagal: " + (result.error || "Error"));
         }
     } catch (err) {
+        showLoading.stop();
         console.error(err);
         // Demo mode
         const idx = allKoordinators.findIndex(k => k.id === koordinatorId);
@@ -234,7 +243,7 @@ window.unassignKoordinator = async function (koordinatorId) {
             allKoordinators[idx].assigned_semester = null;
             allKoordinators[idx].semester_label = null;
             render();
-            showToast("Assignment berhasil dihapus");
+            showToast.success("Assignment berhasil dihapus");
         }
     }
 };
@@ -251,10 +260,4 @@ function confirmAssignment() {
     closeModal();
 }
 
-function showToast(msg) {
-    const t = document.createElement("div");
-    t.className = "fixed bottom-4 left-1/2 -translate-x-1/2 bg-text-main text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50";
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-}
+// showToast is now imported from alerts.js

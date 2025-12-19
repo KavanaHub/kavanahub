@@ -5,6 +5,7 @@
 import { validateEmail, validateNPM } from "./shared.js";
 import { authAPI } from "./api.js";
 import { showFieldError, clearFieldError, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { showToast, showModal, showLoading, animate } from "./utils/alerts.js";
 
 // ---------- LOGIN PAGE INIT ----------
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,10 +14,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const togglePasswordBtn = document.getElementById("toggle-login-password");
     const forgotPasswordLink = document.getElementById("link-forgot-password");
 
+    // Animate form on load
+    const loginCard = document.querySelector('.login-card, .auth-card, form');
+    if (loginCard) {
+        animate.fadeInUp(loginCard, 600);
+    }
+
     // Forgot password (placeholder)
     forgotPasswordLink?.addEventListener("click", (e) => {
         e.preventDefault();
-        alert("Fitur lupa password akan segera hadir. Silakan hubungi admin untuk reset password.");
+        showModal.info(
+            "Fitur Dalam Pengembangan",
+            "Fitur lupa password akan segera hadir. Silakan hubungi admin untuk reset password."
+        );
     });
 
     // Toggle password visibility
@@ -61,6 +71,12 @@ async function handleSubmit(e) {
             sessionStorage.setItem("userName", result.data.nama || "User");
             sessionStorage.setItem("userEmail", result.data.email || "");
 
+            // Show success toast
+            showToast.success("Login berhasil! Mengalihkan...");
+
+            // Short delay for the toast to show
+            await new Promise(resolve => setTimeout(resolve, 800));
+
             // Redirect to role-based dashboard
             const role = sessionStorage.getItem("userRole") || "mahasiswa";
             const dashboardUrls = {
@@ -75,7 +91,10 @@ async function handleSubmit(e) {
         }
     } catch (err) {
         console.error("Login error:", err);
-        alert("Terjadi kesalahan jaringan. Silakan coba lagi.");
+        showModal.error(
+            "Kesalahan Jaringan",
+            "Tidak dapat terhubung ke server. Silakan periksa koneksi internet Anda dan coba lagi."
+        );
     } finally {
         resetButtonLoading(submitBtn);
     }
@@ -109,9 +128,14 @@ function validateLoginForm(identifier, password) {
 function handleLoginError(error, status) {
     if (status === 401) {
         showFieldError("login-password", "Email/NPM atau password salah");
+        showToast.error("Email/NPM atau password salah");
+        // Shake the form for visual feedback
+        const form = document.getElementById("login-form");
+        if (form) animate.shake(form);
     } else if (status === 404) {
         showFieldError("login-identifier", "Akun tidak ditemukan");
+        showToast.error("Akun tidak ditemukan");
     } else {
-        alert("Login gagal: " + (error || "Email/NPM atau password salah"));
+        showModal.error("Login Gagal", error || "Email/NPM atau password salah. Silakan coba lagi.");
     }
 }

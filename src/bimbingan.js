@@ -6,6 +6,7 @@ import { mahasiswaAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { showFieldError, clearAllErrors, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
 import { formatDateShort, getTrackDisplayName, getStatusDisplay } from "./utils/formatUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let sessions = [];
@@ -305,10 +306,11 @@ async function handleSubmit(e) {
 
     if (result.ok) {
       closeModal();
+      showToast.success("Bimbingan berhasil disimpan");
       await loadBimbinganFromAPI();
       updateProgress();
     } else {
-      alert("Gagal menyimpan: " + (result.error || "Terjadi kesalahan"));
+      showModal.error("Gagal Menyimpan", result.error || "Terjadi kesalahan");
     }
   } catch (err) {
     console.error("Submit error:", err);
@@ -331,10 +333,15 @@ async function handleSubmit(e) {
 // ---------- GLOBAL FUNCTIONS ----------
 window.editSession = (index) => openModal(index);
 
-window.deleteSession = (index) => {
-  if (confirm("Apakah Anda yakin ingin menghapus bimbingan ini?")) {
+window.deleteSession = async (index) => {
+  const confirmed = await showModal.confirmDelete(
+    "Hapus Bimbingan?",
+    "Apakah Anda yakin ingin menghapus sesi bimbingan ini?"
+  );
+  if (confirmed) {
     sessions.splice(index, 1);
     sessionStorage.setItem("bimbinganSessions", JSON.stringify(sessions));
+    showToast.success("Bimbingan berhasil dihapus");
     renderSessions();
     updateProgress();
   }

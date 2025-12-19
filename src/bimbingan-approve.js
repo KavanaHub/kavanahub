@@ -6,6 +6,7 @@ import { dosenAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { formatDateShort, getInitials, getTrackDisplayName } from "./utils/formatUtils.js";
 import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let bimbinganList = [];
@@ -362,9 +363,9 @@ async function handleAction(e) {
             updateStats();
 
             // Show success message
-            showToast(status === "approved" ? "Bimbingan berhasil diapprove" : "Bimbingan ditolak");
+            showToast.success(status === "approved" ? "Bimbingan berhasil diapprove" : "Bimbingan ditolak");
         } else {
-            alert("Gagal: " + (result.error || "Terjadi kesalahan"));
+            showModal.error("Gagal", result.error || "Terjadi kesalahan");
         }
     } catch (err) {
         console.error("Action error:", err);
@@ -377,21 +378,14 @@ async function handleAction(e) {
         closeModal();
         renderBimbinganList();
         updateStats();
-        showToast(status === "approved" ? "Bimbingan berhasil diapprove" : "Bimbingan ditolak");
+        showToast.success(status === "approved" ? "Bimbingan berhasil diapprove" : "Bimbingan ditolak");
     } finally {
         resetButtonLoading(submitBtn);
     }
 }
 
-function showToast(message) {
-    const toast = document.createElement("div");
-    toast.className =
-        "fixed bottom-4 left-1/2 -translate-x-1/2 bg-text-main text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50 animate-pulse";
-    toast.textContent = message;
-    document.body.appendChild(toast);
+// showToast is now imported from alerts.js
 
-    setTimeout(() => toast.remove(), 3000);
-}
 
 function showError(message) {
     const container = document.getElementById("bimbingan-list");

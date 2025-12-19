@@ -6,6 +6,7 @@ import { validateNPM } from "./shared.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { showFieldError, clearFieldError } from "./utils/formUtils.js";
 import { getTrackDisplayName } from "./utils/formatUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let selectedTrack = null;
@@ -151,7 +152,7 @@ function confirmInternshipSelection() {
     saveAndRedirect(trackData);
 }
 
-function saveAndRedirect(trackData) {
+async function saveAndRedirect(trackData) {
     sessionStorage.setItem("selectedTrack", JSON.stringify(trackData));
     console.log("Track selected:", trackData);
 
@@ -159,6 +160,6 @@ function saveAndRedirect(trackData) {
     const details =
         trackData.type === "proyek" ? `Partner NPM: ${trackData.partnerNpm}` : `Perusahaan: ${trackData.companyName}`;
 
-    alert(`Anda telah memilih ${displayName}.\n${details}`);
+    await showModal.success(`${displayName} Dipilih!`, details);
     window.location.href = "/mahasiswa/dashboard.html";
 }

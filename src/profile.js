@@ -6,6 +6,7 @@ import { authAPI, getToken, clearToken } from "./api.js";
 import { initPage, closeSidebar, getDashboardURL } from "./utils/pageInit.js";
 import { getInitials } from "./utils/formatUtils.js";
 import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { showToast, showModal, animate } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let profile = null;
@@ -113,7 +114,7 @@ function setupEventListeners() {
     document.getElementById("btn-cancel")?.addEventListener("click", () => renderProfile());
     document.getElementById("btn-logout")?.addEventListener("click", handleLogout);
     document.getElementById("btn-upload-photo")?.addEventListener("click", () => {
-        alert("Fitur upload foto akan segera tersedia");
+        showModal.info("Segera Hadir", "Fitur upload foto akan segera tersedia");
     });
 }
 
@@ -141,9 +142,9 @@ async function handleSave(e) {
             // Update local profile
             profile = { ...profile, ...data };
             renderProfile();
-            showToast("Profil berhasil disimpan");
+            showToast.success("Profil berhasil disimpan");
         } else {
-            alert("Gagal menyimpan: " + (result.error || "Error"));
+            showModal.error("Gagal Menyimpan", result.error || "Terjadi kesalahan saat menyimpan profil");
         }
     } catch (err) {
         console.error(err);
@@ -152,24 +153,27 @@ async function handleSave(e) {
         sessionStorage.setItem("userEmail", data.email);
         profile = { ...profile, ...data };
         renderProfile();
-        showToast("Profil berhasil disimpan");
+        showToast.success("Profil berhasil disimpan");
     } finally {
         resetButtonLoading(btn);
     }
 }
 
-function handleLogout() {
-    if (confirm("Apakah Anda yakin ingin keluar?")) {
+async function handleLogout() {
+    const confirmed = await showModal.confirm(
+        "Logout?",
+        "Apakah Anda yakin ingin keluar?",
+        "Ya, Keluar",
+        "Batal"
+    );
+    if (confirmed) {
         clearToken();
         sessionStorage.clear();
-        window.location.href = "/login.html";
+        showToast.info("Anda telah logout");
+        setTimeout(() => {
+            window.location.href = "/login.html";
+        }, 500);
     }
 }
 
-function showToast(msg) {
-    const t = document.createElement("div");
-    t.className = "fixed bottom-4 left-1/2 -translate-x-1/2 bg-text-main text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50";
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-}
+// showToast is now imported from alerts.js

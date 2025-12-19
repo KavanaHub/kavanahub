@@ -6,6 +6,7 @@ import { dosenAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { formatDateShort, getInitials, getTrackDisplayName } from "./utils/formatUtils.js";
 import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let laporanList = [];
@@ -13,114 +14,114 @@ let currentFilter = "pending";
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
-    // Initialize page with sidebar
-    const { isAuthenticated } = initPage({ activeMenu: "laporan-approve" });
-    if (!isAuthenticated) return;
+  // Initialize page with sidebar
+  const { isAuthenticated } = initPage({ activeMenu: "laporan-approve" });
+  if (!isAuthenticated) return;
 
-    // Setup global closeSidebar
-    window.closeSidebar = closeSidebar;
+  // Setup global closeSidebar
+  window.closeSidebar = closeSidebar;
 
-    // Load data
-    await loadLaporanData();
+  // Load data
+  await loadLaporanData();
 
-    // Event listeners
-    setupEventListeners();
+  // Event listeners
+  setupEventListeners();
 });
 
 // ---------- DATA LOADING ----------
 async function loadLaporanData() {
-    try {
-        const result = await dosenAPI.getLaporanList();
+  try {
+    const result = await dosenAPI.getLaporanList();
 
-        if (result.ok && result.data) {
-            laporanList = result.data;
-        } else {
-            // API failed - use dummy data for demo
-            console.warn("API failed, using dummy data");
-            laporanList = getDummyData();
-        }
-    } catch (err) {
-        console.error("Error loading laporan:", err);
-        laporanList = getDummyData();
+    if (result.ok && result.data) {
+      laporanList = result.data;
+    } else {
+      // API failed - use dummy data for demo
+      console.warn("API failed, using dummy data");
+      laporanList = getDummyData();
     }
+  } catch (err) {
+    console.error("Error loading laporan:", err);
+    laporanList = getDummyData();
+  }
 
-    renderLaporanList();
-    updateStats();
+  renderLaporanList();
+  updateStats();
 }
 
 function getDummyData() {
-    return [
-        {
-            id: 1,
-            mahasiswa_id: 1,
-            mahasiswa_nama: "Ahmad Fauzan",
-            mahasiswa_npm: "2023010001",
-            track: "proyek-1",
-            judul: "Sistem Informasi Perpustakaan Digital",
-            file_laporan: "https://drive.google.com/file/d/abc123",
-            tanggal_submit: "2024-12-15",
-            bimbingan_count: 8,
-            status: "pending",
-        },
-        {
-            id: 2,
-            mahasiswa_id: 2,
-            mahasiswa_nama: "Siti Nurhaliza",
-            mahasiswa_npm: "2023010002",
-            track: "internship-1",
-            judul: "Internship Report - PT Teknologi Nusantara",
-            file_laporan: "https://drive.google.com/file/d/def456",
-            tanggal_submit: "2024-12-14",
-            bimbingan_count: 8,
-            status: "approved",
-            catatan_dosen: "Laporan sudah lengkap dan baik",
-        },
-        {
-            id: 3,
-            mahasiswa_id: 3,
-            mahasiswa_nama: "Budi Santoso",
-            mahasiswa_npm: "2023010003",
-            track: "proyek-2",
-            judul: "Aplikasi Mobile E-Commerce UMKM",
-            file_laporan: "https://drive.google.com/file/d/ghi789",
-            tanggal_submit: "2024-12-12",
-            bimbingan_count: 8,
-            status: "revision",
-            catatan_dosen: "Perlu tambahkan analisis hasil testing dan kesimpulan yang lebih detail",
-        },
-    ];
+  return [
+    {
+      id: 1,
+      mahasiswa_id: 1,
+      mahasiswa_nama: "Ahmad Fauzan",
+      mahasiswa_npm: "2023010001",
+      track: "proyek-1",
+      judul: "Sistem Informasi Perpustakaan Digital",
+      file_laporan: "https://drive.google.com/file/d/abc123",
+      tanggal_submit: "2024-12-15",
+      bimbingan_count: 8,
+      status: "pending",
+    },
+    {
+      id: 2,
+      mahasiswa_id: 2,
+      mahasiswa_nama: "Siti Nurhaliza",
+      mahasiswa_npm: "2023010002",
+      track: "internship-1",
+      judul: "Internship Report - PT Teknologi Nusantara",
+      file_laporan: "https://drive.google.com/file/d/def456",
+      tanggal_submit: "2024-12-14",
+      bimbingan_count: 8,
+      status: "approved",
+      catatan_dosen: "Laporan sudah lengkap dan baik",
+    },
+    {
+      id: 3,
+      mahasiswa_id: 3,
+      mahasiswa_nama: "Budi Santoso",
+      mahasiswa_npm: "2023010003",
+      track: "proyek-2",
+      judul: "Aplikasi Mobile E-Commerce UMKM",
+      file_laporan: "https://drive.google.com/file/d/ghi789",
+      tanggal_submit: "2024-12-12",
+      bimbingan_count: 8,
+      status: "revision",
+      catatan_dosen: "Perlu tambahkan analisis hasil testing dan kesimpulan yang lebih detail",
+    },
+  ];
 }
 
 // ---------- RENDERING ----------
 function renderLaporanList() {
-    const container = document.getElementById("laporan-list");
+  const container = document.getElementById("laporan-list");
 
-    // Filter data
-    let filtered = laporanList.filter((l) => {
-        if (currentFilter === "all") return true;
-        return l.status === currentFilter;
-    });
+  // Filter data
+  let filtered = laporanList.filter((l) => {
+    if (currentFilter === "all") return true;
+    return l.status === currentFilter;
+  });
 
-    // Sort by date (newest first)
-    filtered.sort((a, b) => new Date(b.tanggal_submit) - new Date(a.tanggal_submit));
+  // Sort by date (newest first)
+  filtered.sort((a, b) => new Date(b.tanggal_submit) - new Date(a.tanggal_submit));
 
-    if (filtered.length === 0) {
-        container.innerHTML = renderEmptyState();
-        return;
-    }
+  if (filtered.length === 0) {
+    container.innerHTML = renderEmptyState();
+    return;
+  }
 
-    container.innerHTML = filtered.map((l) => renderLaporanCard(l)).join("");
+  container.innerHTML = filtered.map((l) => renderLaporanCard(l)).join("");
 }
 
 function renderEmptyState() {
-    const messages = {
-        pending: "Tidak ada laporan yang perlu direview",
-        approved: "Belum ada laporan yang diapprove",
-        revision: "Tidak ada laporan yang perlu revisi",
-        all: "Tidak ada data laporan",
-    };
+  const messages = {
+    pending: "Tidak ada laporan yang perlu direview",
+    approved: "Belum ada laporan yang diapprove",
+    revision: "Tidak ada laporan yang perlu revisi",
+    all: "Tidak ada data laporan",
+  };
 
-    return `
+  return `
     <div class="text-center py-12 bg-white rounded-xl border border-slate-100">
       <span class="material-symbols-outlined text-5xl text-slate-300">inbox</span>
       <h3 class="text-lg font-bold text-text-main mt-4">${messages[currentFilter]}</h3>
@@ -130,9 +131,9 @@ function renderEmptyState() {
 }
 
 function renderLaporanCard(l) {
-    const statusConfig = getStatusConfig(l.status);
+  const statusConfig = getStatusConfig(l.status);
 
-    return `
+  return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
       <div class="flex flex-col gap-4">
         <!-- Header -->
@@ -199,166 +200,166 @@ function renderLaporanCard(l) {
 }
 
 function getStatusConfig(status) {
-    const configs = {
-        pending: { text: "Pending", icon: "📄", badgeClass: "bg-yellow-100 text-yellow-700" },
-        approved: { text: "Approved", icon: "✅", badgeClass: "bg-green-100 text-green-700" },
-        revision: { text: "Perlu Revisi", icon: "🔄", badgeClass: "bg-orange-100 text-orange-700" },
-    };
-    return configs[status] || configs.pending;
+  const configs = {
+    pending: { text: "Pending", icon: "📄", badgeClass: "bg-yellow-100 text-yellow-700" },
+    approved: { text: "Approved", icon: "✅", badgeClass: "bg-green-100 text-green-700" },
+    revision: { text: "Perlu Revisi", icon: "🔄", badgeClass: "bg-orange-100 text-orange-700" },
+  };
+  return configs[status] || configs.pending;
 }
 
 function updateStats() {
-    const pending = laporanList.filter((l) => l.status === "pending").length;
-    const approved = laporanList.filter((l) => l.status === "approved").length;
-    const revision = laporanList.filter((l) => l.status === "revision").length;
+  const pending = laporanList.filter((l) => l.status === "pending").length;
+  const approved = laporanList.filter((l) => l.status === "approved").length;
+  const revision = laporanList.filter((l) => l.status === "revision").length;
 
-    document.getElementById("stat-pending").textContent = pending;
-    document.getElementById("stat-approved").textContent = approved;
-    document.getElementById("stat-rejected").textContent = revision;
+  document.getElementById("stat-pending").textContent = pending;
+  document.getElementById("stat-approved").textContent = approved;
+  document.getElementById("stat-rejected").textContent = revision;
 }
 
 // ---------- EVENT HANDLERS ----------
 function setupEventListeners() {
-    // Filter buttons
-    document.querySelectorAll(".filter-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
-            btn.classList.add("active");
-            currentFilter = btn.dataset.filter;
-            renderLaporanList();
-        });
+  // Filter buttons
+  document.querySelectorAll(".filter-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentFilter = btn.dataset.filter;
+      renderLaporanList();
     });
+  });
 
-    // Action Modal
-    document.getElementById("modal-close")?.addEventListener("click", closeActionModal);
-    document.getElementById("btn-modal-cancel")?.addEventListener("click", closeActionModal);
-    document.getElementById("action-modal")?.addEventListener("click", (e) => {
-        if (e.target.id === "action-modal") closeActionModal();
-    });
-    document.getElementById("action-form")?.addEventListener("submit", handleAction);
+  // Action Modal
+  document.getElementById("modal-close")?.addEventListener("click", closeActionModal);
+  document.getElementById("btn-modal-cancel")?.addEventListener("click", closeActionModal);
+  document.getElementById("action-modal")?.addEventListener("click", (e) => {
+    if (e.target.id === "action-modal") closeActionModal();
+  });
+  document.getElementById("action-form")?.addEventListener("submit", handleAction);
 
-    // Preview Modal
-    document.getElementById("preview-close")?.addEventListener("click", closePreviewModal);
-    document.getElementById("preview-modal")?.addEventListener("click", (e) => {
-        if (e.target.id === "preview-modal") closePreviewModal();
-    });
+  // Preview Modal
+  document.getElementById("preview-close")?.addEventListener("click", closePreviewModal);
+  document.getElementById("preview-modal")?.addEventListener("click", (e) => {
+    if (e.target.id === "preview-modal") closePreviewModal();
+  });
 }
 
 // ---------- ACTION MODAL ----------
 window.openApproveModal = function (id) {
-    const laporan = laporanList.find((l) => l.id === id);
-    if (!laporan) return;
+  const laporan = laporanList.find((l) => l.id === id);
+  if (!laporan) return;
 
-    document.getElementById("action-id").value = id;
-    document.getElementById("action-type").value = "approved";
-    document.getElementById("modal-title").textContent = "Approve Laporan";
-    document.getElementById("modal-desc").textContent = `Approve laporan "${laporan.judul}" oleh ${laporan.mahasiswa_nama}?`;
-    document.getElementById("action-catatan").value = "";
-    document.getElementById("error-catatan").classList.add("hidden");
+  document.getElementById("action-id").value = id;
+  document.getElementById("action-type").value = "approved";
+  document.getElementById("modal-title").textContent = "Approve Laporan";
+  document.getElementById("modal-desc").textContent = `Approve laporan "${laporan.judul}" oleh ${laporan.mahasiswa_nama}?`;
+  document.getElementById("action-catatan").value = "";
+  document.getElementById("error-catatan").classList.add("hidden");
 
-    const submitBtn = document.getElementById("btn-modal-submit");
-    submitBtn.textContent = "Approve";
-    submitBtn.className = "flex-1 py-2.5 text-sm font-semibold text-white rounded-lg transition-colors bg-green-500 hover:bg-green-600";
+  const submitBtn = document.getElementById("btn-modal-submit");
+  submitBtn.textContent = "Approve";
+  submitBtn.className = "flex-1 py-2.5 text-sm font-semibold text-white rounded-lg transition-colors bg-green-500 hover:bg-green-600";
 
-    openActionModal();
+  openActionModal();
 };
 
 window.openRevisionModal = function (id) {
-    const laporan = laporanList.find((l) => l.id === id);
-    if (!laporan) return;
+  const laporan = laporanList.find((l) => l.id === id);
+  if (!laporan) return;
 
-    document.getElementById("action-id").value = id;
-    document.getElementById("action-type").value = "revision";
-    document.getElementById("modal-title").textContent = "Minta Revisi";
-    document.getElementById("modal-desc").textContent = `Minta revisi untuk laporan "${laporan.judul}" oleh ${laporan.mahasiswa_nama}? Wajib berikan catatan.`;
-    document.getElementById("action-catatan").value = "";
-    document.getElementById("error-catatan").classList.add("hidden");
+  document.getElementById("action-id").value = id;
+  document.getElementById("action-type").value = "revision";
+  document.getElementById("modal-title").textContent = "Minta Revisi";
+  document.getElementById("modal-desc").textContent = `Minta revisi untuk laporan "${laporan.judul}" oleh ${laporan.mahasiswa_nama}? Wajib berikan catatan.`;
+  document.getElementById("action-catatan").value = "";
+  document.getElementById("error-catatan").classList.add("hidden");
 
-    const submitBtn = document.getElementById("btn-modal-submit");
-    submitBtn.textContent = "Minta Revisi";
-    submitBtn.className = "flex-1 py-2.5 text-sm font-semibold text-white rounded-lg transition-colors bg-yellow-500 hover:bg-yellow-600";
+  const submitBtn = document.getElementById("btn-modal-submit");
+  submitBtn.textContent = "Minta Revisi";
+  submitBtn.className = "flex-1 py-2.5 text-sm font-semibold text-white rounded-lg transition-colors bg-yellow-500 hover:bg-yellow-600";
 
-    openActionModal();
+  openActionModal();
 };
 
 function openActionModal() {
-    const modal = document.getElementById("action-modal");
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    document.body.style.overflow = "hidden";
+  const modal = document.getElementById("action-modal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  document.body.style.overflow = "hidden";
 }
 
 function closeActionModal() {
-    const modal = document.getElementById("action-modal");
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-    document.body.style.overflow = "";
+  const modal = document.getElementById("action-modal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+  document.body.style.overflow = "";
 }
 
 async function handleAction(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const id = parseInt(document.getElementById("action-id").value);
-    const status = document.getElementById("action-type").value;
-    const catatan = document.getElementById("action-catatan").value.trim();
+  const id = parseInt(document.getElementById("action-id").value);
+  const status = document.getElementById("action-type").value;
+  const catatan = document.getElementById("action-catatan").value.trim();
 
-    // Validate - catatan wajib untuk revisi
-    if (status === "revision" && !catatan) {
-        document.getElementById("error-catatan").textContent = "Catatan wajib diisi untuk revisi";
-        document.getElementById("error-catatan").classList.remove("hidden");
-        return;
+  // Validate - catatan wajib untuk revisi
+  if (status === "revision" && !catatan) {
+    document.getElementById("error-catatan").textContent = "Catatan wajib diisi untuk revisi";
+    document.getElementById("error-catatan").classList.remove("hidden");
+    return;
+  }
+
+  const submitBtn = document.getElementById("btn-modal-submit");
+  setButtonLoading(submitBtn, "Memproses...");
+
+  try {
+    const result = await dosenAPI.approveLaporan(id, status);
+
+    if (result.ok) {
+      updateLocalData(id, status, catatan);
+      showSuccessMessage(status);
+    } else {
+      showModal.error("Gagal", result.error || "Terjadi kesalahan");
     }
-
-    const submitBtn = document.getElementById("btn-modal-submit");
-    setButtonLoading(submitBtn, "Memproses...");
-
-    try {
-        const result = await dosenAPI.approveLaporan(id, status);
-
-        if (result.ok) {
-            updateLocalData(id, status, catatan);
-            showSuccessMessage(status);
-        } else {
-            alert("Gagal: " + (result.error || "Terjadi kesalahan"));
-        }
-    } catch (err) {
-        console.error("Action error:", err);
-        // For demo, just update locally
-        updateLocalData(id, status, catatan);
-        showSuccessMessage(status);
-    } finally {
-        resetButtonLoading(submitBtn);
-    }
+  } catch (err) {
+    console.error("Action error:", err);
+    // For demo, just update locally
+    updateLocalData(id, status, catatan);
+    showSuccessMessage(status);
+  } finally {
+    resetButtonLoading(submitBtn);
+  }
 }
 
 function updateLocalData(id, status, catatan) {
-    const laporan = laporanList.find((l) => l.id === id);
-    if (laporan) {
-        laporan.status = status;
-        if (catatan) laporan.catatan_dosen = catatan;
-    }
-    closeActionModal();
-    renderLaporanList();
-    updateStats();
+  const laporan = laporanList.find((l) => l.id === id);
+  if (laporan) {
+    laporan.status = status;
+    if (catatan) laporan.catatan_dosen = catatan;
+  }
+  closeActionModal();
+  renderLaporanList();
+  updateStats();
 }
 
 function showSuccessMessage(status) {
-    const messages = {
-        approved: "Laporan berhasil diapprove",
-        revision: "Permintaan revisi terkirim",
-    };
-    showToast(messages[status] || "Berhasil");
+  const messages = {
+    approved: "Laporan berhasil diapprove",
+    revision: "Permintaan revisi terkirim",
+  };
+  showToast.success(messages[status] || "Berhasil");
 }
 
 // ---------- PREVIEW MODAL ----------
 window.previewLaporan = function (id) {
-    const laporan = laporanList.find((l) => l.id === id);
-    if (!laporan) return;
+  const laporan = laporanList.find((l) => l.id === id);
+  if (!laporan) return;
 
-    const statusConfig = getStatusConfig(laporan.status);
-    const content = document.getElementById("preview-content");
+  const statusConfig = getStatusConfig(laporan.status);
+  const content = document.getElementById("preview-content");
 
-    content.innerHTML = `
+  content.innerHTML = `
     <div class="flex flex-col gap-6">
       <!-- Header -->
       <div class="flex items-center gap-4">
@@ -413,25 +414,17 @@ window.previewLaporan = function (id) {
     </div>
   `;
 
-    const modal = document.getElementById("preview-modal");
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    document.body.style.overflow = "hidden";
+  const modal = document.getElementById("preview-modal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  document.body.style.overflow = "hidden";
 };
 
 window.closePreviewModal = function () {
-    const modal = document.getElementById("preview-modal");
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-    document.body.style.overflow = "";
+  const modal = document.getElementById("preview-modal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+  document.body.style.overflow = "";
 };
 
-function showToast(message) {
-    const toast = document.createElement("div");
-    toast.className =
-        "fixed bottom-4 left-1/2 -translate-x-1/2 bg-text-main text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50 animate-pulse";
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    setTimeout(() => toast.remove(), 3000);
-}
+// showToast is now imported from alerts.js

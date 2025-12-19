@@ -6,6 +6,7 @@ import { koordinatorAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { formatDateShort, getInitials, getTrackDisplayName } from "./utils/formatUtils.js";
 import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let proposalList = [];
@@ -190,7 +191,7 @@ async function handleAction(e) {
         if (result.ok) {
             updateLocal(id, status, catatan);
         } else {
-            alert("Gagal: " + (result.error || "Error"));
+            showModal.error("Gagal", result.error || "Terjadi kesalahan");
         }
     } catch (err) {
         console.error(err);
@@ -206,7 +207,7 @@ function updateLocal(id, status, catatan) {
     closeActionModal();
     renderProposalList();
     updateStats();
-    showToast(status === "approved" ? "Proposal diapprove" : "Proposal ditolak");
+    showToast.success(status === "approved" ? "Proposal diapprove" : "Proposal ditolak");
 }
 
 window.viewDetail = function (id) {
@@ -237,10 +238,4 @@ function closeDetailModal() {
     document.body.style.overflow = "";
 }
 
-function showToast(msg) {
-    const t = document.createElement("div");
-    t.className = "fixed bottom-4 left-1/2 -translate-x-1/2 bg-text-main text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50";
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-}
+// showToast is now imported from alerts.js

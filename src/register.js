@@ -5,6 +5,7 @@
 import { validateEmail, validateNPM, validateWhatsApp, validatePassword } from "./shared.js";
 import { authAPI } from "./api.js";
 import { showFieldError, clearFieldError, clearAllErrors, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- REGISTER PAGE INIT ----------
 document.addEventListener("DOMContentLoaded", () => {
@@ -98,7 +99,7 @@ async function handleSubmit(e) {
         });
 
         if (result.ok) {
-            alert("Registrasi berhasil! Silakan login untuk melanjutkan.");
+            await showModal.success("Registrasi Berhasil!", "Akun Anda berhasil dibuat. Silakan login untuk melanjutkan.");
             window.location.href = "/login.html";
         } else {
             // Handle specific errors
@@ -106,7 +107,7 @@ async function handleSubmit(e) {
         }
     } catch (err) {
         console.error("Registration error:", err);
-        alert("Terjadi kesalahan jaringan. Silakan coba lagi.");
+        showModal.error("Kesalahan Jaringan", "Tidak dapat terhubung ke server. Silakan coba lagi.");
     } finally {
         resetButtonLoading(submitBtn);
     }
@@ -210,6 +211,6 @@ function handleRegistrationError(error) {
     } else if (errorLower.includes("npm")) {
         showFieldError("reg-npm", error);
     } else {
-        alert("Registrasi gagal: " + (error || "Terjadi kesalahan"));
+        showModal.error("Registrasi Gagal", error || "Terjadi kesalahan");
     }
 }

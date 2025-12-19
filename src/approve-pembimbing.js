@@ -6,6 +6,7 @@ import { koordinatorAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { getInitials, getTrackDisplayName } from "./utils/formatUtils.js";
 import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- STATE ----------
 let mahasiswaList = [];
@@ -133,7 +134,7 @@ async function handleAssign(e) {
     e.preventDefault();
     const mahasiswaId = parseInt(document.getElementById("mahasiswa-id").value);
     const dosenId = parseInt(document.getElementById("dosen-select").value);
-    if (!dosenId) { alert("Pilih dosen pembimbing"); return; }
+    if (!dosenId) { showToast.warning("Pilih dosen pembimbing"); return; }
 
     const btn = document.getElementById("btn-submit");
     setButtonLoading(btn, "Menetapkan...");
@@ -143,7 +144,7 @@ async function handleAssign(e) {
         if (result.ok) {
             updateLocal(mahasiswaId, dosenId);
         } else {
-            alert("Gagal: " + (result.error || "Error"));
+            showModal.error("Gagal", result.error || "Gagal menetapkan pembimbing");
         }
     } catch (err) {
         console.error(err);
@@ -160,13 +161,7 @@ function updateLocal(mahasiswaId, dosenId) {
     closeModal();
     renderList();
     updateStats();
-    showToast("Pembimbing berhasil ditetapkan");
+    showToast.success("Pembimbing berhasil ditetapkan");
 }
 
-function showToast(msg) {
-    const t = document.createElement("div");
-    t.className = "fixed bottom-4 left-1/2 -translate-x-1/2 bg-text-main text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50";
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-}
+// showToast is now imported from alerts.js

@@ -5,6 +5,7 @@
 import { authAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { setButtonLoading, resetButtonLoading, showFieldError, clearFieldError } from "./utils/formUtils.js";
+import { showToast, showModal } from "./utils/alerts.js";
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", () => {
@@ -34,12 +35,12 @@ function setupEventListeners() {
     // Notification toggles
     document.getElementById("toggle-email")?.addEventListener("change", (e) => {
         localStorage.setItem("notif_email", e.target.checked);
-        showToast("Preferensi notifikasi disimpan");
+        showToast.success("Preferensi notifikasi disimpan");
     });
 
     document.getElementById("toggle-whatsapp")?.addEventListener("change", (e) => {
         localStorage.setItem("notif_whatsapp", e.target.checked);
-        showToast("Preferensi notifikasi disimpan");
+        showToast.success("Preferensi notifikasi disimpan");
     });
 }
 
@@ -84,19 +85,19 @@ async function handlePasswordChange(e) {
     try {
         const result = await authAPI.changePassword(oldPassword, newPassword);
         if (result.ok) {
-            showToast("Password berhasil diganti");
+            showToast.success("Password berhasil diganti");
             clearForm();
         } else {
             if (result.status === 401) {
                 showFieldError("old-password", "Password lama salah");
             } else {
-                alert("Gagal: " + (result.error || "Error"));
+                showModal.error("Gagal", result.error || "Terjadi kesalahan");
             }
         }
     } catch (err) {
         console.error(err);
         // Demo: show success anyway
-        showToast("Password berhasil diganti");
+        showToast.success("Password berhasil diganti");
         clearForm();
     } finally {
         resetButtonLoading(btn);
@@ -115,10 +116,4 @@ function clearForm() {
     document.getElementById("confirm-password").value = "";
 }
 
-function showToast(msg) {
-    const t = document.createElement("div");
-    t.className = "fixed bottom-4 left-1/2 -translate-x-1/2 bg-text-main text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50";
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-}
+// showToast is now imported from alerts.js
