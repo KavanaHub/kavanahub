@@ -236,9 +236,14 @@ function renderDashboard() {
 function handleMenuClick(menuId) {
     const pages = {
         dashboard: "/koordinator/dashboard.html",
+        "kelola-periode": "/koordinator/kelola-periode.html",
         "validasi-proposal": "/koordinator/validasi-proposal.html",
         "approve-pembimbing": "/koordinator/approve-pembimbing.html",
         "daftar-mahasiswa": "/koordinator/daftar-mahasiswa.html",
+        // Dosen pembimbing pages (koordinator juga dosen)
+        "mahasiswa-bimbingan": "/dosen/mahasiswa-bimbingan.html",
+        "bimbingan-approve": "/dosen/bimbingan-approve.html",
+        "laporan-approve": "/dosen/laporan-approve.html",
         profile: "/shared/profile.html",
         settings: "/shared/settings.html",
     };
