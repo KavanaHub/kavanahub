@@ -184,6 +184,7 @@ function renderEmptyState() {
 
 function renderBimbinganCard(b) {
     const statusConfig = getStatusConfig(b.status);
+    const isPending = b.status === "pending" || b.status === "waiting";
 
     return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
@@ -196,7 +197,7 @@ function renderBimbinganCard(b) {
             </div>
             <div>
               <p class="font-semibold text-text-main text-sm lg:text-base">${b.mahasiswa_nama}</p>
-              <p class="text-text-secondary text-xs">${b.mahasiswa_npm} • ${formatDateShort(b.tanggal)}</p>
+              <p class="text-text-secondary text-xs">Minggu ke-${b.minggu_ke || '-'} • ${formatDateShort(b.tanggal)}</p>
             </div>
           </div>
           <span class="px-2 py-1 text-xs font-medium rounded-full ${statusConfig.badgeClass}">
@@ -206,9 +207,8 @@ function renderBimbinganCard(b) {
 
         <!-- Content -->
         <div class="bg-slate-50 p-3 lg:p-4 rounded-lg">
-          <h4 class="font-semibold text-text-main text-sm mb-2">${b.kegiatan}</h4>
-          <p class="text-text-secondary text-xs lg:text-sm">${b.catatan}</p>
-          ${b.rencana_selanjutnya ? `<p class="text-primary text-xs mt-2"><span class="font-medium">Rencana:</span> ${b.rencana_selanjutnya}</p>` : ""}
+          <h4 class="font-semibold text-text-main text-sm mb-2">${b.topik || 'Tidak ada topik'}</h4>
+          <p class="text-text-secondary text-xs lg:text-sm">${b.catatan || 'Tidak ada catatan'}</p>
         </div>
 
         ${b.catatan_dosen
@@ -221,9 +221,13 @@ function renderBimbinganCard(b) {
         }
 
         <!-- Actions -->
-        ${b.status === "pending"
-            ? `
         <div class="flex gap-2 pt-2">
+          <button onclick="viewBimbinganDetail(${b.id})" class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors">
+            <span class="material-symbols-outlined text-[18px]">visibility</span>
+            Detail
+          </button>
+          ${isPending
+            ? `
           <button onclick="openApproveModal(${b.id})" class="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
             <span class="material-symbols-outlined text-[18px]">check</span>
             Approve
@@ -232,10 +236,10 @@ function renderBimbinganCard(b) {
             <span class="material-symbols-outlined text-[18px]">close</span>
             Reject
           </button>
-        </div>
-        `
+          `
             : ""
         }
+        </div>
       </div>
     </div>
   `;
