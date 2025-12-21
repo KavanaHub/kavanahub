@@ -324,48 +324,33 @@ async function saveAndRedirect(trackData) {
         // Convert track format: "proyek-1" -> "proyek1"
         const trackValue = trackData.track.replace("-", "");
 
-        // Step 1: Save track to backend API
-        const trackResult = await mahasiswaAPI.setTrack(trackValue);
+        // Save track to backend API with optional partner NPM
+        const trackResult = await mahasiswaAPI.setTrack(trackValue, trackData.partnerNpm);
 
         if (!trackResult.ok) {
             await showModal.error("Gagal Memilih Track", trackResult.error || "Terjadi kesalahan saat menyimpan track");
             return;
         }
 
-        // Step 2: For proyek, create kelompok if partner NPM is provided
-        let kelompokCreated = false;
-        if (trackData.type === "proyek" && trackData.partnerNpm) {
-            try {
-                // Create kelompok with partner
-                const kelompokResult = await mahasiswaAPI.createKelompok(`Kelompok ${trackValue.toUpperCase()}`);
-
-                if (kelompokResult.ok) {
-                    kelompokCreated = true;
-                    console.log("Kelompok created:", kelompokResult.data);
-
-                    // Note: Partner will need to join the kelompok separately
-                    // This just creates the kelompok for the current user
-                } else {
-                    console.log("Kelompok creation note:", kelompokResult.error);
-                    // Don't fail if kelompok creation fails - user might already be in a kelompok
-                }
-            } catch (kelompokErr) {
-                console.log("Kelompok creation error (non-fatal):", kelompokErr);
-            }
-        }
-
         // Save to sessionStorage for quick access
         sessionStorage.setItem("selectedTrack", JSON.stringify(trackData));
         sessionStorage.setItem("userTrack", trackValue);
-        console.log("Track saved to backend:", trackData);
+        console.log("Track saved to backend:", trackData, "Result:", trackResult.data);
+
+        // Check if mutual match happened (backend created kelompok automatically)
+        const isMatched = trackResult.data?.matched === true;
 
         // Build success message
         let details;
         if (trackData.type === "proyek") {
-            if (trackData.partnerNpm) {
-                details = `Partner NPM: ${trackData.partnerNpm}` +
-                    (kelompokCreated ? "\n\nKelompok berhasil dibuat! Minta partner Anda untuk join kelompok via menu Kelompok." : "");
+            if (isMatched) {
+                // Mutual match - kelompok automatically created
+                details = `🎉 Match berhasil! Kelompok otomatis terbentuk dengan partner NPM ${trackData.partnerNpm}.\n\nAnda berdua sekarang sudah dalam satu kelompok.`;
+            } else if (trackData.partnerNpm) {
+                // Partner NPM provided but not matched yet
+                details = `Partner NPM: ${trackData.partnerNpm}\n\n⏳ Menunggu partner memilih track yang sama dan memasukkan NPM Anda. Kelompok akan otomatis terbentuk setelah partner mendaftar.`;
             } else {
+                // No partner NPM
                 details = "Anda bisa membuat atau join kelompok di menu Kelompok Proyek.";
             }
         } else {
@@ -374,9 +359,15 @@ async function saveAndRedirect(trackData) {
 
         await showModal.success(`${displayName} Dipilih!`, details);
 
-        // Redirect to kelompok page if proyek, otherwise dashboard
+        // Redirect based on match status
         if (trackData.type === "proyek") {
-            window.location.href = "/mahasiswa/kelompok.html";
+            if (isMatched) {
+                // Already matched - go to dashboard
+                window.location.href = "/mahasiswa/dashboard.html";
+            } else {
+                // Not matched yet - go to kelompok page
+                window.location.href = "/mahasiswa/kelompok.html";
+            }
         } else {
             window.location.href = "/mahasiswa/dashboard.html";
         }

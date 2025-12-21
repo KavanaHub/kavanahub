@@ -109,9 +109,9 @@ export const authAPI = {
 export const mahasiswaAPI = {
     getProfile: () => apiRequest('/api/mahasiswa/profile'),
 
-    setTrack: (track) => apiRequest('/api/mahasiswa/track', {
+    setTrack: (track, partnerNpm = null) => apiRequest('/api/mahasiswa/track', {
         method: 'PATCH',
-        body: JSON.stringify({ track })
+        body: JSON.stringify({ track, partner_npm: partnerNpm })
     }),
 
     getProposalStatus: () => apiRequest('/api/mahasiswa/profile'),
