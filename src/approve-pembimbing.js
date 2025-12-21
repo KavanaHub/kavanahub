@@ -43,9 +43,9 @@ async function loadData() {
 
 function getDummyMahasiswa() {
     return [
-        { id: 1, nama: "Ahmad Fauzan", npm: "2023010001", track: "proyek-1", judul: "Sistem Informasi Perpustakaan", dosen_pembimbing: null },
-        { id: 2, nama: "Siti Nurhaliza", npm: "2023010002", track: "internship-1", judul: "Internship PT Teknologi", dosen_pembimbing: null },
-        { id: 3, nama: "Budi Santoso", npm: "2023010003", track: "proyek-2", judul: "E-Commerce UMKM", dosen_pembimbing: { id: 1, nama: "Dr. Andi Wijaya" } },
+        { id: 1, nama: "Ahmad Fauzan", npm: "2023010001", track: "proyek1", judul_proyek: "Sistem Informasi Perpustakaan", dosen_pembimbing: null },
+        { id: 2, nama: "Siti Nurhaliza", npm: "2023010002", track: "internship1", judul_proyek: "Internship PT Teknologi", dosen_pembimbing: null },
+        { id: 3, nama: "Budi Santoso", npm: "2023010003", track: "proyek2", judul_proyek: "E-Commerce UMKM", dosen_pembimbing: { id: 1, nama: "Dr. Andi Wijaya" } },
     ];
 }
 
@@ -78,7 +78,7 @@ function renderList() {
                     <div class="flex-1 min-w-0">
                         <p class="font-semibold text-text-main text-sm lg:text-base truncate">${m.nama}</p>
                         <p class="text-text-secondary text-xs">${m.npm} • ${getTrackDisplayName(m.track)}</p>
-                        <p class="text-text-main text-xs mt-1 truncate">${m.judul}</p>
+                        <p class="text-text-main text-xs mt-1 truncate">${m.judul_proyek || m.judul || '-'}</p>
                     </div>
                 </div>
                 <button onclick="openAssignModal(${m.id})" class="px-4 py-2 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary/80 transition-colors shrink-0">
