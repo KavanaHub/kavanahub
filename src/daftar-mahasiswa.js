@@ -36,11 +36,11 @@ async function loadData() {
 
 function getDummyData() {
     return [
-        { id: 1, nama: "Ahmad Fauzan", npm: "2023010001", track: "proyek-1", judul: "Sistem Informasi Perpustakaan", pembimbing: "Dr. Andi", bimbingan_count: 5, status: "active" },
-        { id: 2, nama: "Siti Nurhaliza", npm: "2023010002", track: "internship-1", judul: "Internship PT Teknologi", pembimbing: "Prof. Sari", bimbingan_count: 8, status: "ready" },
-        { id: 3, nama: "Budi Santoso", npm: "2023010003", track: "proyek-2", judul: "E-Commerce UMKM", pembimbing: "Dr. Budi", bimbingan_count: 3, status: "active" },
-        { id: 4, nama: "Dewi Anggraini", npm: "2022010015", track: "internship-2", judul: "Internship Bank Mandiri", pembimbing: "Dr. Andi", bimbingan_count: 8, status: "ready" },
-        { id: 5, nama: "Eko Prasetyo", npm: "2023010005", track: "proyek-1", judul: "Aplikasi Monitoring IoT", pembimbing: null, bimbingan_count: 0, status: "active" },
+        { id: 1, nama: "Ahmad Fauzan", npm: "2023010001", track: "proyek1", judul_proyek: "Sistem Informasi Perpustakaan", dosen_nama: "Dr. Andi", bimbingan_count: 5, status: "active" },
+        { id: 2, nama: "Siti Nurhaliza", npm: "2023010002", track: "internship1", judul_proyek: "Internship PT Teknologi", dosen_nama: "Prof. Sari", bimbingan_count: 8, status: "ready" },
+        { id: 3, nama: "Budi Santoso", npm: "2023010003", track: "proyek2", judul_proyek: "E-Commerce UMKM", dosen_nama: "Dr. Budi", bimbingan_count: 3, status: "active" },
+        { id: 4, nama: "Dewi Anggraini", npm: "2022010015", track: "internship2", judul_proyek: "Internship Bank Mandiri", dosen_nama: "Dr. Andi", bimbingan_count: 8, status: "ready" },
+        { id: 5, nama: "Eko Prasetyo", npm: "2023010005", track: "proyek1", judul_proyek: "Aplikasi Monitoring IoT", dosen_nama: null, bimbingan_count: 0, status: "active" },
     ];
 }
 
@@ -80,7 +80,7 @@ function renderCard(m) {
                         ${isReady ? `<span class="px-2 py-0.5 text-[10px] font-medium bg-green-100 text-green-700 rounded-full">Siap Sidang</span>` : ""}
                     </div>
                     <p class="text-text-secondary text-xs">${m.npm} • ${getTrackDisplayName(m.track)}</p>
-                    <p class="text-text-main text-xs mt-1 truncate">${m.judul}</p>
+                    <p class="text-text-main text-xs mt-1 truncate">${m.judul_proyek || '-'}</p>
                 </div>
             </div>
             <div class="flex flex-col sm:items-end gap-2 shrink-0">
@@ -93,8 +93,8 @@ function renderCard(m) {
                         <div class="h-full bg-primary" style="width: ${progress}%"></div>
                     </div>
                 </div>
-                <p class="text-xs ${m.pembimbing ? "text-text-secondary" : "text-yellow-600"}">
-                    ${m.pembimbing ? `👨‍🏫 ${m.pembimbing}` : "⚠️ Belum ada pembimbing"}
+                <p class="text-xs ${m.dosen_nama ? "text-text-secondary" : "text-yellow-600"}">
+                    ${m.dosen_nama ? `👨‍🏫 ${m.dosen_nama}` : "⚠️ Belum ada pembimbing"}
                 </p>
             </div>
         </div>
