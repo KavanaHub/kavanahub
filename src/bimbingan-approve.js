@@ -147,8 +147,9 @@ function renderBimbinganList() {
         // Mahasiswa filter
         if (currentMahasiswa !== "all" && b.mahasiswa_id != currentMahasiswa) return false;
 
-        // Status filter
-        if (currentFilter !== "all" && b.status !== currentFilter) return false;
+        // Status filter - treat 'waiting' as 'pending'
+        const normalizedStatus = b.status === 'waiting' ? 'pending' : b.status;
+        if (currentFilter !== "all" && normalizedStatus !== currentFilter) return false;
 
         return true;
     });
@@ -243,6 +244,7 @@ function renderBimbinganCard(b) {
 function getStatusConfig(status) {
     const configs = {
         pending: { text: "Pending", icon: "🕐", badgeClass: "bg-yellow-100 text-yellow-700" },
+        waiting: { text: "Pending", icon: "🕐", badgeClass: "bg-yellow-100 text-yellow-700" },
         approved: { text: "Approved", icon: "✅", badgeClass: "bg-green-100 text-green-700" },
         rejected: { text: "Rejected", icon: "❌", badgeClass: "bg-red-100 text-red-700" },
     };
@@ -250,7 +252,8 @@ function getStatusConfig(status) {
 }
 
 function updateStats() {
-    const pending = bimbinganList.filter((b) => b.status === "pending").length;
+    // Count 'waiting' as 'pending'
+    const pending = bimbinganList.filter((b) => b.status === "pending" || b.status === "waiting").length;
     const approved = bimbinganList.filter((b) => b.status === "approved").length;
     const rejected = bimbinganList.filter((b) => b.status === "rejected").length;
 
