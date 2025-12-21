@@ -293,6 +293,13 @@ function setupEventListeners() {
 
     // Form submit
     document.getElementById("action-form")?.addEventListener("submit", handleAction);
+
+    // Detail modal events
+    document.getElementById("detail-modal-close")?.addEventListener("click", closeDetailModal);
+    document.getElementById("btn-detail-close")?.addEventListener("click", closeDetailModal);
+    document.getElementById("detail-modal")?.addEventListener("click", (e) => {
+        if (e.target.id === "detail-modal") closeDetailModal();
+    });
 }
 
 // ---------- VIEW DETAIL ----------
@@ -301,46 +308,56 @@ window.viewBimbinganDetail = function (id) {
     if (!b) return;
 
     const statusConfig = getStatusConfig(b.status);
-    const detailHtml = `
-        <div class="text-left">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold">
-                    ${getInitials(b.mahasiswa_nama)}
-                </div>
-                <div>
-                    <p class="font-bold text-lg">${b.mahasiswa_nama}</p>
-                    <p class="text-sm text-slate-500">${b.npm || ''}</p>
-                </div>
+    const content = document.getElementById("detail-modal-content");
+
+    content.innerHTML = `
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                ${getInitials(b.mahasiswa_nama)}
             </div>
-            <div class="space-y-3">
-                <div class="bg-slate-50 p-3 rounded-lg">
-                    <p class="text-xs text-slate-500 mb-1">Minggu Ke</p>
-                    <p class="font-medium">${b.minggu_ke || '-'}</p>
-                </div>
-                <div class="bg-slate-50 p-3 rounded-lg">
-                    <p class="text-xs text-slate-500 mb-1">Tanggal</p>
-                    <p class="font-medium">${formatDateShort(b.tanggal)}</p>
-                </div>
-                <div class="bg-slate-50 p-3 rounded-lg">
-                    <p class="text-xs text-slate-500 mb-1">Topik</p>
-                    <p class="font-medium">${b.topik || 'Tidak ada topik'}</p>
-                </div>
-                <div class="bg-slate-50 p-3 rounded-lg">
-                    <p class="text-xs text-slate-500 mb-1">Catatan</p>
-                    <p class="font-medium">${b.catatan || 'Tidak ada catatan'}</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-slate-500">Status:</span>
-                    <span class="px-2 py-1 text-xs font-medium rounded-full ${statusConfig.badgeClass}">
-                        ${statusConfig.icon} ${statusConfig.text}
-                    </span>
-                </div>
+            <div>
+                <p class="font-bold text-lg">${b.mahasiswa_nama}</p>
+                <p class="text-sm text-slate-500">${b.npm || ''}</p>
+            </div>
+        </div>
+        <div class="space-y-3">
+            <div class="bg-slate-50 p-3 rounded-lg">
+                <p class="text-xs text-slate-500 mb-1">Minggu Ke</p>
+                <p class="font-medium">${b.minggu_ke || '-'}</p>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-lg">
+                <p class="text-xs text-slate-500 mb-1">Tanggal</p>
+                <p class="font-medium">${formatDateShort(b.tanggal)}</p>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-lg">
+                <p class="text-xs text-slate-500 mb-1">Topik</p>
+                <p class="font-medium">${b.topik || 'Tidak ada topik'}</p>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-lg">
+                <p class="text-xs text-slate-500 mb-1">Catatan</p>
+                <p class="font-medium">${b.catatan || 'Tidak ada catatan'}</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500">Status:</span>
+                <span class="px-2 py-1 text-xs font-medium rounded-full ${statusConfig.badgeClass}">
+                    ${statusConfig.icon} ${statusConfig.text}
+                </span>
             </div>
         </div>
     `;
 
-    showModal.info("Detail Bimbingan", detailHtml);
+    const modal = document.getElementById("detail-modal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.style.overflow = "hidden";
 };
+
+function closeDetailModal() {
+    const modal = document.getElementById("detail-modal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.style.overflow = "";
+}
 
 // ---------- MODAL ----------
 window.openApproveModal = function (id) {
