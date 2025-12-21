@@ -322,13 +322,33 @@ function confirmInternshipSelection() {
 }
 
 async function saveAndRedirect(trackData) {
-    sessionStorage.setItem("selectedTrack", JSON.stringify(trackData));
-    console.log("Track selected:", trackData);
-
     const displayName = getTrackDisplayName(trackData.track);
-    const details =
-        trackData.type === "proyek" ? `Partner NPM: ${trackData.partnerNpm}` : `Perusahaan: ${trackData.companyName}`;
 
-    await showModal.success(`${displayName} Dipilih!`, details);
-    window.location.href = "/mahasiswa/dashboard.html";
+    try {
+        // Convert track format: "proyek-1" -> "proyek1"
+        const trackValue = trackData.track.replace("-", "");
+
+        // Save to backend API
+        const result = await mahasiswaAPI.setTrack(trackValue);
+
+        if (!result.ok) {
+            await showModal.error("Gagal Memilih Track", result.error || "Terjadi kesalahan saat menyimpan track");
+            return;
+        }
+
+        // Save to sessionStorage for quick access
+        sessionStorage.setItem("selectedTrack", JSON.stringify(trackData));
+        sessionStorage.setItem("userTrack", trackValue);
+        console.log("Track saved to backend:", trackData);
+
+        const details =
+            trackData.type === "proyek" ? `Partner NPM: ${trackData.partnerNpm}` : `Perusahaan: ${trackData.companyName}`;
+
+        await showModal.success(`${displayName} Dipilih!`, details);
+        window.location.href = "/mahasiswa/dashboard.html";
+
+    } catch (err) {
+        console.error("Error saving track:", err);
+        await showModal.error("Kesalahan Jaringan", "Tidak dapat menyimpan track. Silakan coba lagi.");
+    }
 }

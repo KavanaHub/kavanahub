@@ -3,6 +3,7 @@
 // ========================================
 
 import { mahasiswaAPI } from "../api.js";
+import { getTrackDisplayName } from "../utils/formatUtils.js";
 
 // Helper function to format date
 function formatDate(dateStr) {
@@ -118,7 +119,7 @@ export async function renderMahasiswaDashboard(container, userData) {
           </div>
           <div>
             <p class="text-text-secondary text-xs lg:text-sm font-medium">Track Aktif</p>
-            <p class="text-text-main text-xl lg:text-2xl font-bold mt-1">${track || "Belum dipilih"}</p>
+            <p class="text-text-main text-xl lg:text-2xl font-bold mt-1">${track ? getTrackDisplayName(track) : "Belum dipilih"}</p>
           </div>
         </div>
       </div>

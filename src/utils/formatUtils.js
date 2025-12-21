@@ -54,16 +54,23 @@ export function formatDateShort(dateStr) {
 
 /**
  * Get track display name from track ID
- * @param {string} trackId - Track ID
+ * @param {string} trackId - Track ID (supports 'proyek1' and 'proyek-1' formats)
  * @returns {string} - Display name
  */
 export function getTrackDisplayName(trackId) {
     const names = {
+        // Frontend format (with dash)
         "proyek-1": "Proyek 1",
         "proyek-2": "Proyek 2",
         "proyek-3": "Proyek 3",
         "internship-1": "Internship 1",
         "internship-2": "Internship 2",
+        // Backend format (without dash)
+        "proyek1": "Proyek 1",
+        "proyek2": "Proyek 2",
+        "proyek3": "Proyek 3",
+        "internship1": "Internship 1",
+        "internship2": "Internship 2",
     };
     return names[trackId] || trackId || "Tidak diketahui";
 }
