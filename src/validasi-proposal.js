@@ -215,7 +215,11 @@ async function handleAction(e) {
 
 function updateLocal(id, status, catatan) {
     const p = proposalList.find(x => x.id === id);
-    if (p) { p.status = status; if (catatan) p.catatan = catatan; }
+    if (p) {
+        p.status_proposal = status;
+        p.status = status; // for backward compatibility
+        if (catatan) p.catatan = catatan;
+    }
     closeActionModal();
     renderProposalList();
     updateStats();
@@ -225,20 +229,26 @@ function updateLocal(id, status, catatan) {
 window.viewDetail = function (id) {
     const p = proposalList.find(x => x.id === id);
     if (!p) return;
-    const isProyek = p.track.includes("proyek");
+
+    // Use correct field names from backend
+    const nama = p.nama || p.mahasiswa_nama || 'Unknown';
+    const judul = p.judul_proyek || p.judul || 'Tidak ada judul';
+    const track = p.track || 'proyek1';
+    const isProyek = track.includes("proyek");
+
     document.getElementById("detail-content").innerHTML = `
         <div class="flex flex-col gap-4">
             <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xl">${getInitials(p.mahasiswa_nama)}</div>
-                <div><h3 class="font-bold text-text-main text-lg">${p.mahasiswa_nama}</h3><p class="text-text-secondary text-sm">${p.npm}</p></div>
+                <div class="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xl">${getInitials(nama)}</div>
+                <div><h3 class="font-bold text-text-main text-lg">${nama}</h3><p class="text-text-secondary text-sm">${p.npm || '-'}</p></div>
             </div>
-            <div class="bg-slate-50 p-4 rounded-lg"><p class="text-text-secondary text-xs mb-1">Judul</p><p class="font-semibold text-text-main">${p.judul}</p></div>
+            <div class="bg-slate-50 p-4 rounded-lg"><p class="text-text-secondary text-xs mb-1">Judul</p><p class="font-semibold text-text-main">${judul}</p></div>
             <div class="grid grid-cols-2 gap-3">
-                <div class="bg-slate-50 p-3 rounded-lg"><p class="text-text-secondary text-xs">Track</p><p class="font-semibold text-text-main text-sm">${getTrackDisplayName(p.track)}</p></div>
-                <div class="bg-slate-50 p-3 rounded-lg"><p class="text-text-secondary text-xs">Tanggal Submit</p><p class="font-semibold text-text-main text-sm">${formatDateShort(p.tanggal_submit)}</p></div>
-                ${isProyek ? `<div class="bg-slate-50 p-3 rounded-lg col-span-2"><p class="text-text-secondary text-xs">Partner NPM</p><p class="font-semibold text-text-main text-sm">${p.partner_npm}</p></div>` : `<div class="bg-slate-50 p-3 rounded-lg col-span-2"><p class="text-text-secondary text-xs">Perusahaan</p><p class="font-semibold text-text-main text-sm">${p.company_name}</p></div>`}
+                <div class="bg-slate-50 p-3 rounded-lg"><p class="text-text-secondary text-xs">Track</p><p class="font-semibold text-text-main text-sm">${getTrackDisplayName(track)}</p></div>
+                <div class="bg-slate-50 p-3 rounded-lg"><p class="text-text-secondary text-xs">Tanggal Submit</p><p class="font-semibold text-text-main text-sm">${formatDateShort(p.created_at || p.tanggal_submit)}</p></div>
+                ${isProyek ? `<div class="bg-slate-50 p-3 rounded-lg col-span-2"><p class="text-text-secondary text-xs">Tipe</p><p class="font-semibold text-text-main text-sm">Kelompok</p></div>` : `<div class="bg-slate-50 p-3 rounded-lg col-span-2"><p class="text-text-secondary text-xs">Tipe</p><p class="font-semibold text-text-main text-sm">Individual</p></div>`}
             </div>
-            <a href="${p.file_proposal}" target="_blank" class="py-2.5 text-center text-sm font-semibold bg-primary text-white rounded-lg hover:bg-primary/80">Buka Proposal</a>
+            <a href="${p.file_proposal || '#'}" target="_blank" class="py-2.5 text-center text-sm font-semibold bg-primary text-white rounded-lg hover:bg-primary/80">Buka Proposal</a>
         </div>`;
     document.getElementById("detail-modal").classList.remove("hidden");
     document.getElementById("detail-modal").classList.add("flex");
