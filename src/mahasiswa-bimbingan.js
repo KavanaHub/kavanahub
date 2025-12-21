@@ -161,7 +161,7 @@ function renderMahasiswaCard(m) {
               </span>
             </div>
             <p class="text-text-secondary text-xs lg:text-sm">${m.npm} • ${getTrackDisplayName(m.track)}</p>
-            <p class="text-text-main text-sm mt-2 line-clamp-1">${m.judul_proyek || "Belum ada judul"}</p>
+            <p class="text-text-main text-sm mt-2 line-clamp-1">${m.judul || m.judul_proyek || "Belum ada judul"}</p>
           </div>
         </div>
 
