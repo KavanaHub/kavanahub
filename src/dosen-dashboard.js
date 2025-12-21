@@ -84,7 +84,7 @@ async function loadData() {
             updateSidebarUser();
         }
         if (mahasiswaResult.ok) mahasiswaList = mahasiswaResult.data || [];
-        if (bimbinganResult.ok) pendingBimbingan = (bimbinganResult.data || []).filter(b => b.status === "pending");
+        if (bimbinganResult.ok) pendingBimbingan = (bimbinganResult.data || []).filter(b => b.status === "pending" || b.status === "waiting");
         if (statsResult.ok) stats = statsResult.data;
     } catch (err) {
         console.error("Error loading data:", err);
