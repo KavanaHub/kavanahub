@@ -23,14 +23,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ---------- DATA LOADING ----------
 async function loadData() {
     try {
-        const result = await kaprodiAPI.getStats();
-        if (result.ok) stats = result.data;
+        const [statsResult, activitiesResult] = await Promise.all([
+            kaprodiAPI.getStats(),
+            kaprodiAPI.getRecentActivities()
+        ]);
+
+        if (statsResult.ok) stats = statsResult.data;
         else stats = getDummyStats();
+
+        if (activitiesResult.ok && activitiesResult.data.length > 0) {
+            activities = activitiesResult.data;
+        } else {
+            activities = getDummyActivities(); // Fallback to dummy if no data
+        }
     } catch (err) {
         console.error(err);
         stats = getDummyStats();
+        activities = getDummyActivities();
     }
-    activities = getDummyActivities();
 }
 
 function getDummyStats() {

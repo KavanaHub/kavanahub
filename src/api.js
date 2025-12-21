@@ -247,6 +247,8 @@ export const kaprodiAPI = {
 
     getStats: () => apiRequest('/api/kaprodi/stats'),
 
+    getRecentActivities: () => apiRequest('/api/kaprodi/activities'),
+
     getMahasiswaList: () => apiRequest('/api/kaprodi/mahasiswa'),
 
     getDosenList: () => apiRequest('/api/kaprodi/dosen'),
