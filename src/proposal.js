@@ -31,9 +31,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Setup global closeSidebar
     window.closeSidebar = closeSidebar;
 
-    // Load data
-    loadTrackInfo();
-    loadUserInfo();
+    // Load data - fetch from database
+    await loadTrackInfo();
+    await loadUserInfo();
     await loadDosenList();
 
     // Event listeners
@@ -45,42 +45,106 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ---------- DATA LOADING ----------
-function loadTrackInfo() {
+let profileData = null;
+let kelompokData = null;
+
+async function loadTrackInfo() {
     const trackInfoBox = document.getElementById("track-info-box");
     const partnerSection = document.getElementById("partner-section");
     const dosen2Section = document.getElementById("dosen2-section");
-    const trackData = sessionStorage.getItem("selectedTrack");
 
-    if (!trackData) {
-        trackInfoBox.innerHTML = renderNoTrackWarning();
-        return;
-    }
+    trackInfoBox.innerHTML = '<p class="text-text-secondary text-sm">Loading track info...</p>';
 
-    const track = JSON.parse(trackData);
-    const trackName = getTrackDisplayName(track.track);
-    const isProyek = track.type === "proyek";
-    const isInternship2 = track.track === "internship-2";
+    try {
+        // Fetch profile data from database
+        const result = await mahasiswaAPI.getProfile();
 
-    trackInfoBox.innerHTML = renderTrackInfo(track, trackName, isProyek);
+        if (!result.ok || !result.data.track) {
+            trackInfoBox.innerHTML = renderNoTrackWarning();
+            return;
+        }
 
-    // Show partner section for Proyek
-    if (isProyek) {
-        partnerSection.classList.remove("hidden");
-        document.getElementById("prop-partner-npm").value = track.partnerNpm || "";
-    }
+        profileData = result.data;
+        const track = profileData.track;
+        const trackName = getTrackDisplayName(track);
+        const isProyek = track.startsWith('proyek');
+        const isInternship2 = track === 'internship2';
 
-    // Show dosen 2 for Internship 2
-    if (isInternship2) {
-        dosen2Section.classList.remove("hidden");
+        // Fetch kelompok data if proyek
+        let partnerName = null;
+        let partnerNpm = null;
+        if (isProyek && profileData.kelompok_id) {
+            try {
+                const kelompokResult = await mahasiswaAPI.getMyKelompok();
+                if (kelompokResult.ok && kelompokResult.data?.anggota) {
+                    kelompokData = kelompokResult.data;
+                    // Find partner (the other member)
+                    const partner = kelompokData.anggota.find(m => m.id !== profileData.id);
+                    if (partner) {
+                        partnerName = partner.nama;
+                        partnerNpm = partner.npm;
+                    }
+                }
+            } catch (err) {
+                console.log("Could not load kelompok data:", err);
+            }
+        }
+
+        trackInfoBox.innerHTML = renderTrackInfo(track, trackName, isProyek, kelompokData?.kelompok?.nama);
+
+        // Show partner section for Proyek and populate with database data
+        if (isProyek) {
+            partnerSection.classList.remove("hidden");
+            // Set partner data from database
+            if (partnerName) {
+                document.getElementById("prop-partner-nama").value = partnerName;
+                document.getElementById("prop-partner-nama").readOnly = true;
+                document.getElementById("prop-partner-nama").classList.add("bg-slate-50", "text-text-secondary");
+            }
+            if (partnerNpm) {
+                document.getElementById("prop-partner-npm").value = partnerNpm;
+            }
+        }
+
+        // Show dosen 2 for Internship 2
+        if (isInternship2) {
+            dosen2Section.classList.remove("hidden");
+        }
+    } catch (err) {
+        console.error("Error loading track info:", err);
+        trackInfoBox.innerHTML = '<p class="text-red-500 text-sm">Error loading data</p>';
     }
 }
 
-function loadUserInfo() {
-    const userName = sessionStorage.getItem("userName");
-    const userNPM = sessionStorage.getItem("userNPM");
+async function loadUserInfo() {
+    // Wait for profile to load if not already loaded
+    if (!profileData) {
+        try {
+            const result = await mahasiswaAPI.getProfile();
+            if (result.ok) {
+                profileData = result.data;
+            }
+        } catch (err) {
+            console.error("Error loading user info:", err);
+            return;
+        }
+    }
 
-    if (userName) document.getElementById("prop-nama").value = userName;
-    if (userNPM) document.getElementById("prop-npm").value = userNPM;
+    if (profileData) {
+        const namaInput = document.getElementById("prop-nama");
+        const npmInput = document.getElementById("prop-npm");
+
+        if (namaInput && profileData.nama) {
+            namaInput.value = profileData.nama;
+            namaInput.readOnly = true;
+            namaInput.classList.add("bg-slate-50", "text-text-secondary");
+        }
+        if (npmInput && profileData.npm) {
+            npmInput.value = profileData.npm;
+            npmInput.readOnly = true;
+            npmInput.classList.add("bg-slate-50", "text-text-secondary");
+        }
+    }
 }
 
 async function loadDosenList() {
@@ -123,7 +187,11 @@ function renderNoTrackWarning() {
   `;
 }
 
-function renderTrackInfo(track, trackName, isProyek) {
+function renderTrackInfo(track, trackName, isProyek, kelompokName = null) {
+    const subtitle = isProyek
+        ? (kelompokName ? `Kelompok: ${kelompokName}` : 'Kelompok belum terbentuk')
+        : 'Individual';
+
     return `
     <div class="flex items-center gap-4">
       <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl ${isProyek ? "bg-blue-100" : "bg-purple-100"} flex items-center justify-center text-2xl lg:text-3xl shrink-0">
@@ -131,11 +199,8 @@ function renderTrackInfo(track, trackName, isProyek) {
       </div>
       <div class="flex-1 min-w-0">
         <p class="font-bold text-text-main text-base lg:text-lg">${trackName}</p>
-        <p class="text-text-secondary text-xs lg:text-sm truncate">${isProyek ? `Kelompok - Partner NPM: ${track.partnerNpm}` : `Individual - ${track.companyName}`}</p>
+        <p class="text-text-secondary text-xs lg:text-sm truncate">${subtitle}</p>
       </div>
-      <a href="/mahasiswa/track.html" class="px-3 py-1.5 text-xs lg:text-sm text-primary font-medium border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors shrink-0">
-        Ganti
-      </a>
     </div>
   `;
 }
