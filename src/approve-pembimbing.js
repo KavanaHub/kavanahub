@@ -78,7 +78,8 @@ function renderList() {
                     <div class="flex-1 min-w-0">
                         <p class="font-semibold text-text-main text-sm lg:text-base truncate">${m.nama}</p>
                         <p class="text-text-secondary text-xs">${m.npm} • ${getTrackDisplayName(m.track)}</p>
-                        <p class="text-text-main text-xs mt-1 truncate">${m.judul_proyek || m.judul || '-'}</p>
+                        <p class="text-text-main text-xs mt-1 truncate">${m.judul_proyek || '-'}</p>
+                        ${m.usulan_dosen_nama ? `<p class="text-primary text-xs mt-1">📋 Diusulkan: <span class="font-medium">${m.usulan_dosen_nama}</span></p>` : ''}
                     </div>
                 </div>
                 <button onclick="openAssignModal(${m.id})" class="px-4 py-2 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary/80 transition-colors shrink-0">
