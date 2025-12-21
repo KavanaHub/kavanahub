@@ -51,7 +51,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ---------- CHECK EXISTING PROPOSAL ----------
 /**
  * Check if user or kelompok already has a submitted proposal
- * Redirect if status is pending or approved (not rejected or null)
+ * Only block access if status is specifically 'pending' or 'approved'
+ * Allow access if: null, undefined, empty string, 'rejected'
  */
 async function checkExistingProposal() {
     try {
@@ -62,26 +63,22 @@ async function checkExistingProposal() {
         const profile = result.data;
         const status = profile.status_proposal;
 
-        // If proposal exists and is not rejected, redirect
-        if (status && status !== 'rejected') {
-            let message, redirectUrl;
+        console.log("[Proposal] Checking status:", status);
 
-            if (status === 'pending') {
-                message = "Proposal Anda sedang direview oleh koordinator. Silakan tunggu.";
-                redirectUrl = "/mahasiswa/dashboard.html";
-            } else if (status === 'approved') {
-                message = "Proposal Anda sudah disetujui!";
-                redirectUrl = "/mahasiswa/dashboard.html";
-            } else {
-                message = `Status proposal: ${status}`;
-                redirectUrl = "/mahasiswa/dashboard.html";
-            }
-
-            await showModal.info("Proposal Sudah Disubmit", message);
-            window.location.href = redirectUrl;
+        // Only block for specific statuses
+        if (status === 'pending') {
+            await showModal.info("Proposal Sudah Disubmit", "Proposal Anda sedang direview oleh koordinator. Silakan tunggu.");
+            window.location.href = "/mahasiswa/dashboard.html";
             return true;
         }
 
+        if (status === 'approved') {
+            await showModal.info("Proposal Sudah Disetujui", "Proposal Anda sudah disetujui!");
+            window.location.href = "/mahasiswa/dashboard.html";
+            return true;
+        }
+
+        // For null, undefined, empty string, 'rejected', or any other value - allow access
         return false;
     } catch (err) {
         console.error("Error checking existing proposal:", err);
