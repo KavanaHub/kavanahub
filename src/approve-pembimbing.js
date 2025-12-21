@@ -43,9 +43,9 @@ async function loadData() {
 
 function getDummyMahasiswa() {
     return [
-        { id: 1, nama: "Ahmad Fauzan", npm: "2023010001", track: "proyek1", judul_proyek: "Sistem Informasi Perpustakaan", dosen_pembimbing: null },
-        { id: 2, nama: "Siti Nurhaliza", npm: "2023010002", track: "internship1", judul_proyek: "Internship PT Teknologi", dosen_pembimbing: null },
-        { id: 3, nama: "Budi Santoso", npm: "2023010003", track: "proyek2", judul_proyek: "E-Commerce UMKM", dosen_pembimbing: { id: 1, nama: "Dr. Andi Wijaya" } },
+        { id: 1, nama: "Ahmad Fauzan", npm: "2023010001", track: "proyek1", judul_proyek: "Sistem Informasi Perpustakaan", dosen_id: null, dosen_nama: null },
+        { id: 2, nama: "Siti Nurhaliza", npm: "2023010002", track: "internship1", judul_proyek: "Internship PT Teknologi", dosen_id: null, dosen_nama: null },
+        { id: 3, nama: "Budi Santoso", npm: "2023010003", track: "proyek2", judul_proyek: "E-Commerce UMKM", dosen_id: 1, dosen_nama: "Dr. Andi Wijaya" },
     ];
 }
 
@@ -60,7 +60,7 @@ function getDummyDosen() {
 // ---------- RENDERING ----------
 function renderList() {
     const container = document.getElementById("mahasiswa-list");
-    const needAssign = mahasiswaList.filter(m => !m.dosen_pembimbing);
+    const needAssign = mahasiswaList.filter(m => !m.dosen_id);
 
     if (needAssign.length === 0) {
         container.innerHTML = `<div class="text-center py-12 bg-white rounded-xl border border-slate-100">
@@ -91,8 +91,8 @@ function renderList() {
 }
 
 function updateStats() {
-    const pending = mahasiswaList.filter(m => !m.dosen_pembimbing).length;
-    const assigned = mahasiswaList.filter(m => m.dosen_pembimbing).length;
+    const pending = mahasiswaList.filter(m => !m.dosen_id).length;
+    const assigned = mahasiswaList.filter(m => m.dosen_id).length;
     document.getElementById("stat-pending").textContent = pending;
     document.getElementById("stat-assigned").textContent = assigned;
 }
