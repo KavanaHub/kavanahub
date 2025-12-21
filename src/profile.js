@@ -71,13 +71,13 @@ function getDummyProfile() {
         return {
             nama: sessionStorage.getItem("userName") || "Nama Dosen",
             email: sessionStorage.getItem("userEmail") || "dosen@univ.ac.id",
-            nip: "198501012010011001",
+            nidn: "0012345678",
         };
     } else {
         return {
             nama: sessionStorage.getItem("userName") || "Nama User",
             email: sessionStorage.getItem("userEmail") || "user@univ.ac.id",
-            nip: "198501012010011001",
+            nidn: "0012345678",
         };
     }
 }
@@ -101,8 +101,8 @@ function renderProfile() {
         document.getElementById("label-identifier").textContent = "NPM";
         document.getElementById("profile-identifier").textContent = p.npm || "-";
     } else {
-        document.getElementById("label-identifier").textContent = "NIP";
-        document.getElementById("profile-identifier").textContent = p.nip || "-";
+        document.getElementById("label-identifier").textContent = "NIDN";
+        document.getElementById("profile-identifier").textContent = p.nidn || "-";
     }
 
     // Mahasiswa-specific fields
