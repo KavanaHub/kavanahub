@@ -54,8 +54,12 @@ function getDummyData() {
 // ---------- RENDERING ----------
 function renderProposalList() {
     const container = document.getElementById("proposal-list");
-    let filtered = proposalList.filter(p => currentFilter === "all" || p.status === currentFilter);
-    filtered.sort((a, b) => new Date(b.tanggal_submit) - new Date(a.tanggal_submit));
+    // Use status_proposal from backend, fallback to status for compatibility
+    let filtered = proposalList.filter(p => {
+        const status = p.status_proposal || p.status || 'pending';
+        return currentFilter === "all" || status === currentFilter;
+    });
+    filtered.sort((a, b) => new Date(b.created_at || b.tanggal_submit) - new Date(a.created_at || a.tanggal_submit));
 
     if (filtered.length === 0) {
         container.innerHTML = `
@@ -70,33 +74,40 @@ function renderProposalList() {
 }
 
 function renderProposalCard(p) {
+    // Use correct field names from backend API
+    const status = p.status_proposal || p.status || 'pending';
+    const nama = p.nama || 'Unknown';
+    const judul = p.judul_proyek || p.judul || 'Tidak ada judul';
+    const track = p.track || 'proyek1';
+
     const statusConfig = { pending: { text: "Pending", icon: "🕐", class: "bg-yellow-100 text-yellow-700" }, approved: { text: "Approved", icon: "✅", class: "bg-green-100 text-green-700" }, rejected: { text: "Rejected", icon: "❌", class: "bg-red-100 text-red-700" } };
-    const s = statusConfig[p.status] || statusConfig.pending;
-    const isProyek = p.track.includes("proyek");
+    const s = statusConfig[status] || statusConfig.pending;
+    const isProyek = track.includes("proyek");
 
     return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
         <div class="flex flex-col gap-4">
             <div class="flex items-start justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">${getInitials(p.mahasiswa_nama)}</div>
+                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">${getInitials(nama)}</div>
                     <div>
-                        <p class="font-semibold text-text-main text-sm lg:text-base">${p.mahasiswa_nama}</p>
-                        <p class="text-text-secondary text-xs">${p.npm} • ${getTrackDisplayName(p.track)}</p>
+                        <p class="font-semibold text-text-main text-sm lg:text-base">${nama}</p>
+                        <p class="text-text-secondary text-xs">${p.npm || '-'} • ${getTrackDisplayName(track)}</p>
                     </div>
                 </div>
                 <span class="px-2 py-1 text-xs font-medium rounded-full ${s.class}">${s.icon} ${s.text}</span>
             </div>
 
             <div class="bg-slate-50 p-3 lg:p-4 rounded-lg">
-                <h4 class="font-semibold text-text-main text-sm mb-2">${p.judul}</h4>
+                <h4 class="font-semibold text-text-main text-sm mb-2">${judul}</h4>
                 <div class="flex flex-wrap gap-3 text-xs text-text-secondary">
-                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_today</span>${formatDateShort(p.tanggal_submit)}</span>
-                    ${isProyek ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">group</span>Partner: ${p.partner_npm}</span>` : `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">business</span>${p.company_name}</span>`}
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_today</span>${formatDateShort(p.created_at || p.tanggal_submit)}</span>
+                    ${isProyek ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">group</span>Kelompok</span>` : `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">business</span>Individual</span>`}
                 </div>
             </div>
 
             ${p.catatan ? `<div class="bg-red-50 p-3 rounded-lg border border-red-100"><p class="text-red-700 text-xs"><span class="font-medium">Catatan:</span> ${p.catatan}</p></div>` : ""}
+
 
             <div class="flex gap-2 pt-2">
                 <a href="${p.file_proposal}" target="_blank" class="flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
@@ -113,9 +124,10 @@ function renderProposalCard(p) {
 }
 
 function updateStats() {
-    document.getElementById("stat-pending").textContent = proposalList.filter(p => p.status === "pending").length;
-    document.getElementById("stat-approved").textContent = proposalList.filter(p => p.status === "approved").length;
-    document.getElementById("stat-rejected").textContent = proposalList.filter(p => p.status === "rejected").length;
+    // Use status_proposal from backend
+    document.getElementById("stat-pending").textContent = proposalList.filter(p => (p.status_proposal || p.status) === "pending").length;
+    document.getElementById("stat-approved").textContent = proposalList.filter(p => (p.status_proposal || p.status) === "approved").length;
+    document.getElementById("stat-rejected").textContent = proposalList.filter(p => (p.status_proposal || p.status) === "rejected").length;
 }
 
 // ---------- EVENT HANDLERS ----------
@@ -145,7 +157,7 @@ window.openApproveModal = function (id) {
     document.getElementById("action-id").value = id;
     document.getElementById("action-type").value = "approved";
     document.getElementById("modal-title").textContent = "Approve Proposal";
-    document.getElementById("modal-desc").textContent = `Approve proposal "${p.judul}" oleh ${p.mahasiswa_nama}?`;
+    document.getElementById("modal-desc").textContent = `Approve proposal "${p.judul_proyek || p.judul}" oleh ${p.nama || p.mahasiswa_nama}?`;
     document.getElementById("action-catatan").value = "";
     const btn = document.getElementById("btn-modal-submit");
     btn.textContent = "Approve";
@@ -159,7 +171,7 @@ window.openRejectModal = function (id) {
     document.getElementById("action-id").value = id;
     document.getElementById("action-type").value = "rejected";
     document.getElementById("modal-title").textContent = "Reject Proposal";
-    document.getElementById("modal-desc").textContent = `Reject proposal "${p.judul}" oleh ${p.mahasiswa_nama}? Berikan alasan penolakan.`;
+    document.getElementById("modal-desc").textContent = `Reject proposal "${p.judul_proyek || p.judul}" oleh ${p.nama || p.mahasiswa_nama}? Berikan alasan penolakan.`;
     document.getElementById("action-catatan").value = "";
     const btn = document.getElementById("btn-modal-submit");
     btn.textContent = "Reject";
