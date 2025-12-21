@@ -74,7 +74,13 @@ async function loadData() {
             dosenAPI.getBimbinganList(),
         ]);
 
-        if (profileResult.ok) dosenProfile = profileResult.data;
+        if (profileResult.ok) {
+            dosenProfile = profileResult.data;
+            // Update sessionStorage with real profile data
+            if (dosenProfile.nama) sessionStorage.setItem("userName", dosenProfile.nama);
+            if (dosenProfile.email) sessionStorage.setItem("userEmail", dosenProfile.email);
+            updateSidebarUser();
+        }
         if (mahasiswaResult.ok) mahasiswaList = mahasiswaResult.data || [];
         if (bimbinganResult.ok) pendingBimbingan = (bimbinganResult.data || []).filter(b => b.status === "pending");
     } catch (err) {

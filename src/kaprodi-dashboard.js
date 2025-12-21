@@ -53,12 +53,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ---------- DATA LOADING ----------
 async function loadData() {
     try {
-        const [statsResult, dosenResult] = await Promise.all([
+        const [statsResult, dosenResult, profileResult] = await Promise.all([
             kaprodiAPI.getStats(),
             kaprodiAPI.getDosenList(),
+            kaprodiAPI.getProfile(),
         ]);
         if (statsResult.ok) stats = statsResult.data;
         if (dosenResult.ok) dosenList = dosenResult.data || [];
+
+        // Update sessionStorage with real profile data
+        if (profileResult.ok && profileResult.data) {
+            if (profileResult.data.nama) sessionStorage.setItem("userName", profileResult.data.nama);
+            if (profileResult.data.email) sessionStorage.setItem("userEmail", profileResult.data.email);
+            updateSidebarUser();
+        }
     } catch (err) {
         console.error(err);
         stats = getDummyStats();

@@ -66,13 +66,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ---------- DATA LOADING ----------
 async function loadData() {
     try {
-        const [statsResult, proposalResult] = await Promise.all([
+        const [statsResult, proposalResult, profileResult] = await Promise.all([
             koordinatorAPI.getStats(),
             koordinatorAPI.getPendingProposals(),
+            koordinatorAPI.getProfile(),
         ]);
 
         if (statsResult.ok) stats = statsResult.data;
         if (proposalResult.ok) pendingProposals = proposalResult.data || [];
+
+        // Update sessionStorage with real profile data
+        if (profileResult.ok && profileResult.data) {
+            if (profileResult.data.nama) sessionStorage.setItem("userName", profileResult.data.nama);
+            if (profileResult.data.email) sessionStorage.setItem("userEmail", profileResult.data.email);
+            updateSidebarUser(); // Update sidebar with new name
+        }
     } catch (err) {
         console.error("Error loading data:", err);
         // Use dummy data
