@@ -266,7 +266,7 @@ export const kaprodiAPI = {
 };
 
 // ========================================
-// PUBLIC API (no auth required)
+// PUBLIC API (No Auth Required)
 // ========================================
 
 export const publicAPI = {
