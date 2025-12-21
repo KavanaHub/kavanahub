@@ -53,7 +53,7 @@ function renderList() {
         if (search && !m.nama.toLowerCase().includes(search) && !m.npm.includes(search)) return false;
         if (currentFilter === "proyek") return m.track.includes("proyek");
         if (currentFilter === "internship") return m.track.includes("internship");
-        if (currentFilter === "siap") return m.bimbingan_count >= 8 || m.status === "ready";
+        if (currentFilter === "siap") return (m.bimbingan_count || 0) >= 8 || m.status === "ready";
         return true;
     });
 
@@ -106,7 +106,7 @@ function updateStats() {
     document.getElementById("stat-total").textContent = mahasiswaList.length;
     document.getElementById("stat-proyek").textContent = mahasiswaList.filter(m => m.track.includes("proyek")).length;
     document.getElementById("stat-internship").textContent = mahasiswaList.filter(m => m.track.includes("internship")).length;
-    document.getElementById("stat-siap").textContent = mahasiswaList.filter(m => m.bimbingan_count >= 8 || m.status === "ready").length;
+    document.getElementById("stat-siap").textContent = mahasiswaList.filter(m => (m.bimbingan_count || 0) >= 8 || m.status === "ready").length;
 }
 
 // ---------- EVENT HANDLERS ----------
