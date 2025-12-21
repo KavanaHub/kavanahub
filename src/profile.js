@@ -2,7 +2,7 @@
 // PROFILE PAGE (Shared - All Roles)
 // ========================================
 
-import { authAPI, getToken, clearToken } from "./api.js";
+import { authAPI, mahasiswaAPI, dosenAPI, koordinatorAPI, kaprodiAPI, getToken, clearToken } from "./api.js";
 import { initPage, closeSidebar, getDashboardURL } from "./utils/pageInit.js";
 import { getInitials } from "./utils/formatUtils.js";
 import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
@@ -26,14 +26,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ---------- DATA LOADING ----------
 async function loadProfile() {
     try {
-        const result = await authAPI.getProfile();
+        let result;
+
+        // Use role-specific API endpoint
+        if (currentRole === "mahasiswa") {
+            result = await mahasiswaAPI.getProfile();
+        } else if (currentRole === "dosen") {
+            result = await dosenAPI.getProfile();
+        } else if (currentRole === "koordinator") {
+            result = await koordinatorAPI.getProfile();
+        } else if (currentRole === "kaprodi") {
+            result = await kaprodiAPI.getProfile();
+        } else {
+            result = await authAPI.getProfile();
+        }
+
         if (result.ok) {
             profile = result.data;
+            // Update session storage with fresh data
+            if (profile.nama) sessionStorage.setItem("userName", profile.nama);
+            if (profile.email) sessionStorage.setItem("userEmail", profile.email);
         } else {
+            console.error("Profile API error:", result.error);
             profile = getDummyProfile();
         }
     } catch (err) {
-        console.error(err);
+        console.error("Error loading profile:", err);
         profile = getDummyProfile();
     }
     renderProfile();
