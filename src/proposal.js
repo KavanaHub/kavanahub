@@ -241,7 +241,7 @@ async function handleSubmit(e) {
     try {
         const result = await mahasiswaAPI.submitProposal({
             judul_proyek: formData.judul,
-            file_proposal: formData.proposalLink,
+            file_url: formData.proposalLink,
             usulan_dosen_id: formData.dosen || null,
         });
 
