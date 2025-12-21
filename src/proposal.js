@@ -263,15 +263,20 @@ async function handleCancel() {
 async function handleSubmit(e) {
     e.preventDefault();
 
-    const trackData = sessionStorage.getItem("selectedTrack");
-    if (!trackData) {
+    // Use profileData from database (loaded in loadTrackInfo)
+    if (!profileData || !profileData.track) {
         showToast.warning("Silakan pilih track terlebih dahulu");
         window.location.href = "/mahasiswa/track.html";
         return;
     }
 
-    const track = JSON.parse(trackData);
     const formData = getFormData();
+
+    // Build track object from profileData for validation
+    const track = {
+        track: profileData.track,
+        type: profileData.track.startsWith('proyek') ? 'proyek' : 'internship'
+    };
 
     // Validate
     if (!validateForm(formData, track)) return;
@@ -288,7 +293,6 @@ async function handleSubmit(e) {
         });
 
         if (result.ok) {
-            saveToSession(formData, track);
             await showModal.success("Proposal Terkirim!", "Proposal Anda akan direview oleh koordinator.");
             window.location.href = "/mahasiswa/dashboard.html";
         } else {
