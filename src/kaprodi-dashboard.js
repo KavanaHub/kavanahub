@@ -105,7 +105,7 @@ function renderDashboard() {
             <!-- Header -->
             <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 class="text-text-main text-2xl sm:text-3xl lg:text-4xl font-black">Selamat Datang, ${userName.split(" ")[0]}!</h1>
+                    <h1 class="text-text-main text-2xl sm:text-3xl lg:text-4xl font-black">Selamat Datang, ${userName}!</h1>
                     <p class="text-text-secondary text-sm lg:text-base mt-1">Dashboard Kepala Program Studi</p>
                 </div>
                 <div class="flex items-center gap-2 px-3 py-2 bg-amber-100 text-amber-700 rounded-lg">
