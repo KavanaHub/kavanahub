@@ -143,9 +143,13 @@ function renderAngkatanChart(data) {
 function renderActivities() {
     const container = document.getElementById("activity-list");
     const icons = {
+        register: { icon: "person_add", color: "text-cyan-600 bg-cyan-50" },
+        track: { icon: "route", color: "text-indigo-600 bg-indigo-50" },
         proposal: { icon: "description", color: "text-yellow-600 bg-yellow-50" },
+        approved: { icon: "task_alt", color: "text-green-600 bg-green-50" },
+        bimbingan_waiting: { icon: "schedule", color: "text-orange-600 bg-orange-50" },
         bimbingan: { icon: "chat", color: "text-blue-600 bg-blue-50" },
-        sidang: { icon: "verified", color: "text-green-600 bg-green-50" },
+        sidang: { icon: "verified", color: "text-emerald-600 bg-emerald-50" },
         pembimbing: { icon: "how_to_reg", color: "text-purple-600 bg-purple-50" },
     };
 
