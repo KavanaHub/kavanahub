@@ -11,6 +11,7 @@ import { formatDateShort, getInitials, removeAcademicTitles } from "./utils/form
 let dosenProfile = null;
 let mahasiswaList = [];
 let pendingBimbingan = [];
+let stats = { total_mahasiswa: 0, bimbingan_pending: 0, siap_sidang: 0, laporan_pending: 0 };
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
@@ -68,10 +69,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ---------- DATA LOADING ----------
 async function loadData() {
     try {
-        const [profileResult, mahasiswaResult, bimbinganResult] = await Promise.all([
+        const [profileResult, mahasiswaResult, bimbinganResult, statsResult] = await Promise.all([
             dosenAPI.getProfile(),
             dosenAPI.getMahasiswaBimbingan(),
             dosenAPI.getBimbinganList(),
+            dosenAPI.getStats(),
         ]);
 
         if (profileResult.ok) {
@@ -83,6 +85,7 @@ async function loadData() {
         }
         if (mahasiswaResult.ok) mahasiswaList = mahasiswaResult.data || [];
         if (bimbinganResult.ok) pendingBimbingan = (bimbinganResult.data || []).filter(b => b.status === "pending");
+        if (statsResult.ok) stats = statsResult.data;
     } catch (err) {
         console.error("Error loading data:", err);
         // Use dummy data
@@ -112,9 +115,12 @@ function renderDashboard() {
     const main = document.getElementById("main-content");
     const rawName = dosenProfile?.nama || sessionStorage.getItem("userName") || "Dosen";
     const userName = removeAcademicTitles(rawName);
-    const totalMahasiswa = mahasiswaList.length;
-    const totalPending = pendingBimbingan.length;
-    const siapSidang = mahasiswaList.filter(m => m.bimbingan_count >= 8).length;
+
+    // Use stats from API
+    const totalMahasiswa = stats.total_mahasiswa || mahasiswaList.length;
+    const totalPending = stats.bimbingan_pending || pendingBimbingan.length;
+    const siapSidang = stats.siap_sidang || 0;
+    const laporanPending = stats.laporan_pending || 0;
 
     main.innerHTML = `
         <div class="max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-8">
@@ -171,7 +177,7 @@ function renderDashboard() {
                             <span class="material-symbols-outlined text-[24px]">description</span>
                         </div>
                         <div>
-                            <p class="text-2xl lg:text-3xl font-bold text-text-main">0</p>
+                            <p class="text-2xl lg:text-3xl font-bold text-text-main">${laporanPending}</p>
                             <p class="text-text-secondary text-xs lg:text-sm">Laporan Pending</p>
                         </div>
                     </div>
@@ -227,7 +233,7 @@ function renderDashboard() {
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="font-medium text-text-main text-sm truncate">${b.mahasiswa_nama}</p>
-                            <p class="text-text-secondary text-xs truncate">${b.kegiatan}</p>
+                            <p class="text-text-secondary text-xs truncate">${b.topik || b.kegiatan || '-'}</p>
                         </div>
                         <span class="text-text-secondary text-xs shrink-0">${formatDateShort(b.tanggal)}</span>
                     </div>

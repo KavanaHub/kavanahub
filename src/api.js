@@ -162,6 +162,8 @@ export const mahasiswaAPI = {
 export const dosenAPI = {
     getProfile: () => apiRequest('/api/dosen/profile'),
 
+    getStats: () => apiRequest('/api/dosen/stats'),
+
     getMahasiswaBimbingan: () => apiRequest('/api/dosen/mahasiswa'),
 
     getBimbinganList: () => apiRequest('/api/dosen/bimbingan'),
