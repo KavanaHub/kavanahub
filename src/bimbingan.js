@@ -132,9 +132,9 @@ async function loadBimbinganFromAPI() {
       sessions = result.data.map((b) => ({
         id: b.id,
         date: b.tanggal,
-        topic: b.kegiatan,
+        topic: b.topik || b.kegiatan || "",
         notes: b.catatan || "",
-        next: b.rencana_selanjutnya || "",
+        mingguKe: b.minggu_ke,
         status: b.status,
       }));
       renderSessions();
@@ -311,11 +311,14 @@ async function handleSubmit(e) {
   setButtonLoading(submitBtn, "Menyimpan...");
 
   try {
+    // Calculate minggu_ke based on existing sessions count
+    const mingguKe = sessions.length + 1;
+
     const result = await mahasiswaAPI.createBimbingan({
       tanggal: date,
-      kegiatan: topic,
+      minggu_ke: mingguKe,
+      topik: topic,
       catatan: notes,
-      rencana_selanjutnya: next,
     });
 
     if (result.ok) {
