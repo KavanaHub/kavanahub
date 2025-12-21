@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmPasswordInput = document.getElementById("reg-confirm-password");
     const togglePasswordBtn = document.getElementById("toggle-password");
 
+    // Populate angkatan options dynamically
+    populateAngkatanOptions();
+
     // Toggle password visibility
     togglePasswordBtn?.addEventListener("click", () => {
         const type = passwordInput.type === "password" ? "text" : "password";
@@ -50,6 +53,39 @@ document.addEventListener("DOMContentLoaded", () => {
     // Form submission
     form?.addEventListener("submit", handleSubmit);
 });
+
+// ---------- ANGKATAN OPTIONS ----------
+/**
+ * Populate angkatan dropdown dynamically
+ * - In Indonesia, academic year starts in October
+ * - Batch 2025 enters in October 2025
+ * - After October, current year batch is the newest (baru masuk)
+ * - Before October, previous year batch is still the newest
+ * - Only show last 4 years (older batches are no longer relevant)
+ */
+function populateAngkatanOptions() {
+    const select = document.getElementById("reg-angkatan");
+    if (!select) return;
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // JavaScript months are 0-indexed
+
+    // Determine the newest angkatan based on month
+    // Before October: newest batch is previous year (they entered last October)
+    // After October (>= 10): newest batch is current year (they just entered this October)
+    const newestAngkatan = currentMonth >= 10 ? currentYear : currentYear - 1;
+
+    // Generate options for 4 years (from newest to oldest)
+    // Example: In Dec 2025 -> 2025, 2024, 2023, 2022
+    // Example: In May 2025 -> 2024, 2023, 2022, 2021
+    for (let year = newestAngkatan; year >= newestAngkatan - 3; year--) {
+        const option = document.createElement("option");
+        option.value = year.toString();
+        option.textContent = year.toString();
+        select.appendChild(option);
+    }
+}
 
 // ---------- HELPERS ----------
 function updatePasswordRequirement(elementId, isValid, text) {
