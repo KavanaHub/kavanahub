@@ -3,7 +3,7 @@
 // ========================================
 
 import { validateNPM } from "./shared.js";
-import { mahasiswaAPI, publicAPI } from "./api.js";
+import { mahasiswaAPI } from "./api.js";
 import { initPage, closeSidebar } from "./utils/pageInit.js";
 import {
     showFieldError,
@@ -149,7 +149,7 @@ async function loadUserInfo() {
 
 async function loadDosenList() {
     try {
-        const result = await publicAPI.getDosenList();
+        const result = await mahasiswaAPI.getDosenList();
         if (result.ok && result.data) {
             dosenList = result.data;
             populateDosenDropdowns();

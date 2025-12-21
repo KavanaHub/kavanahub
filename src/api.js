@@ -149,7 +149,10 @@ export const mahasiswaAPI = {
     getAvailableKelompok: () => apiRequest('/api/mahasiswa/kelompok/available'),
 
     // Periode Aktif - cek apakah mahasiswa eligible untuk proyek/internship
-    getPeriodeAktif: () => apiRequest('/api/mahasiswa/periode-aktif')
+    getPeriodeAktif: () => apiRequest('/api/mahasiswa/periode-aktif'),
+
+    // Dosen list for proposal
+    getDosenList: () => apiRequest('/api/mahasiswa/dosen/list')
 };
 
 // ========================================
