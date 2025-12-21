@@ -31,6 +31,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Setup global closeSidebar
     window.closeSidebar = closeSidebar;
 
+    // Check if already submitted - redirect if so
+    const alreadySubmitted = await checkExistingProposal();
+    if (alreadySubmitted) return;
+
     // Load data - fetch from database
     await loadTrackInfo();
     await loadUserInfo();
@@ -43,6 +47,47 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Setup error clearing
     setupErrorClearOnInput(FORM_FIELDS);
 });
+
+// ---------- CHECK EXISTING PROPOSAL ----------
+/**
+ * Check if user or kelompok already has a submitted proposal
+ * Redirect if status is pending or approved (not rejected or null)
+ */
+async function checkExistingProposal() {
+    try {
+        const result = await mahasiswaAPI.getProfile();
+
+        if (!result.ok) return false;
+
+        const profile = result.data;
+        const status = profile.status_proposal;
+
+        // If proposal exists and is not rejected, redirect
+        if (status && status !== 'rejected') {
+            let message, redirectUrl;
+
+            if (status === 'pending') {
+                message = "Proposal Anda sedang direview oleh koordinator. Silakan tunggu.";
+                redirectUrl = "/mahasiswa/dashboard.html";
+            } else if (status === 'approved') {
+                message = "Proposal Anda sudah disetujui!";
+                redirectUrl = "/mahasiswa/dashboard.html";
+            } else {
+                message = `Status proposal: ${status}`;
+                redirectUrl = "/mahasiswa/dashboard.html";
+            }
+
+            await showModal.info("Proposal Sudah Disubmit", message);
+            window.location.href = redirectUrl;
+            return true;
+        }
+
+        return false;
+    } catch (err) {
+        console.error("Error checking existing proposal:", err);
+        return false;
+    }
+}
 
 // ---------- DATA LOADING ----------
 let profileData = null;
