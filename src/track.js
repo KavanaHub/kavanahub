@@ -58,6 +58,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Setup global closeSidebar
     window.closeSidebar = closeSidebar;
 
+    // Check if user already has a track and kelompok - redirect if so
+    const hasExistingTrack = await checkExistingTrack();
+    if (hasExistingTrack) {
+        // User already has track, page will redirect
+        return;
+    }
+
     // Load semester and filter tracks
     await initializeTrackVisibility();
 
@@ -82,6 +89,67 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Clear errors on input
     setupErrorClearing();
 });
+
+// ---------- CHECK EXISTING TRACK ----------
+/**
+ * Check if user already has a track selected
+ * If they have track + kelompok, redirect to dashboard
+ * If they have track but no kelompok (proyek), redirect to kelompok page
+ */
+async function checkExistingTrack() {
+    try {
+        const result = await mahasiswaAPI.getProfile();
+
+        if (!result.ok) {
+            console.log("[Track] Could not get profile");
+            return false;
+        }
+
+        const profile = result.data;
+
+        // If user has a track
+        if (profile.track) {
+            const trackType = profile.track.startsWith('internship') ? 'internship' : 'proyek';
+
+            // For proyek: check if they have kelompok
+            if (trackType === 'proyek') {
+                if (profile.kelompok_id) {
+                    // Already have track AND kelompok - redirect to dashboard
+                    console.log("[Track] User already has track and kelompok, redirecting...");
+                    await showModal.info(
+                        "Track Sudah Dipilih",
+                        `Anda sudah memilih ${getTrackDisplayName(profile.track)} dan sudah memiliki kelompok.`
+                    );
+                    window.location.href = "/mahasiswa/dashboard.html";
+                    return true;
+                } else {
+                    // Has track but no kelompok - redirect to kelompok page
+                    console.log("[Track] User has track but no kelompok, redirecting to kelompok...");
+                    await showModal.info(
+                        "Track Sudah Dipilih",
+                        `Anda sudah memilih ${getTrackDisplayName(profile.track)}. Silakan buat atau join kelompok.`
+                    );
+                    window.location.href = "/mahasiswa/kelompok.html";
+                    return true;
+                }
+            } else {
+                // Internship - no kelompok needed
+                console.log("[Track] User already has internship track, redirecting...");
+                await showModal.info(
+                    "Track Sudah Dipilih",
+                    `Anda sudah memilih ${getTrackDisplayName(profile.track)}.`
+                );
+                window.location.href = "/mahasiswa/dashboard.html";
+                return true;
+            }
+        }
+
+        return false;
+    } catch (err) {
+        console.error("[Track] Error checking existing track:", err);
+        return false;
+    }
+}
 
 // ---------- SEMESTER CALCULATION ----------
 /**
