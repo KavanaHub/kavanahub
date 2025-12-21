@@ -196,7 +196,7 @@ function renderMahasiswaCard(m) {
             </button>
             ${m.bimbingan_pending > 0
       ? `
-            <a href="/bimbingan-approve.html?mahasiswa=${m.id}" class="px-3 py-1.5 text-xs font-medium bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+            <a href="/dosen/bimbingan-approve.html?mahasiswa=${m.id}" class="px-3 py-1.5 text-xs font-medium bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
               Review
             </a>
             `
@@ -326,7 +326,7 @@ window.viewDetail = function (id) {
       <div class="flex gap-3">
         ${mahasiswa.bimbingan_pending > 0
       ? `
-        <a href="/bimbingan-approve.html?mahasiswa=${mahasiswa.id}" class="flex-1 py-2.5 text-center text-sm font-semibold bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+        <a href="/dosen/bimbingan-approve.html?mahasiswa=${mahasiswa.id}" class="flex-1 py-2.5 text-center text-sm font-semibold bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
           Review Bimbingan
         </a>
         `

@@ -81,25 +81,25 @@ export async function renderDosenDashboard(container, userData) {
         <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
           <h3 class="text-base lg:text-lg font-bold text-text-main mb-4 lg:mb-6">Aksi Cepat</h3>
           <div class="grid grid-cols-2 gap-3 lg:gap-4">
-            <a href="/mahasiswa-bimbingan.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors group">
+            <a href="/dosen/mahasiswa-bimbingan.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors group">
               <div class="p-2 lg:p-3 bg-primary/10 text-primary rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">
                 <span class="material-symbols-outlined text-[20px] lg:text-[24px]">groups</span>
               </div>
               <span class="text-xs lg:text-sm font-medium text-text-main text-center">Lihat Mahasiswa</span>
             </a>
-            <a href="/bimbingan-approve.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors group">
+            <a href="/dosen/bimbingan-approve.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors group">
               <div class="p-2 lg:p-3 bg-yellow-100 text-yellow-600 rounded-lg group-hover:bg-yellow-500 group-hover:text-white transition-colors">
                 <span class="material-symbols-outlined text-[20px] lg:text-[24px]">check_circle</span>
               </div>
               <span class="text-xs lg:text-sm font-medium text-text-main text-center">Approve Bimbingan</span>
             </a>
-            <a href="/laporan-approve.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors group">
+            <a href="/dosen/laporan-approve.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors group">
               <div class="p-2 lg:p-3 bg-green-100 text-green-600 rounded-lg group-hover:bg-green-500 group-hover:text-white transition-colors">
                 <span class="material-symbols-outlined text-[20px] lg:text-[24px]">grading</span>
               </div>
               <span class="text-xs lg:text-sm font-medium text-text-main text-center">Approve Laporan</span>
             </a>
-            <a href="/profile.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors group">
+            <a href="/shared/profile.html" class="flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-6 bg-slate-50 hover:bg-primary/10 rounded-xl transition-colors group">
               <div class="p-2 lg:p-3 bg-purple-100 text-purple-600 rounded-lg group-hover:bg-purple-500 group-hover:text-white transition-colors">
                 <span class="material-symbols-outlined text-[20px] lg:text-[24px]">person</span>
               </div>
@@ -112,7 +112,7 @@ export async function renderDosenDashboard(container, userData) {
         <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
           <div class="flex justify-between items-center mb-4 lg:mb-6">
             <h3 class="text-base lg:text-lg font-bold text-text-main">Mahasiswa Bimbingan</h3>
-            <a href="/mahasiswa-bimbingan.html" class="text-xs text-primary hover:underline">Lihat Semua</a>
+            <a href="/dosen/mahasiswa-bimbingan.html" class="text-xs text-primary hover:underline">Lihat Semua</a>
           </div>
           ${mahasiswaList.length > 0
         ? `
