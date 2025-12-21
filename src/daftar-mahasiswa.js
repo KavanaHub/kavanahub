@@ -66,8 +66,9 @@ function renderList() {
 }
 
 function renderCard(m) {
-    const isReady = m.bimbingan_count >= 8 || m.status === "ready";
-    const progress = Math.min((m.bimbingan_count / 8) * 100, 100);
+    const bimbinganCount = m.bimbingan_count || 0;
+    const isReady = bimbinganCount >= 8 || m.status === "ready";
+    const progress = Math.min((bimbinganCount / 8) * 100, 100);
 
     return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
@@ -87,7 +88,7 @@ function renderCard(m) {
                 <div class="w-full sm:w-32">
                     <div class="flex justify-between text-xs text-text-secondary mb-1">
                         <span>Bimbingan</span>
-                        <span>${m.bimbingan_count}/8</span>
+                        <span>${bimbinganCount}/8</span>
                     </div>
                     <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div class="h-full bg-primary" style="width: ${progress}%"></div>
