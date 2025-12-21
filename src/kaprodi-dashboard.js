@@ -4,7 +4,7 @@
 
 import { kaprodiAPI, getToken } from "./api.js";
 import { getSidebarHTML, bindSidebarEvents, updateSidebarUser } from "./components/sidebar.js";
-import { getInitials } from "./utils/formatUtils.js";
+import { getInitials, removeAcademicTitles } from "./utils/formatUtils.js";
 
 // ---------- STATE ----------
 let stats = null;
@@ -96,7 +96,8 @@ function getDummyDosen() {
 // ---------- RENDERING ----------
 function renderDashboard() {
     const main = document.getElementById("main-content");
-    const userName = sessionStorage.getItem("userName") || "Kaprodi";
+    const rawName = sessionStorage.getItem("userName") || "Kaprodi";
+    const userName = removeAcademicTitles(rawName);
     const s = stats || getDummyStats();
 
     main.innerHTML = `

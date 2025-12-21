@@ -7,6 +7,7 @@ import { mahasiswaAPI, dosenAPI, koordinatorAPI, kaprodiAPI, getToken, clearToke
 import { getSidebarHTML, getMobileHeaderHTML, bindSidebarEvents, updateSidebarUser, updateBimbinganBadge } from "./components/sidebar.js";
 import { renderMahasiswaDashboard } from "./components/mahasiswaDashboard.js";
 import { renderDosenDashboard } from "./components/dosenDashboard.js";
+import { removeAcademicTitles } from "./utils/formatUtils.js";
 
 // ---------- STATE ----------
 let currentRole = sessionStorage.getItem("userRole") || "mahasiswa";
@@ -66,14 +67,16 @@ async function fetchUserProfile() {
 
 // ---------- UPDATE HEADER USER ----------
 function updateHeaderUser() {
-  const userName = sessionStorage.getItem("userName") || "User";
+  const rawName = sessionStorage.getItem("userName") || "User";
+  const userName = removeAcademicTitles(rawName);
   const headerName = document.querySelector(".header-name");
   if (headerName) headerName.textContent = userName;
 }
 
 // ---------- DASHBOARD HTML (Responsive) ----------
 function getDashboardHTML() {
-  const userName = sessionStorage.getItem("userName") || "User";
+  const rawName = sessionStorage.getItem("userName") || "User";
+  const userName = removeAcademicTitles(rawName);
 
   return `
     ${getMobileHeaderHTML()}

@@ -5,7 +5,7 @@
 import { dosenAPI } from "./api.js";
 import { getToken, clearToken } from "./api.js";
 import { getSidebarHTML, bindSidebarEvents, updateSidebarUser } from "./components/sidebar.js";
-import { formatDateShort, getInitials } from "./utils/formatUtils.js";
+import { formatDateShort, getInitials, removeAcademicTitles } from "./utils/formatUtils.js";
 
 // ---------- STATE ----------
 let dosenProfile = null;
@@ -110,7 +110,8 @@ function getDummyBimbingan() {
 // ---------- RENDERING ----------
 function renderDashboard() {
     const main = document.getElementById("main-content");
-    const userName = dosenProfile?.nama || sessionStorage.getItem("userName") || "Dosen";
+    const rawName = dosenProfile?.nama || sessionStorage.getItem("userName") || "Dosen";
+    const userName = removeAcademicTitles(rawName);
     const totalMahasiswa = mahasiswaList.length;
     const totalPending = pendingBimbingan.length;
     const siapSidang = mahasiswaList.filter(m => m.bimbingan_count >= 8).length;

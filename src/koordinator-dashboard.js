@@ -4,7 +4,7 @@
 
 import { koordinatorAPI, getToken } from "./api.js";
 import { getSidebarHTML, bindSidebarEvents, updateSidebarUser } from "./components/sidebar.js";
-import { formatDateShort, getInitials } from "./utils/formatUtils.js";
+import { formatDateShort, getInitials, removeAcademicTitles } from "./utils/formatUtils.js";
 
 // ---------- STATE ----------
 let stats = null;
@@ -109,7 +109,8 @@ function getDummyProposals() {
 // ---------- RENDERING ----------
 function renderDashboard() {
     const main = document.getElementById("main-content");
-    const userName = sessionStorage.getItem("userName") || "Koordinator";
+    const rawName = sessionStorage.getItem("userName") || "Koordinator";
+    const userName = removeAcademicTitles(rawName);
     const s = stats || getDummyStats();
 
     main.innerHTML = `

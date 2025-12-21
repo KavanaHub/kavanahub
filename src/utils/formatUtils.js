@@ -114,3 +114,39 @@ export function getInitials(name) {
 
     return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
 }
+
+/**
+ * Remove academic titles from name
+ * @param {string} name - Full name with titles
+ * @returns {string} - Name without academic titles
+ */
+export function removeAcademicTitles(name) {
+    if (!name) return "";
+
+    // Common Indonesian academic titles (before and after name)
+    const titlesToRemove = [
+        // Prefix titles
+        /^(Prof\.|Dr\.|Ir\.|Drs\.|Dra\.|H\.|Hj\.|Rd\.|R\.)\s*/gi,
+        // Suffix titles - degree abbreviations
+        /,?\s*(S\.Kom\.?|S\.T\.?|S\.Pd\.?|S\.S\.?|S\.H\.?|S\.E\.?|S\.I\.?|S\.Sos\.?|S\.Psi\.?|S\.Ked\.?|S\.Farm\.?|S\.Hum\.?)/gi,
+        /,?\s*(M\.Kom\.?|M\.T\.?|M\.Pd\.?|M\.Hum\.?|M\.Sc\.?|M\.Si\.?|M\.M\.?|M\.H\.?|M\.Eng\.?|MT\.?|MM\.?|MBA\.?)/gi,
+        /,?\s*(Ph\.?D\.?|Dr\.?|Sp\.?)/gi,
+        // Professional certifications
+        /,?\s*(CAIP|SFPC|CDSP|SFPE|CEH|CISSP|PMP|CFA|EBDP\.CDSP)/gi,
+        // Clean up extra commas and spaces
+        /,\s*,/g,
+        /,\s*$/,
+        /^\s*,/,
+    ];
+
+    let cleanName = name;
+
+    for (const pattern of titlesToRemove) {
+        cleanName = cleanName.replace(pattern, "");
+    }
+
+    // Clean up extra whitespace
+    cleanName = cleanName.replace(/\s+/g, " ").trim();
+
+    return cleanName;
+}
