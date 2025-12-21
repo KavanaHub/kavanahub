@@ -283,12 +283,8 @@ function confirmSelection() {
 function confirmProyekSelection() {
     const partnerNpm = document.getElementById("partner-npm").value.trim();
 
-    if (!partnerNpm) {
-        showFieldError("partner-npm", "NPM partner wajib diisi");
-        return;
-    }
-
-    if (!validateNPM(partnerNpm)) {
+    // Partner NPM is OPTIONAL - validate only if provided
+    if (partnerNpm && !validateNPM(partnerNpm)) {
         showFieldError("partner-npm", "NPM tidak valid");
         return;
     }
@@ -296,7 +292,7 @@ function confirmProyekSelection() {
     const trackData = {
         track: selectedTrack,
         type: selectedType,
-        partnerNpm: partnerNpm,
+        partnerNpm: partnerNpm || null, // null if not provided
     };
 
     saveAndRedirect(trackData);
@@ -328,12 +324,34 @@ async function saveAndRedirect(trackData) {
         // Convert track format: "proyek-1" -> "proyek1"
         const trackValue = trackData.track.replace("-", "");
 
-        // Save to backend API
-        const result = await mahasiswaAPI.setTrack(trackValue);
+        // Step 1: Save track to backend API
+        const trackResult = await mahasiswaAPI.setTrack(trackValue);
 
-        if (!result.ok) {
-            await showModal.error("Gagal Memilih Track", result.error || "Terjadi kesalahan saat menyimpan track");
+        if (!trackResult.ok) {
+            await showModal.error("Gagal Memilih Track", trackResult.error || "Terjadi kesalahan saat menyimpan track");
             return;
+        }
+
+        // Step 2: For proyek, create kelompok if partner NPM is provided
+        let kelompokCreated = false;
+        if (trackData.type === "proyek" && trackData.partnerNpm) {
+            try {
+                // Create kelompok with partner
+                const kelompokResult = await mahasiswaAPI.createKelompok(`Kelompok ${trackValue.toUpperCase()}`);
+
+                if (kelompokResult.ok) {
+                    kelompokCreated = true;
+                    console.log("Kelompok created:", kelompokResult.data);
+
+                    // Note: Partner will need to join the kelompok separately
+                    // This just creates the kelompok for the current user
+                } else {
+                    console.log("Kelompok creation note:", kelompokResult.error);
+                    // Don't fail if kelompok creation fails - user might already be in a kelompok
+                }
+            } catch (kelompokErr) {
+                console.log("Kelompok creation error (non-fatal):", kelompokErr);
+            }
         }
 
         // Save to sessionStorage for quick access
@@ -341,11 +359,27 @@ async function saveAndRedirect(trackData) {
         sessionStorage.setItem("userTrack", trackValue);
         console.log("Track saved to backend:", trackData);
 
-        const details =
-            trackData.type === "proyek" ? `Partner NPM: ${trackData.partnerNpm}` : `Perusahaan: ${trackData.companyName}`;
+        // Build success message
+        let details;
+        if (trackData.type === "proyek") {
+            if (trackData.partnerNpm) {
+                details = `Partner NPM: ${trackData.partnerNpm}` +
+                    (kelompokCreated ? "\n\nKelompok berhasil dibuat! Minta partner Anda untuk join kelompok via menu Kelompok." : "");
+            } else {
+                details = "Anda bisa membuat atau join kelompok di menu Kelompok Proyek.";
+            }
+        } else {
+            details = `Perusahaan: ${trackData.companyName}`;
+        }
 
         await showModal.success(`${displayName} Dipilih!`, details);
-        window.location.href = "/mahasiswa/dashboard.html";
+
+        // Redirect to kelompok page if proyek, otherwise dashboard
+        if (trackData.type === "proyek") {
+            window.location.href = "/mahasiswa/kelompok.html";
+        } else {
+            window.location.href = "/mahasiswa/dashboard.html";
+        }
 
     } catch (err) {
         console.error("Error saving track:", err);
