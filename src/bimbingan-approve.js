@@ -295,6 +295,53 @@ function setupEventListeners() {
     document.getElementById("action-form")?.addEventListener("submit", handleAction);
 }
 
+// ---------- VIEW DETAIL ----------
+window.viewBimbinganDetail = function (id) {
+    const b = bimbinganList.find((item) => item.id === id);
+    if (!b) return;
+
+    const statusConfig = getStatusConfig(b.status);
+    const detailHtml = `
+        <div class="text-left">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                    ${getInitials(b.mahasiswa_nama)}
+                </div>
+                <div>
+                    <p class="font-bold text-lg">${b.mahasiswa_nama}</p>
+                    <p class="text-sm text-slate-500">${b.npm || ''}</p>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <div class="bg-slate-50 p-3 rounded-lg">
+                    <p class="text-xs text-slate-500 mb-1">Minggu Ke</p>
+                    <p class="font-medium">${b.minggu_ke || '-'}</p>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-lg">
+                    <p class="text-xs text-slate-500 mb-1">Tanggal</p>
+                    <p class="font-medium">${formatDateShort(b.tanggal)}</p>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-lg">
+                    <p class="text-xs text-slate-500 mb-1">Topik</p>
+                    <p class="font-medium">${b.topik || 'Tidak ada topik'}</p>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-lg">
+                    <p class="text-xs text-slate-500 mb-1">Catatan</p>
+                    <p class="font-medium">${b.catatan || 'Tidak ada catatan'}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-500">Status:</span>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full ${statusConfig.badgeClass}">
+                        ${statusConfig.icon} ${statusConfig.text}
+                    </span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    showModal.info("Detail Bimbingan", detailHtml);
+};
+
 // ---------- MODAL ----------
 window.openApproveModal = function (id) {
     const bimbingan = bimbinganList.find((b) => b.id === id);
@@ -303,7 +350,7 @@ window.openApproveModal = function (id) {
     document.getElementById("action-id").value = id;
     document.getElementById("action-type").value = "approved";
     document.getElementById("modal-title").textContent = "Approve Bimbingan";
-    document.getElementById("modal-desc").textContent = `Approve bimbingan "${bimbingan.kegiatan}" oleh ${bimbingan.mahasiswa_nama}?`;
+    document.getElementById("modal-desc").textContent = `Approve bimbingan "${bimbingan.topik || 'Minggu ke-' + bimbingan.minggu_ke}" oleh ${bimbingan.mahasiswa_nama}?`;
     document.getElementById("action-catatan").value = "";
 
     const submitBtn = document.getElementById("btn-modal-submit");
@@ -320,7 +367,7 @@ window.openRejectModal = function (id) {
     document.getElementById("action-id").value = id;
     document.getElementById("action-type").value = "rejected";
     document.getElementById("modal-title").textContent = "Reject Bimbingan";
-    document.getElementById("modal-desc").textContent = `Reject bimbingan "${bimbingan.kegiatan}" oleh ${bimbingan.mahasiswa_nama}? Berikan alasan penolakan.`;
+    document.getElementById("modal-desc").textContent = `Reject bimbingan "${bimbingan.topik || 'Minggu ke-' + bimbingan.minggu_ke}" oleh ${bimbingan.mahasiswa_nama}? Berikan alasan penolakan.`;
     document.getElementById("action-catatan").value = "";
 
     const submitBtn = document.getElementById("btn-modal-submit");
