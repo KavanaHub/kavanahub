@@ -84,8 +84,26 @@
                 </a>
             </header>
 
+            <!-- No Track Message (shown when no track available for semester) -->
+            <div id="no-track-message" class="hidden">
+                <div class="bg-white rounded-xl p-6 lg:p-8 border border-slate-200 text-center">
+                    <div
+                        class="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-3xl lg:text-4xl mx-auto mb-4">
+                        <span class="material-symbols-outlined text-4xl lg:text-5xl">info</span>
+                    </div>
+                    <h3 class="text-lg lg:text-xl font-bold text-text-main mb-2" id="no-track-title">Tidak Ada Proyek
+                        Aktif</h3>
+                    <p class="text-text-secondary text-sm lg:text-base mb-4" id="no-track-description">
+                        Belum ada periode proyek yang aktif untuk semester Anda saat ini.
+                    </p>
+                    <p class="text-text-secondary text-xs lg:text-sm">
+                        Silakan tunggu pengumuman dari koordinator atau hubungi dosen pembimbing Anda.
+                    </p>
+                </div>
+            </div>
+
             <!-- Track Categories -->
-            <div class="space-y-8 lg:space-y-10">
+            <div class="space-y-8 lg:space-y-10" id="track-categories">
                 <!-- Proyek Section -->
                 <div class="track-category">
                     <div class="flex items-center gap-3 lg:gap-4 mb-4 lg:mb-6">
@@ -101,7 +119,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 track-options">
                         <!-- Proyek 1 -->
                         <div class="track-card bg-white rounded-xl p-4 lg:p-6 border border-slate-200 hover:border-primary/50 hover:shadow-lg transition-all cursor-pointer group"
-                            data-track="proyek-1" data-type="proyek">
+                            data-track="proyek-1" data-type="proyek" data-semester="2">
                             <div class="flex justify-between items-start mb-3 lg:mb-4">
                                 <span
                                     class="px-2 lg:px-3 py-1 text-[10px] lg:text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">Semester
@@ -136,7 +154,7 @@
 
                         <!-- Proyek 2 -->
                         <div class="track-card bg-white rounded-xl p-4 lg:p-6 border border-slate-200 hover:border-primary/50 hover:shadow-lg transition-all cursor-pointer group"
-                            data-track="proyek-2" data-type="proyek">
+                            data-track="proyek-2" data-type="proyek" data-semester="3">
                             <div class="flex justify-between items-start mb-3 lg:mb-4">
                                 <span
                                     class="px-2 lg:px-3 py-1 text-[10px] lg:text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">Semester
@@ -171,7 +189,7 @@
 
                         <!-- Proyek 3 -->
                         <div class="track-card bg-white rounded-xl p-4 lg:p-6 border-2 border-primary shadow-lg relative sm:col-span-2 lg:col-span-1"
-                            data-track="proyek-3" data-type="proyek">
+                            data-track="proyek-3" data-type="proyek" data-semester="5">
                             <div class="absolute -top-3 left-1/2 -translate-x-1/2">
                                 <span
                                     class="px-3 lg:px-4 py-1 text-[10px] lg:text-xs font-bold bg-primary text-white rounded-full">POPULER</span>
@@ -224,7 +242,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 track-options">
                         <!-- Internship 1 -->
                         <div class="track-card bg-white rounded-xl p-4 lg:p-6 border border-slate-200 hover:border-purple-400 hover:shadow-lg transition-all cursor-pointer group"
-                            data-track="internship-1" data-type="internship">
+                            data-track="internship-1" data-type="internship" data-semester="7">
                             <div class="flex justify-between items-start mb-3 lg:mb-4">
                                 <span
                                     class="px-2 lg:px-3 py-1 text-[10px] lg:text-xs font-semibold bg-purple-100 text-purple-700 rounded-full">Semester
@@ -259,7 +277,7 @@
 
                         <!-- Internship 2 -->
                         <div class="track-card bg-white rounded-xl p-4 lg:p-6 border border-slate-200 hover:border-purple-400 hover:shadow-lg transition-all cursor-pointer group"
-                            data-track="internship-2" data-type="internship">
+                            data-track="internship-2" data-type="internship" data-semester="8">
                             <div class="flex justify-between items-start mb-3 lg:mb-4">
                                 <span
                                     class="px-2 lg:px-3 py-1 text-[10px] lg:text-xs font-semibold bg-purple-100 text-purple-700 rounded-full">Semester

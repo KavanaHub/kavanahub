@@ -7,10 +7,30 @@ import { initPage, closeSidebar } from "./utils/pageInit.js";
 import { showFieldError, clearFieldError } from "./utils/formUtils.js";
 import { getTrackDisplayName } from "./utils/formatUtils.js";
 import { showToast, showModal } from "./utils/alerts.js";
+import { mahasiswaAPI } from "./api.js";
 
 // ---------- STATE ----------
 let selectedTrack = null;
 let selectedType = null;
+let studentSemester = null;
+let activeJadwal = [];
+
+// ---------- SEMESTER TO TRACK MAPPING ----------
+const SEMESTER_TRACK_MAP = {
+    2: "proyek-1",
+    3: "proyek-2",
+    5: "proyek-3",
+    7: "internship-1",
+    8: "internship-2"
+};
+
+const SEMESTER_LABELS = {
+    2: "Proyek 1 (Semester 2)",
+    3: "Proyek 2 (Semester 3)",
+    5: "Proyek 3 (Semester 5)",
+    7: "Internship 1 (Semester 7)",
+    8: "Internship 2 (Semester 8)"
+};
 
 // ---------- DOM SELECTORS ----------
 const getElements = () => ({
@@ -24,19 +44,26 @@ const getElements = () => ({
     selectedType: document.getElementById("selected-track-type"),
     teamSection: document.getElementById("team-section"),
     companySection: document.getElementById("company-section"),
+    noTrackMessage: document.getElementById("no-track-message"),
+    noTrackTitle: document.getElementById("no-track-title"),
+    noTrackDescription: document.getElementById("no-track-description"),
+    trackCategories: document.getElementById("track-categories"),
 });
 
 // ---------- TRACK PAGE INIT ----------
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     // Initialize page with sidebar
     initPage({ activeMenu: "track" });
 
     // Setup global closeSidebar
     window.closeSidebar = closeSidebar;
 
+    // Load semester and filter tracks
+    await initializeTrackVisibility();
+
     const elements = getElements();
 
-    // Track card click handlers
+    // Track card click handlers (only for visible cards)
     elements.trackCards.forEach((card) => {
         const btn = card.querySelector(".track-select-btn");
         btn?.addEventListener("click", () => {
@@ -55,6 +82,148 @@ document.addEventListener("DOMContentLoaded", () => {
     // Clear errors on input
     setupErrorClearing();
 });
+
+// ---------- SEMESTER CALCULATION ----------
+/**
+ * Calculate student's current semester based on angkatan
+ * Academic year: Oct-Feb (odd semester), Mar-Sep (even semester)
+ */
+function calculateSemester(angkatan) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // 1-12
+
+    // Calculate academic years since entry
+    // Entry year starts in October
+    let yearsSinceEntry = currentYear - angkatan;
+
+    // Determine which semester within the academic year
+    // Oct-Feb = Odd semester (1st semester of that academic year)
+    // Mar-Sep = Even semester (2nd semester of that academic year)
+    let semester;
+
+    if (currentMonth >= 10) {
+        // October onwards = start of new odd semester
+        semester = (yearsSinceEntry * 2) + 1;
+    } else if (currentMonth >= 3 && currentMonth <= 9) {
+        // March-September = even semester
+        semester = yearsSinceEntry * 2;
+    } else {
+        // January-February = still in odd semester (started last October)
+        semester = ((yearsSinceEntry - 1) * 2) + 1;
+    }
+
+    // Ensure minimum semester is 1
+    return Math.max(1, semester);
+}
+
+// ---------- TRACK VISIBILITY LOGIC ----------
+async function initializeTrackVisibility() {
+    const elements = getElements();
+
+    try {
+        // Use the mahasiswa periode-aktif endpoint - it calculates semester and checks jadwal
+        const result = await mahasiswaAPI.getPeriodeAktif();
+
+        if (result.ok) {
+            const data = result.data;
+            studentSemester = data.semester;
+
+            console.log("[Track] Student semester:", studentSemester);
+            console.log("[Track] Active periode:", data.active ? data.periode : "None");
+
+            if (data.active && data.periode) {
+                // There's an active periode for this semester
+                activeJadwal = [data.periode];
+            } else {
+                activeJadwal = [];
+            }
+        } else {
+            console.error("Failed to get periode aktif:", result.error);
+            studentSemester = null;
+            activeJadwal = [];
+        }
+    } catch (err) {
+        console.error("Error fetching periode aktif:", err);
+        // Fallback: calculate manually
+        const angkatan = parseInt(sessionStorage.getItem("userAngkatan")) || null;
+        if (angkatan) {
+            studentSemester = calculateSemester(angkatan);
+        }
+        activeJadwal = [];
+    }
+
+    // Filter and display tracks
+    filterTracksBasedOnSemester(elements);
+}
+
+
+function filterTracksBasedOnSemester(elements) {
+    const trackCards = elements.trackCards;
+    const trackCategories = elements.trackCategories;
+    const noTrackMessage = elements.noTrackMessage;
+
+    // Check if student semester has a track
+    const hasTrackForSemester = SEMESTER_TRACK_MAP.hasOwnProperty(studentSemester);
+
+    // Check if there's an active jadwal for student's semester
+    const activeJadwalForSemester = activeJadwal.find(
+        j => parseInt(j.semester) === studentSemester
+    );
+
+    let visibleTrackCount = 0;
+
+    // Hide all track cards first, then show only matching ones
+    trackCards.forEach(card => {
+        const cardSemester = parseInt(card.dataset.semester);
+
+        if (cardSemester === studentSemester && activeJadwalForSemester) {
+            // Show this track - it matches student semester AND has active jadwal
+            card.classList.remove("hidden");
+            card.style.display = "";
+            visibleTrackCount++;
+        } else {
+            // Hide this track
+            card.classList.add("hidden");
+            card.style.display = "none";
+        }
+    });
+
+    // Hide empty sections
+    document.querySelectorAll(".track-category").forEach(category => {
+        const visibleCards = category.querySelectorAll(".track-card:not(.hidden)");
+        if (visibleCards.length === 0) {
+            category.classList.add("hidden");
+        } else {
+            category.classList.remove("hidden");
+        }
+    });
+
+    // Show appropriate message
+    if (visibleTrackCount === 0) {
+        trackCategories.classList.add("hidden");
+        noTrackMessage.classList.remove("hidden");
+
+        // Customize message based on reason
+        if (!hasTrackForSemester) {
+            // Semesters without projects (1, 4, 6)
+            elements.noTrackTitle.textContent = "Tidak Ada Proyek di Semester Ini";
+            elements.noTrackDescription.textContent =
+                `Semester ${studentSemester} tidak memiliki proyek atau internship yang harus diambil. ` +
+                `Semester dengan proyek: 2 (Proyek 1), 3 (Proyek 2), 5 (Proyek 3), 7 (Internship 1), 8 (Internship 2).`;
+        } else {
+            // Has track for semester but no active jadwal
+            const trackLabel = SEMESTER_LABELS[studentSemester] || `Semester ${studentSemester}`;
+            elements.noTrackTitle.textContent = "Periode Proyek Belum Dibuka";
+            elements.noTrackDescription.textContent =
+                `Koordinator belum membuka periode untuk ${trackLabel}. ` +
+                `Silakan tunggu pengumuman atau hubungi koordinator.`;
+        }
+    } else {
+        trackCategories.classList.remove("hidden");
+        noTrackMessage.classList.add("hidden");
+    }
+}
 
 // ---------- ERROR HANDLING ----------
 function setupErrorClearing() {

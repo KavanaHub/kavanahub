@@ -98,7 +98,7 @@ function getDashboardHTML() {
               <span class="material-symbols-outlined text-[18px] sm:text-[20px]">help</span>
               <span class="hidden sm:inline">Bantuan</span>
             </button>
-            <a href="/proposal.html" class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-primary px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium text-white shadow-md shadow-primary/20 hover:bg-primary/90 transition-colors">
+            <a href="/mahasiswa/proposal.html" class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-primary px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium text-white shadow-md shadow-primary/20 hover:bg-primary/90 transition-colors">
               <span class="material-symbols-outlined text-[18px] sm:text-[20px]">add</span>
               <span class="hidden sm:inline">Ajukan Topik</span>
             </a>
