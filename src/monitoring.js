@@ -97,7 +97,7 @@ function renderStatusChart(data) {
     };
 
     container.innerHTML = Object.entries(data).map(([key, value]) => {
-        const percent = Math.round((value / total) * 100);
+        const percent = total > 0 ? Math.round((value / total) * 100) : 0;
         return `
         <div>
             <div class="flex justify-between text-xs mb-1">
