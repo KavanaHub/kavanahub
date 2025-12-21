@@ -100,9 +100,9 @@ function getDummyStats() {
 
 function getDummyProposals() {
     return [
-        { id: 1, mahasiswa_nama: "Ahmad Fauzan", npm: "2023010001", judul: "Sistem Informasi Perpustakaan", tanggal: "2024-12-15", track: "proyek-1" },
-        { id: 2, mahasiswa_nama: "Siti Nurhaliza", npm: "2023010002", judul: "Internship PT Teknologi", tanggal: "2024-12-14", track: "internship-1" },
-        { id: 3, mahasiswa_nama: "Budi Santoso", npm: "2023010003", judul: "Aplikasi E-Commerce UMKM", tanggal: "2024-12-13", track: "proyek-2" },
+        { id: 1, nama: "Ahmad Fauzan", npm: "2023010001", judul_proyek: "Sistem Informasi Perpustakaan", tanggal: "2024-12-15", track: "proyek1" },
+        { id: 2, nama: "Siti Nurhaliza", npm: "2023010002", judul_proyek: "Internship PT Teknologi", tanggal: "2024-12-14", track: "internship1" },
+        { id: 3, nama: "Budi Santoso", npm: "2023010003", judul_proyek: "Aplikasi E-Commerce UMKM", tanggal: "2024-12-13", track: "proyek2" },
     ];
 }
 
@@ -220,11 +220,11 @@ function renderDashboard() {
                     ${pendingProposals.slice(0, 5).map(p => `
                     <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                         <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
-                            ${getInitials(p.mahasiswa_nama)}
+                            ${getInitials(p.nama || 'Unknown')}
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-medium text-text-main text-sm truncate">${p.mahasiswa_nama}</p>
-                            <p class="text-text-secondary text-xs truncate">${p.judul}</p>
+                            <p class="font-medium text-text-main text-sm truncate">${p.nama || 'Unknown'}</p>
+                            <p class="text-text-secondary text-xs truncate">${p.judul_proyek || '-'}</p>
                         </div>
                         <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-700 rounded-full shrink-0">Pending</span>
                     </div>
