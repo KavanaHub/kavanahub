@@ -114,7 +114,7 @@ function renderProposalCard(p) {
                     <span class="material-symbols-outlined text-[16px]">description</span>Lihat Proposal
                 </a>
                 <button onclick="viewDetail(${p.id})" class="px-3 py-2 text-xs font-medium text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50">Detail</button>
-                ${p.status === "pending" ? `
+                ${status === "pending" ? `
                 <button onclick="openApproveModal(${p.id})" class="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"><span class="material-symbols-outlined text-[16px]">check</span>Approve</button>
                 <button onclick="openRejectModal(${p.id})" class="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"><span class="material-symbols-outlined text-[16px]">close</span>Reject</button>
                 ` : ""}
