@@ -55,60 +55,74 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ---------- DATA LOADING ----------
-function loadTrackInfo(container) {
+async function loadTrackInfo(container) {
   if (!container) return;
 
-  const trackData = sessionStorage.getItem("selectedTrack");
+  container.innerHTML = '<p class="text-text-secondary text-sm">Loading...</p>';
 
-  if (!trackData) {
-    container.innerHTML = renderNoTrackWarning();
-    return;
-  }
+  try {
+    const result = await mahasiswaAPI.getProfile();
 
-  const track = JSON.parse(trackData);
-  const isProyek = track.type === "proyek";
+    if (!result.ok || !result.data.track) {
+      container.innerHTML = renderNoTrackWarning();
+      return;
+    }
 
-  container.innerHTML = `
+    const profile = result.data;
+    const track = profile.track;
+    const isProyek = track.includes("proyek");
+
+    container.innerHTML = `
     <div class="flex items-center gap-3 mb-3">
       <div class="p-2 ${isProyek ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"} rounded-lg text-xl lg:text-2xl">
         ${isProyek ? "📋" : "🏢"}
       </div>
       <h4 class="font-semibold text-text-main text-sm lg:text-base">Track Aktif</h4>
     </div>
-    <p class="font-bold text-text-main text-base lg:text-lg">${getTrackDisplayName(track.track)}</p>
-    <p class="text-text-secondary text-xs lg:text-sm mt-1">${isProyek ? `Partner: ${track.partnerNpm}` : track.companyName}</p>
+    <p class="font-bold text-text-main text-base lg:text-lg">${getTrackDisplayName(track)}</p>
+    <p class="text-text-secondary text-xs lg:text-sm mt-1">${isProyek ? "Proyek Kelompok" : "Internship"}</p>
   `;
+  } catch (err) {
+    console.error("Error loading track info:", err);
+    container.innerHTML = renderNoTrackWarning();
+  }
 }
 
-function loadPembimbingInfo(container) {
+async function loadPembimbingInfo(container) {
   if (!container) return;
 
-  const proposalData = sessionStorage.getItem("proposalData");
+  container.innerHTML = '<p class="text-text-secondary text-sm">Loading...</p>';
 
-  if (!proposalData) {
-    container.innerHTML = renderNoPembimbingWarning();
-    return;
-  }
+  try {
+    const result = await mahasiswaAPI.getProfile();
 
-  const proposal = JSON.parse(proposalData);
-  const dosenNames = {
-    "dosen-1": "Dr. Ahmad Fauzi, M.Kom",
-    "dosen-2": "Dr. Budi Santoso, M.T.",
-    "dosen-3": "Prof. Citra Dewi, Ph.D",
-    "dosen-4": "Dr. Diana Putri, M.Sc",
-    "dosen-5": "Dr. Eko Prasetyo, M.Kom",
-  };
+    if (!result.ok) {
+      container.innerHTML = renderNoPembimbingWarning();
+      return;
+    }
 
-  container.innerHTML = `
+    const profile = result.data;
+
+    // Check if proposal is approved and has dosen
+    if (profile.status_proposal !== 'approved' || !profile.dosen_nama) {
+      container.innerHTML = renderNoPembimbingWarning();
+      return;
+    }
+
+    container.innerHTML = `
     <div class="flex items-center gap-3 mb-3">
       <div class="p-2 bg-blue-50 text-primary rounded-lg">
         <span class="material-symbols-outlined text-[20px] lg:text-[24px]">person</span>
       </div>
       <h4 class="font-semibold text-text-main text-sm lg:text-base">Dosen Pembimbing</h4>
     </div>
-    <p class="font-bold text-text-main text-base lg:text-lg">${dosenNames[proposal.dosen] || "Belum ditentukan"}</p>
+    <p class="font-bold text-text-main text-base lg:text-lg">${profile.dosen_nama}</p>
     <p class="text-text-secondary text-xs lg:text-sm mt-1">Pembimbing Utama</p>
   `;
+  } catch (err) {
+    console.error("Error loading pembimbing info:", err);
+    container.innerHTML = renderNoPembimbingWarning();
+  }
 }
 
 async function loadBimbinganFromAPI() {
