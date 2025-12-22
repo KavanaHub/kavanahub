@@ -38,13 +38,13 @@ export async function renderMahasiswaDashboard(container, userData) {
     const bimbinganPending = bimbinganList.filter((b) => b.status === "pending").length;
 
     // Get data from userData (fetched on init)
-    const proposalStatus = userData?.proposal_status || null;
+    const proposalStatus = userData?.status_proposal || null;
     const track = userData?.track || null;
     const dosenNama = userData?.dosen_nama || null;
     const dosenNama2 = userData?.dosen_nama_2 || null;
     const laporanStatus = userData?.laporan_status || null;
     const sidangStatus = userData?.sidang_status || null;
-    const judul = userData?.judul || null;
+    const judul = userData?.judul_proyek || userData?.judul || null;
 
     // Calculate progress percentage
     let progress = 0;
