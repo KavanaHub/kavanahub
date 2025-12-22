@@ -12,69 +12,68 @@ let dosenList = [];
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
-    const { isAuthenticated } = initPage({ activeMenu: "kelola-users" });
-    if (!isAuthenticated) return;
+  const { isAuthenticated } = initPage({ activeMenu: "kelola-users" });
+  if (!isAuthenticated) return;
 
-    window.closeSidebar = closeSidebar;
+  window.closeSidebar = closeSidebar;
 
-    // Tab events
-    document.getElementById("tab-mahasiswa").addEventListener("click", () => switchTab("mahasiswa"));
-    document.getElementById("tab-dosen").addEventListener("click", () => switchTab("dosen"));
+  // Tab events
+  document.getElementById("tab-mahasiswa").addEventListener("click", () => switchTab("mahasiswa"));
+  document.getElementById("tab-dosen").addEventListener("click", () => switchTab("dosen"));
 
-    await loadData();
-    renderList();
+  await loadData();
+  renderList();
 });
 
 function switchTab(tab) {
-    currentTab = tab;
+  currentTab = tab;
 
-    // Update tab styles
-    document.getElementById("tab-mahasiswa").className = tab === "mahasiswa"
-        ? "px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary"
-        : "px-4 py-2 text-sm font-medium text-text-secondary hover:text-primary";
-    document.getElementById("tab-dosen").className = tab === "dosen"
-        ? "px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary"
-        : "px-4 py-2 text-sm font-medium text-text-secondary hover:text-primary";
+  // Update tab styles
+  document.getElementById("tab-mahasiswa").className = tab === "mahasiswa"
+    ? "px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary"
+    : "px-4 py-2 text-sm font-medium text-text-secondary hover:text-primary";
+  document.getElementById("tab-dosen").className = tab === "dosen"
+    ? "px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary"
+    : "px-4 py-2 text-sm font-medium text-text-secondary hover:text-primary";
 
-    renderList();
+  renderList();
 }
 
 // ---------- DATA LOADING ----------
 async function loadData() {
-    try {
-        const result = await adminAPI.getAllUsers();
-        if (result.ok) {
-            mahasiswaList = result.data.mahasiswa || [];
-            dosenList = result.data.dosen || [];
-        }
-    } catch (err) {
-        console.error("Error loading users:", err);
+  try {
+    const result = await adminAPI.getAllUsers();
+    if (result.ok) {
+      mahasiswaList = result.data.mahasiswa || [];
+      dosenList = result.data.dosen || [];
     }
+  } catch (err) {
+    console.error("Error loading users:", err);
+  }
 }
 
 // ---------- RENDER ----------
 function renderList() {
-    const container = document.getElementById("user-list");
-    const list = currentTab === "mahasiswa" ? mahasiswaList : dosenList;
+  const container = document.getElementById("user-list");
+  const list = currentTab === "mahasiswa" ? mahasiswaList : dosenList;
 
-    if (list.length === 0) {
-        container.innerHTML = `
+  if (list.length === 0) {
+    container.innerHTML = `
       <div class="p-8 text-center">
         <span class="material-symbols-outlined text-4xl text-slate-300">person_off</span>
         <p class="text-text-secondary mt-2">Tidak ada data ${currentTab}</p>
       </div>
     `;
-        return;
-    }
+    return;
+  }
 
-    container.innerHTML = `
+  container.innerHTML = `
     <table class="w-full text-sm">
       <thead class="bg-slate-50 text-text-secondary">
         <tr>
           <th class="px-4 py-3 text-left font-medium">Nama</th>
           <th class="px-4 py-3 text-left font-medium">Email</th>
           <th class="px-4 py-3 text-left font-medium">${currentTab === "mahasiswa" ? "NPM" : "Jabatan"}</th>
-          <th class="px-4 py-3 text-center font-medium">Status</th>
           <th class="px-4 py-3 text-center font-medium">Aksi</th>
         </tr>
       </thead>
@@ -86,20 +85,15 @@ function renderList() {
 }
 
 function renderRow(user) {
-    const isActive = user.is_active !== false;
-    const statusBadge = isActive
-        ? '<span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded">Aktif</span>'
-        : '<span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-700 rounded">Non-Aktif</span>';
-
-    return `
+  return `
     <tr class="hover:bg-slate-50">
       <td class="px-4 py-3 font-medium text-text-main">${user.nama}</td>
       <td class="px-4 py-3 text-text-secondary">${user.email}</td>
       <td class="px-4 py-3 text-text-secondary">${currentTab === "mahasiswa" ? (user.npm || "-") : (user.jabatan || "Dosen")}</td>
-      <td class="px-4 py-3 text-center">${statusBadge}</td>
       <td class="px-4 py-3 text-center">
-        <button onclick="toggleStatus(${user.id}, ${isActive})" class="text-xs px-2 py-1 rounded ${isActive ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}">
-          ${isActive ? 'Nonaktifkan' : 'Aktifkan'}
+        <button onclick="deleteUser(${user.id}, '${user.nama}')" class="text-xs px-3 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200 flex items-center gap-1 mx-auto">
+          <span class="material-symbols-outlined text-[14px]">delete</span>
+          Hapus
         </button>
       </td>
     </tr>
@@ -107,17 +101,21 @@ function renderRow(user) {
 }
 
 // ---------- ACTIONS ----------
-window.toggleStatus = async function (userId, isCurrentlyActive) {
-    try {
-        const result = await adminAPI.updateUserStatus(userId, currentTab, !isCurrentlyActive);
-        if (result.ok) {
-            await loadData();
-            renderList();
-        } else {
-            alert("Gagal mengubah status");
-        }
-    } catch (err) {
-        console.error("Error toggling status:", err);
-        alert("Terjadi kesalahan");
+window.deleteUser = async function (userId, userName) {
+  const confirmed = confirm(`Apakah Anda yakin ingin menghapus user "${userName}"?\n\nTindakan ini tidak dapat dibatalkan!`);
+  if (!confirmed) return;
+
+  try {
+    const result = await adminAPI.deleteUser(userId, currentTab);
+    if (result.ok) {
+      await loadData();
+      renderList();
+      alert("User berhasil dihapus");
+    } else {
+      alert("Gagal menghapus user: " + (result.error || "Unknown error"));
     }
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    alert("Terjadi kesalahan saat menghapus user");
+  }
 };
