@@ -31,6 +31,7 @@ export default defineConfig({
                 'koordinator-validasi-proposal': resolve(__dirname, 'koordinator/validasi-proposal.html'),
                 'koordinator-approve-pembimbing': resolve(__dirname, 'koordinator/approve-pembimbing.html'),
                 'koordinator-daftar-mahasiswa': resolve(__dirname, 'koordinator/daftar-mahasiswa.html'),
+                'koordinator-jadwal-sidang': resolve(__dirname, 'koordinator/jadwal-sidang.html'),
 
                 // Kaprodi pages
                 'kaprodi-dashboard': resolve(__dirname, 'kaprodi/dashboard.html'),
