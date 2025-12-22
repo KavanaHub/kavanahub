@@ -152,7 +152,13 @@ export const mahasiswaAPI = {
     getPeriodeAktif: () => apiRequest('/api/mahasiswa/periode-aktif'),
 
     // Dosen list for proposal
-    getDosenList: () => apiRequest('/api/mahasiswa/dosen/list')
+    getDosenList: () => apiRequest('/api/mahasiswa/dosen/list'),
+
+    // Laporan Sidang
+    getMyLaporan: () => apiRequest('/api/mahasiswa/laporan'),
+
+    // Sidang
+    getMySidang: () => apiRequest('/api/mahasiswa/sidang')
 };
 
 // ========================================

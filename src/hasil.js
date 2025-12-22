@@ -10,6 +10,8 @@ import { formatDateFull, getStatusDisplay, getInitials } from "./utils/formatUti
 // ---------- STATE ----------
 let profileData = null;
 let bimbinganData = [];
+let laporanData = [];
+let sidangData = null;
 
 // ---------- HASIL PAGE INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
@@ -30,10 +32,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ---------- DATA LOADING ----------
 async function loadDataFromAPI() {
     try {
-        const [profileResult, bimbinganResult] = await Promise.all([mahasiswaAPI.getProfile(), mahasiswaAPI.getMyBimbingan()]);
+        const [profileResult, bimbinganResult, laporanResult, sidangResult] = await Promise.all([
+            mahasiswaAPI.getProfile(),
+            mahasiswaAPI.getMyBimbingan(),
+            mahasiswaAPI.getMyLaporan(),
+            mahasiswaAPI.getMySidang()
+        ]);
 
         if (profileResult.ok) profileData = profileResult.data;
         if (bimbinganResult.ok) bimbinganData = bimbinganResult.data || [];
+        if (laporanResult.ok) laporanData = laporanResult.data || [];
+        if (sidangResult.ok) sidangData = sidangResult.data?.[0] || null; // Get first sidang
     } catch (err) {
         console.error("Error loading data:", err);
     }
@@ -69,12 +78,22 @@ function loadStatus() {
 }
 
 function calculateState() {
+    // Get laporan status from API data
+    const latestLaporan = laporanData.length > 0 ? laporanData[0] : null;
+    const hasLaporan = latestLaporan && (latestLaporan.status === 'pending' || latestLaporan.status === 'submitted' || latestLaporan.status === 'approved');
+    const laporanStatus = latestLaporan?.status || null;
+
+    // Get sidang status from API data
+    const sidangStatus = sidangData?.status || null;
+    const jadwalSidang = sidangData?.tanggal ? `${sidangData.tanggal} ${sidangData.waktu || ''}` : null;
+
     return {
-        proposalStatus: profileData.status_proposal,
+        proposalStatus: profileData?.status_proposal,
         approvedBimbingan: bimbinganData.filter((b) => b.status === "approved").length,
-        hasLaporan: profileData.file_laporan || sessionStorage.getItem("laporanData"),
-        sidangStatus: profileData.sidang_status,
-        jadwalSidang: profileData.jadwal_sidang,
+        hasLaporan: hasLaporan,
+        laporanStatus: laporanStatus,
+        sidangStatus: sidangStatus,
+        jadwalSidang: jadwalSidang,
     };
 }
 
