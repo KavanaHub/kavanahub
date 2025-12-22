@@ -19,6 +19,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Setup global closeSidebar
     window.closeSidebar = closeSidebar;
 
+    // Check if laporan already submitted - redirect if so
+    const hasExistingLaporan = await checkExistingLaporan();
+    if (hasExistingLaporan) return;
+
     // Load data
     await checkPrerequisites();
     loadExistingData();
@@ -32,6 +36,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById(fieldId)?.addEventListener("input", () => clearFieldError(fieldId));
     });
 });
+
+// ---------- CHECK EXISTING LAPORAN ----------
+async function checkExistingLaporan() {
+    try {
+        const result = await mahasiswaAPI.getMyLaporan();
+        if (result.ok && result.data && result.data.length > 0) {
+            const latestLaporan = result.data[0];
+            // If laporan exists and is pending/submitted/approved, redirect
+            if (['pending', 'submitted', 'approved'].includes(latestLaporan.status)) {
+                await showModal.info(
+                    "Laporan Sudah Disubmit",
+                    `Laporan Anda sudah disubmit dengan status: ${latestLaporan.status}. Silakan cek di halaman Hasil Sidang.`
+                );
+                window.location.href = "/mahasiswa/hasil.html";
+                return true;
+            }
+            // If revision/rejected, allow resubmit (don't redirect)
+        }
+        return false;
+    } catch (err) {
+        console.error("Error checking existing laporan:", err);
+        return false;
+    }
+}
 
 // ---------- PREREQUISITES CHECK ----------
 async function checkPrerequisites() {
