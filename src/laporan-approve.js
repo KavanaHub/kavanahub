@@ -185,7 +185,7 @@ function renderLaporanCard(l) {
             <span class="material-symbols-outlined text-[16px]">visibility</span>
             Detail
           </button>
-          ${l.status === "pending" ? `
+          ${(l.status === "pending" || l.status === "submitted") ? `
           <button onclick="openApproveModal(${l.id})" class="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
             <span class="material-symbols-outlined text-[16px]">check</span>
             Approve
