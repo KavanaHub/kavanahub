@@ -1,0 +1,194 @@
+<!doctype html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard - Kavana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2596be",
+                        "background-light": "#e8f4f8",
+                        "text-main": "#1e2134",
+                        "text-secondary": "#548192"
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light font-display text-text-main h-screen overflow-hidden flex">
+    <!-- Mobile Header -->
+    <div id="mobile-header"
+        class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-[#dc2626] to-[#b91c1c] px-4 py-3 flex items-center justify-between shadow-lg">
+        <button id="btn-open-sidebar" class="text-white p-2 -ml-2">
+            <span class="material-symbols-outlined text-[28px]">menu</span>
+        </button>
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-white icon-fill">admin_panel_settings</span>
+            <span class="text-white font-bold">Admin Panel</span>
+        </div>
+        <div class="w-10"></div>
+    </div>
+
+    <div id="sidebar-placeholder"></div>
+
+    <main class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0">
+        <div class="max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-8">
+            <!-- Header -->
+            <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="flex items-center gap-3 lg:gap-4">
+                    <div
+                        class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl lg:text-3xl">admin_panel_settings</span>
+                    </div>
+                    <div>
+                        <h2 class="text-text-main text-xl sm:text-2xl lg:text-3xl font-black">Admin Dashboard</h2>
+                        <p class="text-text-secondary text-xs sm:text-sm lg:text-base">Kelola seluruh sistem KavanaHub
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                            <span class="material-symbols-outlined">school</span>
+                        </div>
+                        <div>
+                            <p id="stat-mahasiswa" class="text-2xl font-bold text-text-main">0</p>
+                            <p class="text-text-secondary text-xs">Total Mahasiswa</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-green-50 text-green-600 rounded-lg">
+                            <span class="material-symbols-outlined">groups</span>
+                        </div>
+                        <div>
+                            <p id="stat-dosen" class="text-2xl font-bold text-text-main">0</p>
+                            <p class="text-text-secondary text-xs">Total Dosen</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                            <span class="material-symbols-outlined">assignment_ind</span>
+                        </div>
+                        <div>
+                            <p id="stat-koordinator" class="text-2xl font-bold text-text-main">0</p>
+                            <p class="text-text-secondary text-xs">Koordinator</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
+                            <span class="material-symbols-outlined">event</span>
+                        </div>
+                        <div>
+                            <p id="stat-sidang" class="text-2xl font-bold text-text-main">0</p>
+                            <p class="text-text-secondary text-xs">Sidang Bulan Ini</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Quick Actions -->
+                <div class="bg-white p-5 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-text-main text-lg mb-4">Aksi Cepat</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="/admin/kelola-users.html"
+                            class="flex items-center gap-3 p-4 bg-slate-50 rounded-lg hover:bg-primary/10 transition-colors">
+                            <span class="material-symbols-outlined text-primary">manage_accounts</span>
+                            <span class="text-sm font-medium">Kelola Users</span>
+                        </a>
+                        <a href="/admin/kelola-dosen.html"
+                            class="flex items-center gap-3 p-4 bg-slate-50 rounded-lg hover:bg-primary/10 transition-colors">
+                            <span class="material-symbols-outlined text-primary">person_add</span>
+                            <span class="text-sm font-medium">Kelola Dosen</span>
+                        </a>
+                        <a href="/admin/monitoring.html"
+                            class="flex items-center gap-3 p-4 bg-slate-50 rounded-lg hover:bg-primary/10 transition-colors">
+                            <span class="material-symbols-outlined text-primary">monitoring</span>
+                            <span class="text-sm font-medium">Monitoring</span>
+                        </a>
+                        <a href="/admin/laporan.html"
+                            class="flex items-center gap-3 p-4 bg-slate-50 rounded-lg hover:bg-primary/10 transition-colors">
+                            <span class="material-symbols-outlined text-primary">summarize</span>
+                            <span class="text-sm font-medium">Laporan Sistem</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white p-5 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-text-main text-lg mb-4">Aktivitas Terbaru</h3>
+                    <div id="activity-list" class="flex flex-col gap-3">
+                        <div class="text-center py-6">
+                            <span class="material-symbols-outlined text-3xl text-slate-300 animate-spin">sync</span>
+                            <p class="text-text-secondary text-sm mt-2">Memuat data...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Overview -->
+            <div class="bg-white p-5 lg:p-6 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-text-main text-lg mb-4">Ringkasan Sistem</h3>
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="p-4 bg-blue-50 rounded-lg text-center">
+                        <p id="stat-proposal-pending" class="text-xl font-bold text-blue-600">0</p>
+                        <p class="text-xs text-blue-700">Proposal Pending</p>
+                    </div>
+                    <div class="p-4 bg-green-50 rounded-lg text-center">
+                        <p id="stat-bimbingan-aktif" class="text-xl font-bold text-green-600">0</p>
+                        <p class="text-xs text-green-700">Bimbingan Aktif</p>
+                    </div>
+                    <div class="p-4 bg-yellow-50 rounded-lg text-center">
+                        <p id="stat-laporan-pending" class="text-xl font-bold text-yellow-600">0</p>
+                        <p class="text-xs text-yellow-700">Laporan Pending</p>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-lg text-center">
+                        <p id="stat-sidang-scheduled" class="text-xl font-bold text-purple-600">0</p>
+                        <p class="text-xs text-purple-700">Sidang Terjadwal</p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg text-center">
+                        <p id="stat-users-inactive" class="text-xl font-bold text-red-600">0</p>
+                        <p class="text-xs text-red-700">Users Tidak Aktif</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="/src/admin-dashboard.js"></script>
+</body>
+
+</html>

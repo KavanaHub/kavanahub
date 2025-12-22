@@ -176,6 +176,15 @@ export function createMenuHandler(currentRole = "mahasiswa") {
             "daftar-dosen": "/kaprodi/daftar-dosen.html",
             monitoring: "/kaprodi/monitoring.html",
         },
+        admin: {
+            dashboard: "/admin/dashboard.html",
+            "kelola-users": "/admin/kelola-users.html",
+            "kelola-dosen": "/admin/kelola-dosen.html",
+            "kelola-mahasiswa": "/admin/kelola-mahasiswa.html",
+            monitoring: "/admin/monitoring.html",
+            laporan: "/admin/laporan.html",
+            settings: "/admin/settings.html",
+        },
     };
 
     // Shared pages (all roles)

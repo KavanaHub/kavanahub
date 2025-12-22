@@ -109,6 +109,15 @@ export const MENU_CONFIG = {
         { id: "profile", label: "Profil Saya", icon: "person" },
         { id: "settings", label: "Pengaturan", icon: "settings" },
     ],
+    admin: [
+        { id: "dashboard", label: "Dashboard", icon: "dashboard" },
+        { id: "kelola-users", label: "Kelola Users", icon: "manage_accounts" },
+        { id: "kelola-dosen", label: "Kelola Dosen", icon: "person_add" },
+        { id: "kelola-mahasiswa", label: "Kelola Mahasiswa", icon: "school" },
+        { id: "monitoring", label: "Monitoring Sistem", icon: "monitoring" },
+        { id: "laporan", label: "Laporan Sistem", icon: "summarize" },
+        { id: "settings", label: "Pengaturan Sistem", icon: "settings" },
+    ],
 };
 
 export const ROLE_LABEL = {
@@ -116,6 +125,7 @@ export const ROLE_LABEL = {
     dosen: "Dosen Pembimbing",
     koordinator: "Koordinator",
     kaprodi: "Kepala Prodi",
+    admin: "Administrator",
 };
 
 export const TITLE_MAP = {

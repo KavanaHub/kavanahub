@@ -279,6 +279,45 @@ export const kaprodiAPI = {
 };
 
 // ========================================
+// ADMIN API
+// ========================================
+
+export const adminAPI = {
+    getProfile: () => apiRequest('/api/admin/profile'),
+
+    getStats: () => apiRequest('/api/admin/stats'),
+
+    getRecentActivity: () => apiRequest('/api/admin/activity'),
+
+    // User management
+    getAllUsers: () => apiRequest('/api/admin/users'),
+
+    updateUserStatus: (userId, role, isActive) => apiRequest(`/api/admin/users/${userId}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ role, is_active: isActive })
+    }),
+
+    deleteUser: (userId, role) => apiRequest(`/api/admin/users/${userId}`, {
+        method: 'DELETE',
+        body: JSON.stringify({ role })
+    }),
+
+    // Dosen management
+    getAllDosen: () => apiRequest('/api/admin/dosen'),
+
+    createDosen: (data) => apiRequest('/api/admin/dosen', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    }),
+
+    // Mahasiswa management
+    getAllMahasiswa: () => apiRequest('/api/admin/mahasiswa'),
+
+    // System reports
+    getSystemReport: () => apiRequest('/api/admin/report')
+};
+
+// ========================================
 // PUBLIC API (No Auth Required)
 // ========================================
 

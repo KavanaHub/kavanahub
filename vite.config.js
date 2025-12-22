@@ -39,6 +39,9 @@ export default defineConfig({
                 'kaprodi-daftar-dosen': resolve(__dirname, 'kaprodi/daftar-dosen.html'),
                 'kaprodi-monitoring': resolve(__dirname, 'kaprodi/monitoring.html'),
 
+                // Admin pages
+                'admin-dashboard': resolve(__dirname, 'admin/dashboard.html'),
+
                 // Shared pages
                 'shared-profile': resolve(__dirname, 'shared/profile.html'),
                 'shared-settings': resolve(__dirname, 'shared/settings.html'),
