@@ -109,7 +109,7 @@ async function handleSubmit(e) {
     try {
         const result = await mahasiswaAPI.submitLaporan({
             judul,
-            file_laporan: link,
+            file_url: link,
         });
 
         if (result.ok) {
