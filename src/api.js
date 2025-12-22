@@ -241,7 +241,12 @@ export const koordinatorAPI = {
     }),
 
     // Get assigned semester for this koordinator
-    getMySemester: () => apiRequest('/api/koordinator/my-semester')
+    getMySemester: () => apiRequest('/api/koordinator/my-semester'),
+
+    // Sidang APIs
+    getAllMahasiswa: () => apiRequest('/api/koordinator/mahasiswa'),
+    getAllSidang: () => apiRequest('/api/koordinator/sidang'),
+    getPengujiList: () => apiRequest('/api/koordinator/penguji')
 };
 
 // ========================================
