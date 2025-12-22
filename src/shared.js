@@ -92,6 +92,7 @@ export const MENU_CONFIG = {
         { id: "validasi-proposal", label: "Validasi Proposal", icon: "fact_check" },
         { id: "approve-pembimbing", label: "Assign Pembimbing", icon: "how_to_reg" },
         { id: "daftar-mahasiswa", label: "Daftar Mahasiswa", icon: "groups" },
+        { id: "jadwal-sidang", label: "Jadwal Sidang", icon: "calendar_month" },
         // Dosen Pembimbing features (koordinator juga dosen)
         { id: "separator", label: "Dosen Pembimbing", icon: "" },
         { id: "mahasiswa-bimbingan", label: "Mahasiswa Bimbingan", icon: "school" },
