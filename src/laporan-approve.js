@@ -99,7 +99,9 @@ function renderLaporanList() {
   // Filter data
   let filtered = laporanList.filter((l) => {
     if (currentFilter === "all") return true;
-    return l.status === currentFilter;
+    // Treat 'submitted' as 'pending' for backward compatibility
+    const status = l.status === 'submitted' ? 'pending' : l.status;
+    return status === currentFilter;
   });
 
   // Sort by date (newest first)
@@ -202,6 +204,7 @@ function renderLaporanCard(l) {
 function getStatusConfig(status) {
   const configs = {
     pending: { text: "Pending", icon: "📄", badgeClass: "bg-yellow-100 text-yellow-700" },
+    submitted: { text: "Pending", icon: "📄", badgeClass: "bg-yellow-100 text-yellow-700" },
     approved: { text: "Approved", icon: "✅", badgeClass: "bg-green-100 text-green-700" },
     revision: { text: "Perlu Revisi", icon: "🔄", badgeClass: "bg-orange-100 text-orange-700" },
   };
@@ -209,7 +212,8 @@ function getStatusConfig(status) {
 }
 
 function updateStats() {
-  const pending = laporanList.filter((l) => l.status === "pending").length;
+  // Include 'submitted' as 'pending' for backward compatibility
+  const pending = laporanList.filter((l) => l.status === "pending" || l.status === "submitted").length;
   const approved = laporanList.filter((l) => l.status === "approved").length;
   const revision = laporanList.filter((l) => l.status === "revision").length;
 
