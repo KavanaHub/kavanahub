@@ -1,0 +1,78 @@
+<!doctype html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Kelola Users - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2596be",
+                        "background-light": "#e8f4f8",
+                        "text-main": "#1e2134",
+                        "text-secondary": "#548192"
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background-light font-display text-text-main h-screen overflow-hidden flex">
+    <!-- Mobile Header -->
+    <div id="mobile-header"
+        class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-[#dc2626] to-[#b91c1c] px-4 py-3 flex items-center justify-between shadow-lg">
+        <button id="btn-open-sidebar" class="text-white p-2 -ml-2">
+            <span class="material-symbols-outlined text-[28px]">menu</span>
+        </button>
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-white icon-fill">admin_panel_settings</span>
+            <span class="text-white font-bold">Admin</span>
+        </div>
+        <div class="w-10"></div>
+    </div>
+
+    <div id="sidebar-placeholder"></div>
+
+    <main class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0">
+        <div class="max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+            <!-- Header -->
+            <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 class="text-text-main text-2xl lg:text-3xl font-black">Kelola Users</h1>
+                    <p class="text-text-secondary text-sm">Kelola semua pengguna sistem</p>
+                </div>
+            </header>
+
+            <!-- Tabs -->
+            <div class="flex gap-2 border-b border-slate-200">
+                <button id="tab-mahasiswa"
+                    class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">Mahasiswa</button>
+                <button id="tab-dosen"
+                    class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-primary">Dosen</button>
+            </div>
+
+            <!-- User List -->
+            <div id="user-list" class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-8 text-center">
+                    <span class="material-symbols-outlined text-4xl text-slate-300 animate-spin">sync</span>
+                    <p class="text-text-secondary mt-2">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="/src/admin-kelola-users.js"></script>
+</body>
+
+</html>
