@@ -84,6 +84,7 @@ async function handleSubmit(e) {
                 dosen: "/dosen/dashboard.html",
                 koordinator: "/koordinator/dashboard.html",
                 kaprodi: "/kaprodi/dashboard.html",
+                admin: "/admin/dashboard.html",
             };
             window.location.href = dashboardUrls[role] || dashboardUrls.mahasiswa;
         } else {
