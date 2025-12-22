@@ -29,21 +29,34 @@ export async function renderMahasiswaDashboard(container, userData) {
   `;
 
   try {
-    // Fetch bimbingan data
-    const bimbinganResult = await mahasiswaAPI.getMyBimbingan();
+    // Fetch bimbingan, laporan, and sidang data
+    const [bimbinganResult, laporanResult, sidangResult] = await Promise.all([
+      mahasiswaAPI.getMyBimbingan(),
+      mahasiswaAPI.getMyLaporan(),
+      mahasiswaAPI.getMySidang()
+    ]);
+
     const bimbinganList = bimbinganResult.ok ? bimbinganResult.data || [] : [];
+    const laporanList = laporanResult.ok ? laporanResult.data || [] : [];
+    const sidangList = sidangResult.ok ? sidangResult.data || [] : [];
 
     // Count approved bimbingan
     const bimbinganApproved = bimbinganList.filter((b) => b.status === "approved").length;
     const bimbinganPending = bimbinganList.filter((b) => b.status === "pending").length;
+
+    // Get latest laporan status
+    const latestLaporan = laporanList.length > 0 ? laporanList[0] : null;
+    const laporanStatus = latestLaporan?.status || null;
+
+    // Get latest sidang status
+    const latestSidang = sidangList.length > 0 ? sidangList[0] : null;
+    const sidangStatus = latestSidang?.status || null;
 
     // Get data from userData (fetched on init)
     const proposalStatus = userData?.status_proposal || null;
     const track = userData?.track || null;
     const dosenNama = userData?.dosen_nama || null;
     const dosenNama2 = userData?.dosen_nama_2 || null;
-    const laporanStatus = userData?.laporan_status || null;
-    const sidangStatus = userData?.sidang_status || null;
     const judul = userData?.judul_proyek || userData?.judul || null;
 
     // Calculate progress percentage
@@ -63,10 +76,16 @@ export async function renderMahasiswaDashboard(container, userData) {
     if (laporanStatus === "approved") {
       progress += 25;
       progressSteps.laporan = true;
+    } else if (laporanStatus === "pending" || laporanStatus === "submitted") {
+      // Laporan submitted but not approved - show partial progress
+      progress += 10;
     }
-    if (sidangStatus === "completed") {
+    if (sidangStatus === "completed" || sidangStatus === "lulus") {
       progress += 25;
       progressSteps.sidang = true;
+    } else if (sidangStatus === "scheduled") {
+      // Sidang scheduled but not completed
+      progress += 10;
     }
 
     // Get proposal status display
@@ -154,12 +173,12 @@ export async function renderMahasiswaDashboard(container, userData) {
                 <span class="text-[10px] lg:text-xs font-medium ${progressSteps.bimbingan || bimbinganApproved > 0 ? "text-primary" : "text-slate-400"}">Bimbingan</span>
               </div>
               <div class="flex flex-col items-center gap-1 lg:gap-2">
-                <div class="w-full h-1 ${progressSteps.laporan ? "bg-primary" : "bg-slate-200"} rounded"></div>
-                <span class="text-[10px] lg:text-xs font-medium ${progressSteps.laporan ? "text-primary" : "text-slate-400"}">Laporan</span>
+                <div class="w-full h-1 ${progressSteps.laporan ? "bg-primary" : laporanStatus ? "bg-primary/50" : "bg-slate-200"} rounded"></div>
+                <span class="text-[10px] lg:text-xs font-medium ${progressSteps.laporan || laporanStatus ? "text-primary" : "text-slate-400"}">Laporan</span>
               </div>
               <div class="flex flex-col items-center gap-1 lg:gap-2">
-                <div class="w-full h-1 ${progressSteps.sidang ? "bg-primary" : "bg-slate-200"} rounded"></div>
-                <span class="text-[10px] lg:text-xs font-medium ${progressSteps.sidang ? "text-primary" : "text-slate-400"}">Sidang</span>
+                <div class="w-full h-1 ${progressSteps.sidang ? "bg-primary" : sidangStatus === "scheduled" ? "bg-primary/50" : "bg-slate-200"} rounded"></div>
+                <span class="text-[10px] lg:text-xs font-medium ${progressSteps.sidang || sidangStatus === "scheduled" ? "text-primary" : "text-slate-400"}">Sidang</span>
               </div>
             </div>
           </div>
