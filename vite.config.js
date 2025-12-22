@@ -42,6 +42,7 @@ export default defineConfig({
                 // Admin pages
                 'admin-dashboard': resolve(__dirname, 'admin/dashboard.html'),
                 'admin-kelola-users': resolve(__dirname, 'admin/kelola-users.html'),
+                'admin-kelola-dosen': resolve(__dirname, 'admin/kelola-dosen.html'),
 
                 // Shared pages
                 'shared-profile': resolve(__dirname, 'shared/profile.html'),
