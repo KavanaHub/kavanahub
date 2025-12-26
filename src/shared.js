@@ -112,8 +112,6 @@ export const MENU_CONFIG = {
     admin: [
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
         { id: "kelola-users", label: "Kelola Users", icon: "manage_accounts" },
-        { id: "kelola-dosen", label: "Kelola Dosen", icon: "person_add" },
-        { id: "kelola-mahasiswa", label: "Kelola Mahasiswa", icon: "school" },
         { id: "monitoring", label: "Monitoring Sistem", icon: "monitoring" },
         { id: "laporan", label: "Laporan Sistem", icon: "summarize" },
         { id: "settings", label: "Pengaturan Sistem", icon: "settings" },
