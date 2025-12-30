@@ -11,6 +11,8 @@ import { showToast, showModal } from "./utils/alerts.js";
 // ---------- STATE ----------
 let mahasiswaList = [];
 let dosenList = [];
+let pollingInterval = null;
+const POLLING_DELAY = 10000; // 10 seconds
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
@@ -20,10 +22,42 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await loadData();
     setupEventListeners();
+
+    // Start polling for realtime updates
+    startPolling();
+
+    // Stop polling when page is hidden, resume when visible
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            stopPolling();
+        } else {
+            startPolling();
+        }
+    });
+
+    // Cleanup on page unload
+    window.addEventListener("beforeunload", stopPolling);
 });
 
+// ---------- POLLING ----------
+function startPolling() {
+    if (pollingInterval) return; // Already polling
+    pollingInterval = setInterval(async () => {
+        await loadData(true); // silent refresh
+    }, POLLING_DELAY);
+    console.log("[Realtime] Polling started");
+}
+
+function stopPolling() {
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+        console.log("[Realtime] Polling stopped");
+    }
+}
+
 // ---------- DATA LOADING ----------
-async function loadData() {
+async function loadData(silent = false) {
     try {
         const [mahasiswaResult, dosenResult] = await Promise.all([
             koordinatorAPI.getMahasiswaList(),
@@ -33,12 +67,15 @@ async function loadData() {
         if (dosenResult.ok) dosenList = dosenResult.data || [];
     } catch (err) {
         console.error(err);
-        mahasiswaList = getDummyMahasiswa();
-        dosenList = getDummyDosen();
+        if (!silent) {
+            mahasiswaList = getDummyMahasiswa();
+            dosenList = getDummyDosen();
+        }
+        return; // Don't update UI on error during polling
     }
     renderList();
     updateStats();
-    populateDosenDropdown();
+    if (!silent) populateDosenDropdown();
 }
 
 function getDummyMahasiswa() {
