@@ -129,6 +129,7 @@ function handleMenuClick(menuId) {
     laporan: "/mahasiswa/laporan.html",
     nilai: "/mahasiswa/hasil.html",
     profile: "/shared/profile.html",
+    settings: "/shared/settings.html",
   };
 
   if (redirectPages[menuId]) {
