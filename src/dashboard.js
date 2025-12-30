@@ -123,6 +123,7 @@ function handleMenuClick(menuId) {
   // Pages that should redirect to separate HTML
   const redirectPages = {
     track: "/mahasiswa/track.html",
+    kelompok: "/mahasiswa/kelompok.html",
     proposal: "/mahasiswa/proposal.html",
     bimbingan: "/mahasiswa/bimbingan.html",
     laporan: "/mahasiswa/laporan.html",
