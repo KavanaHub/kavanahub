@@ -73,7 +73,7 @@ function renderList() {
         <tr>
           <th class="px-4 py-3 text-left font-medium">Nama</th>
           <th class="px-4 py-3 text-left font-medium">Email</th>
-          <th class="px-4 py-3 text-left font-medium">${currentTab === "mahasiswa" ? "NPM" : "Jabatan"}</th>
+          <th class="px-4 py-3 text-left font-medium">${currentTab === "mahasiswa" ? "NPM" : "Role"}</th>
           <th class="px-4 py-3 text-center font-medium">Aksi</th>
         </tr>
       </thead>
@@ -89,7 +89,7 @@ function renderRow(user) {
     <tr class="hover:bg-slate-50">
       <td class="px-4 py-3 font-medium text-text-main">${user.nama}</td>
       <td class="px-4 py-3 text-text-secondary">${user.email}</td>
-      <td class="px-4 py-3 text-text-secondary">${currentTab === "mahasiswa" ? (user.npm || "-") : (user.jabatan || "Dosen")}</td>
+      <td class="px-4 py-3 text-text-secondary">${currentTab === "mahasiswa" ? (user.npm || "-") : (user.roles || "dosen")}</td>
       <td class="px-4 py-3 text-center">
         <button onclick="deleteUser(${user.id}, '${user.nama}')" class="text-xs px-3 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200 flex items-center gap-1 mx-auto">
           <span class="material-symbols-outlined text-[14px]">delete</span>
