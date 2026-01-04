@@ -212,6 +212,7 @@ window.assignKoordinator = async function (koordinatorId, semester) {
 };
 
 window.quickAssign = async function (koordinatorId, semester) {
+    console.log('[DEBUG] quickAssign called:', { koordinatorId, semester });
     if (!semester) return;
     await window.assignKoordinator(koordinatorId, parseInt(semester));
 };
