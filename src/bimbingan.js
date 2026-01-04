@@ -169,7 +169,7 @@ function renderNoPembimbingWarning() {
       <h4 class="font-semibold text-text-main text-sm lg:text-base">Dosen Pembimbing</h4>
     </div>
     <p class="text-yellow-600 text-sm font-medium">Belum ada proposal</p>
-    <a href="/proposal.html" class="text-primary text-xs hover:underline mt-2 inline-block">Upload Proposal →</a>
+    <a href="/mahasiswa/proposal.html" class="text-primary text-xs hover:underline mt-2 inline-block">Upload Proposal →</a>
   `;
 }
 
