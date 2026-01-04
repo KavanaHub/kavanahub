@@ -188,10 +188,13 @@ window.showAssignOptions = function (semester) {
 };
 
 window.assignKoordinator = async function (koordinatorId, semester) {
+    console.log('[DEBUG] assignKoordinator called:', { koordinatorId, semester });
     closeModal();
 
     try {
+        console.log('[DEBUG] Calling API...');
         const result = await kaprodiAPI.assignKoordinatorSemester(koordinatorId, semester);
+        console.log('[DEBUG] API result:', result);
         if (result.ok) {
             showToast.success(result.data.message || "Berhasil assign koordinator");
             await loadData();
@@ -199,7 +202,7 @@ window.assignKoordinator = async function (koordinatorId, semester) {
             showToast.error("Gagal: " + (result.error || "Error"));
         }
     } catch (err) {
-        console.error(err);
+        console.error('[DEBUG] API error:', err);
         // Demo mode
         const idx = allKoordinators.findIndex(k => k.id === koordinatorId);
         if (idx !== -1) {
