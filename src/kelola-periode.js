@@ -185,6 +185,7 @@ function setupEventListeners() {
             } else {
                 tipeSelect.value = 'proyek';
             }
+            tipeSelect.disabled = true; // Lock tipe sesuai track
         }
     });
 
