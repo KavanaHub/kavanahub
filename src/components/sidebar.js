@@ -47,7 +47,6 @@ export function getSidebarHTML(currentRole, activeMenu = "dashboard", hiddenMenu
 
       const isActive = activeMenu === item.id;
       const icon = item.icon || MENU_ICONS[item.id] || "circle";
-      const hasBadge = item.id === "bimbingan";
 
       return `
       <a href="#" 
@@ -58,7 +57,6 @@ export function getSidebarHTML(currentRole, activeMenu = "dashboard", hiddenMenu
         }">
         <span class="material-symbols-outlined text-[22px]">${icon}</span>
         <span class="text-sm flex-1">${item.label}</span>
-        ${hasBadge ? '<span class="sidebar-badge w-5 h-5 rounded-full bg-pink-500 text-white text-xs font-bold flex items-center justify-center shadow-md">2</span>' : ""}
       </a>
     `;
     })
