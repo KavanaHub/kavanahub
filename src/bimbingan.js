@@ -11,6 +11,7 @@ import { showToast, showModal } from "./utils/alerts.js";
 // ---------- STATE ----------
 let sessions = [];
 let editingIndex = -1;
+let hasPembimbing = false; // Track if dosen pembimbing exists
 
 // ---------- CONSTANTS ----------
 const MAX_SESSIONS = 8;
@@ -47,7 +48,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateProgress();
 
   // Event listeners
-  elements.btnAddSession?.addEventListener("click", () => openModal());
+  elements.btnAddSession?.addEventListener("click", () => {
+    if (!hasPembimbing) {
+      showToast.warning("Anda belum memiliki dosen pembimbing. Upload proposal terlebih dahulu.");
+      return;
+    }
+    openModal();
+  });
   document.getElementById("modal-close")?.addEventListener("click", closeModal);
   document.getElementById("btn-modal-cancel")?.addEventListener("click", closeModal);
   elements.modal?.addEventListener("click", (e) => e.target === elements.modal && closeModal());
@@ -105,9 +112,12 @@ async function loadPembimbingInfo(container) {
 
     // Check if proposal is approved and has dosen
     if (profile.status_proposal !== 'approved' || !profile.dosen_nama) {
+      hasPembimbing = false;
       container.innerHTML = renderNoPembimbingWarning();
       return;
     }
+
+    hasPembimbing = true;
 
     container.innerHTML = `
     <div class="flex items-center gap-3 mb-3">
