@@ -3,7 +3,7 @@
 // ========================================
 
 // Base API URL
-const API_BASE_URL = 'https://kavana-backend-j8ktr.ondigitalocean.app';
+const API_BASE_URL = 'https://asia-southeast2-renzip-478811.cloudfunctions.net/kavana';
 
 // ========================================
 // TOKEN MANAGEMENT
