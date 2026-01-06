@@ -242,23 +242,51 @@ window.viewDetail = function (id) {
     if (!p) return;
 
     // Use correct field names from backend
-    const nama = p.nama || p.mahasiswa_nama || 'Unknown';
     const judul = p.judul_proyek || p.judul || 'Tidak ada judul';
     const track = p.track || 'proyek1';
     const isProyek = track.includes("proyek");
+    const kelompokNama = p.kelompok_nama || p.nama_kelompok || null;
+    const anggota = p.anggota || [];
+
+    // Display kelompok name for proyek, individual name for internship
+    const displayName = isProyek && kelompokNama ? kelompokNama : (p.nama || p.mahasiswa_nama || 'Unknown');
+    const displayInitials = isProyek && kelompokNama ? 'K' : getInitials(p.nama || 'U');
+
+    // Build anggota list HTML
+    const anggotaHTML = anggota.length > 0 ? `
+        <div class="bg-blue-50 p-4 rounded-lg">
+            <p class="text-text-secondary text-xs mb-2"><span class="material-symbols-outlined text-[14px] align-middle">group</span> Anggota Kelompok</p>
+            <div class="flex flex-col gap-2">
+                ${anggota.map(a => `
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-xs">${getInitials(a.nama)}</div>
+                        <div>
+                            <p class="font-medium text-text-main text-sm">${a.nama}</p>
+                            <p class="text-text-secondary text-xs">${a.npm}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    ` : '';
 
     document.getElementById("detail-content").innerHTML = `
         <div class="flex flex-col gap-4">
             <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xl">${getInitials(nama)}</div>
-                <div><h3 class="font-bold text-text-main text-lg">${nama}</h3><p class="text-text-secondary text-sm">${p.npm || '-'}</p></div>
+                <div class="w-14 h-14 rounded-full ${isProyek ? 'bg-blue-500' : 'bg-primary'} text-white flex items-center justify-center font-bold text-xl">${displayInitials}</div>
+                <div>
+                    <h3 class="font-bold text-text-main text-lg">${displayName}</h3>
+                    <p class="text-text-secondary text-sm">${isProyek && kelompokNama ? 'Kelompok Proyek' : (p.npm || '-')}</p>
+                </div>
             </div>
+            ${anggotaHTML}
             <div class="bg-slate-50 p-4 rounded-lg"><p class="text-text-secondary text-xs mb-1">Judul</p><p class="font-semibold text-text-main">${judul}</p></div>
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-slate-50 p-3 rounded-lg"><p class="text-text-secondary text-xs">Track</p><p class="font-semibold text-text-main text-sm">${getTrackDisplayName(track)}</p></div>
                 <div class="bg-slate-50 p-3 rounded-lg"><p class="text-text-secondary text-xs">Tanggal Submit</p><p class="font-semibold text-text-main text-sm">${formatDateShort(p.created_at || p.tanggal_submit)}</p></div>
-                ${isProyek ? `<div class="bg-slate-50 p-3 rounded-lg col-span-2"><p class="text-text-secondary text-xs">Tipe</p><p class="font-semibold text-text-main text-sm">Kelompok</p></div>` : `<div class="bg-slate-50 p-3 rounded-lg col-span-2"><p class="text-text-secondary text-xs">Tipe</p><p class="font-semibold text-text-main text-sm">Individual</p></div>`}
+                ${isProyek ? `<div class="bg-slate-50 p-3 rounded-lg col-span-2"><p class="text-text-secondary text-xs">Tipe</p><p class="font-semibold text-text-main text-sm">Kelompok (${anggota.length} anggota)</p></div>` : `<div class="bg-slate-50 p-3 rounded-lg col-span-2"><p class="text-text-secondary text-xs">Tipe</p><p class="font-semibold text-text-main text-sm">Individual</p></div>`}
             </div>
+            ${p.usulan_dosen_nama ? `<div class="bg-green-50 p-3 rounded-lg"><p class="text-text-secondary text-xs">Usulan Dosen Pembimbing</p><p class="font-semibold text-green-700 text-sm">${p.usulan_dosen_nama}</p></div>` : ''}
             <a href="${p.file_proposal || '#'}" target="_blank" class="py-2.5 text-center text-sm font-semibold bg-primary text-white rounded-lg hover:bg-primary/80">Buka Proposal</a>
         </div>`;
     document.getElementById("detail-modal").classList.remove("hidden");
