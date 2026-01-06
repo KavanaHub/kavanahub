@@ -107,15 +107,30 @@ function renderList() {
         return;
     }
 
-    container.innerHTML = needAssign.map(m => `
+    container.innerHTML = needAssign.map(m => {
+        const isProyek = m.track && m.track.includes('proyek');
+        const kelompokNama = m.kelompok_nama || m.nama_kelompok || null;
+        const anggota = m.anggota || [];
+
+        // Display kelompok name for proyek, individual name for internship
+        const displayName = isProyek && kelompokNama ? kelompokNama : m.nama;
+        const displayInitials = isProyek && kelompokNama ? 'K' : getInitials(m.nama);
+
+        // Build anggota list
+        const anggotaList = anggota.length > 0
+            ? anggota.map(a => `${a.nama} (${a.npm})`).join(', ')
+            : (isProyek ? `${m.nama} (${m.npm || '-'})` : '');
+
+        return `
         <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
             <div class="flex flex-col sm:flex-row gap-4">
                 <div class="flex items-center gap-3 flex-1">
-                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">${getInitials(m.nama)}</div>
+                    <div class="w-10 h-10 rounded-full ${isProyek ? 'bg-blue-500' : 'bg-primary'} text-white flex items-center justify-center font-bold text-sm">${displayInitials}</div>
                     <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-text-main text-sm lg:text-base truncate">${m.nama}</p>
-                        <p class="text-text-secondary text-xs">${m.npm} • ${getTrackDisplayName(m.track)}</p>
+                        <p class="font-semibold text-text-main text-sm lg:text-base truncate">${displayName}</p>
+                        <p class="text-text-secondary text-xs">${isProyek && kelompokNama ? 'Kelompok' : m.npm} • ${getTrackDisplayName(m.track)}</p>
                         <p class="text-text-main text-xs mt-1 truncate">${m.judul_proyek || '-'}</p>
+                        ${isProyek && anggotaList ? `<p class="text-text-secondary text-xs mt-1"><span class="material-symbols-outlined text-[14px] align-middle">group</span> ${anggotaList}</p>` : ''}
                         ${m.usulan_dosen_nama ? `<p class="text-primary text-xs mt-1">📋 Diusulkan: <span class="font-medium">${m.usulan_dosen_nama}</span></p>` : ''}
                     </div>
                 </div>
@@ -124,7 +139,8 @@ function renderList() {
                 </button>
             </div>
         </div>
-    `).join("");
+    `;
+    }).join("");
 }
 
 function updateStats() {

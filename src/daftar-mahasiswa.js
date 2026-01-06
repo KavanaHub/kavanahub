@@ -70,18 +70,32 @@ function renderCard(m) {
     const isReady = bimbinganCount >= 8 || m.status === "ready";
     const progress = Math.min((bimbinganCount / 8) * 100, 100);
 
+    const isProyek = m.track && m.track.includes('proyek');
+    const kelompokNama = m.kelompok_nama || m.nama_kelompok || null;
+    const anggota = m.anggota || [];
+
+    // Display kelompok name for proyek, individual name for internship
+    const displayName = isProyek && kelompokNama ? kelompokNama : m.nama;
+    const displayInitials = isProyek && kelompokNama ? 'K' : getInitials(m.nama);
+
+    // Build anggota list
+    const anggotaList = anggota.length > 0
+        ? anggota.map(a => `${a.nama} (${a.npm})`).join(', ')
+        : (isProyek ? `${m.nama} (${m.npm || '-'})` : '');
+
     return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
         <div class="flex flex-col sm:flex-row gap-4">
             <div class="flex items-center gap-3 flex-1 min-w-0">
-                <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shrink-0">${getInitials(m.nama)}</div>
+                <div class="w-10 h-10 rounded-full ${isProyek ? 'bg-blue-500' : 'bg-primary'} text-white flex items-center justify-center font-bold text-sm shrink-0">${displayInitials}</div>
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2 mb-1">
-                        <p class="font-semibold text-text-main text-sm truncate">${m.nama}</p>
+                        <p class="font-semibold text-text-main text-sm truncate">${displayName}</p>
                         ${isReady ? `<span class="px-2 py-0.5 text-[10px] font-medium bg-green-100 text-green-700 rounded-full">Siap Sidang</span>` : ""}
                     </div>
-                    <p class="text-text-secondary text-xs">${m.npm} • ${getTrackDisplayName(m.track)}</p>
+                    <p class="text-text-secondary text-xs">${isProyek && kelompokNama ? 'Kelompok' : m.npm} • ${getTrackDisplayName(m.track)}</p>
                     <p class="text-text-main text-xs mt-1 truncate">${m.judul_proyek || '-'}</p>
+                    ${isProyek && anggotaList ? `<p class="text-text-secondary text-xs mt-1"><span class="material-symbols-outlined text-[14px] align-middle">group</span> ${anggotaList}</p>` : ''}
                 </div>
             </div>
             <div class="flex flex-col sm:items-end gap-2 shrink-0">

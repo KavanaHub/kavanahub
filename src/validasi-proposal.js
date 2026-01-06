@@ -79,20 +79,31 @@ function renderProposalCard(p) {
     const nama = p.nama || 'Unknown';
     const judul = p.judul_proyek || p.judul || 'Tidak ada judul';
     const track = p.track || 'proyek1';
+    const kelompokNama = p.kelompok_nama || p.nama_kelompok || null;
+    const anggota = p.anggota || []; // Array of {nama, npm}
 
     const statusConfig = { pending: { text: "Pending", icon: "🕐", class: "bg-yellow-100 text-yellow-700" }, approved: { text: "Approved", icon: "✅", class: "bg-green-100 text-green-700" }, rejected: { text: "Rejected", icon: "❌", class: "bg-red-100 text-red-700" } };
     const s = statusConfig[status] || statusConfig.pending;
     const isProyek = track.includes("proyek");
+
+    // Display kelompok name for proyek, individual name for internship
+    const displayName = isProyek && kelompokNama ? kelompokNama : nama;
+    const displayInitials = isProyek && kelompokNama ? 'K' : getInitials(nama);
+
+    // Build anggota list for kelompok
+    const anggotaList = anggota.length > 0
+        ? anggota.map(a => `${a.nama} (${a.npm})`).join(', ')
+        : (isProyek ? `${nama} (${p.npm || '-'})` : '');
 
     return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
         <div class="flex flex-col gap-4">
             <div class="flex items-start justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">${getInitials(nama)}</div>
+                    <div class="w-10 h-10 rounded-full ${isProyek ? 'bg-blue-500' : 'bg-primary'} text-white flex items-center justify-center font-bold text-sm">${displayInitials}</div>
                     <div>
-                        <p class="font-semibold text-text-main text-sm lg:text-base">${nama}</p>
-                        <p class="text-text-secondary text-xs">${p.npm || '-'} • ${getTrackDisplayName(track)}</p>
+                        <p class="font-semibold text-text-main text-sm lg:text-base">${displayName}</p>
+                        <p class="text-text-secondary text-xs">${isProyek && kelompokNama ? 'Kelompok' : p.npm || '-'} • ${getTrackDisplayName(track)}</p>
                     </div>
                 </div>
                 <span class="px-2 py-1 text-xs font-medium rounded-full ${s.class}">${s.icon} ${s.text}</span>
@@ -102,7 +113,7 @@ function renderProposalCard(p) {
                 <h4 class="font-semibold text-text-main text-sm mb-2">${judul}</h4>
                 <div class="flex flex-wrap gap-3 text-xs text-text-secondary">
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_today</span>${formatDateShort(p.created_at || p.tanggal_submit)}</span>
-                    ${isProyek ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">group</span>Kelompok</span>` : `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">business</span>Individual</span>`}
+                    ${isProyek ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">group</span>${anggotaList || 'Kelompok'}</span>` : `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">person</span>Individual</span>`}
                 </div>
             </div>
 
