@@ -211,7 +211,11 @@ async function handleAssign(e) {
 function updateLocal(mahasiswaId, dosenId) {
     const m = mahasiswaList.find(x => x.id === mahasiswaId);
     const d = dosenList.find(x => x.id === dosenId);
-    if (m && d) { m.dosen_pembimbing = { id: d.id, nama: d.nama }; d.mahasiswa_count++; }
+    if (m && d) {
+        m.dosen_id = d.id;  // This is what the filter checks
+        m.dosen_nama = d.nama;
+        d.mahasiswa_count++;
+    }
     closeModal();
     renderList();
     updateStats();
