@@ -81,8 +81,8 @@ async function loadTrackInfo(container) {
 
     container.innerHTML = `
     <div class="flex items-center gap-3 mb-3">
-      <div class="p-2 ${isProyek ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"} rounded-lg text-xl lg:text-2xl">
-        ${isProyek ? "📋" : "🏢"}
+      <div class="p-2 ${isProyek ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"} rounded-lg">
+        <span class="material-symbols-outlined text-xl lg:text-2xl">${isProyek ? "description" : "business"}</span>
       </div>
       <h4 class="font-semibold text-text-main text-sm lg:text-base">Track Aktif</h4>
     </div>

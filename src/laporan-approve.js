@@ -203,10 +203,10 @@ function renderLaporanCard(l) {
 
 function getStatusConfig(status) {
   const configs = {
-    pending: { text: "Pending", icon: "📄", badgeClass: "bg-yellow-100 text-yellow-700" },
-    submitted: { text: "Pending", icon: "📄", badgeClass: "bg-yellow-100 text-yellow-700" },
-    approved: { text: "Approved", icon: "✅", badgeClass: "bg-green-100 text-green-700" },
-    revision: { text: "Perlu Revisi", icon: "🔄", badgeClass: "bg-orange-100 text-orange-700" },
+    pending: { text: "Pending", icon: '<span class="material-symbols-outlined text-[14px] align-middle">description</span>', badgeClass: "bg-yellow-100 text-yellow-700" },
+    submitted: { text: "Pending", icon: '<span class="material-symbols-outlined text-[14px] align-middle">description</span>', badgeClass: "bg-yellow-100 text-yellow-700" },
+    approved: { text: "Approved", icon: '<span class="material-symbols-outlined text-[14px] align-middle">check_circle</span>', badgeClass: "bg-green-100 text-green-700" },
+    revision: { text: "Perlu Revisi", icon: '<span class="material-symbols-outlined text-[14px] align-middle">refresh</span>', badgeClass: "bg-orange-100 text-orange-700" },
   };
   return configs[status] || configs.pending;
 }

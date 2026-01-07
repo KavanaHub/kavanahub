@@ -109,7 +109,7 @@ function renderCard(m) {
                     </div>
                 </div>
                 <p class="text-xs ${m.dosen_nama ? "text-text-secondary" : "text-yellow-600"}">
-                    ${m.dosen_nama ? `👨‍🏫 ${m.dosen_nama}` : "⚠️ Belum ada pembimbing"}
+                    ${m.dosen_nama ? `<span class="material-symbols-outlined text-[14px] align-middle">school</span> ${m.dosen_nama}` : '<span class="material-symbols-outlined text-[14px] align-middle">warning</span> Belum ada pembimbing'}
                 </p>
             </div>
         </div>

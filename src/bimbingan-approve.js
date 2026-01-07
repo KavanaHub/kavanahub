@@ -247,10 +247,10 @@ function renderBimbinganCard(b) {
 
 function getStatusConfig(status) {
     const configs = {
-        pending: { text: "Pending", icon: "🕐", badgeClass: "bg-yellow-100 text-yellow-700" },
-        waiting: { text: "Pending", icon: "🕐", badgeClass: "bg-yellow-100 text-yellow-700" },
-        approved: { text: "Approved", icon: "✅", badgeClass: "bg-green-100 text-green-700" },
-        rejected: { text: "Rejected", icon: "❌", badgeClass: "bg-red-100 text-red-700" },
+        pending: { text: "Pending", icon: '<span class="material-symbols-outlined text-[14px] align-middle">schedule</span>', badgeClass: "bg-yellow-100 text-yellow-700" },
+        waiting: { text: "Pending", icon: '<span class="material-symbols-outlined text-[14px] align-middle">schedule</span>', badgeClass: "bg-yellow-100 text-yellow-700" },
+        approved: { text: "Approved", icon: '<span class="material-symbols-outlined text-[14px] align-middle">check_circle</span>', badgeClass: "bg-green-100 text-green-700" },
+        rejected: { text: "Rejected", icon: '<span class="material-symbols-outlined text-[14px] align-middle">cancel</span>', badgeClass: "bg-red-100 text-red-700" },
     };
     return configs[status] || configs.pending;
 }

@@ -72,8 +72,8 @@ async function checkPrerequisites() {
         updatePrereqCard(
             prereqProposal,
             profileResult.ok && profileResult.data.status_proposal === "approved",
-            "✅",
-            "❌",
+            '<span class="material-symbols-outlined text-[18px]">check_circle</span>',
+            '<span class="material-symbols-outlined text-[18px]">cancel</span>',
             "green",
             "red"
         );
@@ -84,7 +84,7 @@ async function checkPrerequisites() {
         const isComplete = approvedCount >= 8;
 
         if (isComplete) {
-            updatePrereqCard(prereqBimbingan, true, "✅", "", "green", "");
+            updatePrereqCard(prereqBimbingan, true, '<span class="material-symbols-outlined text-[18px]">check_circle</span>', "", "green", "");
         } else {
             prereqBimbingan.querySelector(".prereq-icon").innerHTML = `<span class="text-yellow-600 font-bold">${approvedCount}/8</span>`;
             prereqBimbingan.classList.remove("bg-slate-50", "border-slate-100");

@@ -311,12 +311,12 @@ function openModal(card) {
     elements.selectedName.textContent = trackName;
 
     if (trackType === "proyek") {
-        elements.selectedIcon.textContent = "📋";
+        elements.selectedIcon.innerHTML = '<span class="material-symbols-outlined text-2xl">description</span>';
         elements.selectedType.textContent = "Proyek - 2 Orang per Kelompok";
         elements.teamSection.classList.remove("hidden");
         elements.companySection.classList.add("hidden");
     } else {
-        elements.selectedIcon.textContent = "🏢";
+        elements.selectedIcon.innerHTML = '<span class="material-symbols-outlined text-2xl">business</span>';
         elements.selectedType.textContent = "Internship - Individual";
         elements.teamSection.classList.add("hidden");
         elements.companySection.classList.remove("hidden");
@@ -413,10 +413,10 @@ async function saveAndRedirect(trackData) {
         if (trackData.type === "proyek") {
             if (isMatched) {
                 // Mutual match - kelompok automatically created
-                details = `🎉 Match berhasil! Kelompok otomatis terbentuk dengan partner NPM ${trackData.partnerNpm}.\n\nAnda berdua sekarang sudah dalam satu kelompok.`;
+                details = `Match berhasil! Kelompok otomatis terbentuk dengan partner NPM ${trackData.partnerNpm}.\n\nAnda berdua sekarang sudah dalam satu kelompok.`;
             } else if (trackData.partnerNpm) {
                 // Partner NPM provided but not matched yet
-                details = `Partner NPM: ${trackData.partnerNpm}\n\n⏳ Menunggu partner memilih track yang sama dan memasukkan NPM Anda. Kelompok akan otomatis terbentuk setelah partner mendaftar.`;
+                details = `Partner NPM: ${trackData.partnerNpm}\n\nMenunggu partner memilih track yang sama dan memasukkan NPM Anda. Kelompok akan otomatis terbentuk setelah partner mendaftar.`;
             } else {
                 // No partner NPM
                 details = "Anda bisa membuat atau join kelompok di menu Kelompok Proyek.";

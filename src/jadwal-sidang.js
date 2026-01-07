@@ -16,91 +16,91 @@ let currentFilter = "eligible";
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
-    const { isAuthenticated } = initPage({ activeMenu: "jadwal-sidang" });
-    if (!isAuthenticated) return;
+  const { isAuthenticated } = initPage({ activeMenu: "jadwal-sidang" });
+  if (!isAuthenticated) return;
 
-    window.closeSidebar = closeSidebar;
+  window.closeSidebar = closeSidebar;
 
-    await loadData();
-    setupEventListeners();
+  await loadData();
+  setupEventListeners();
 });
 
 // ---------- DATA LOADING ----------
 async function loadData() {
-    try {
-        const [mahasiswaResult, sidangResult, pengujiResult] = await Promise.all([
-            koordinatorAPI.getAllMahasiswa(),
-            koordinatorAPI.getAllSidang(),
-            koordinatorAPI.getPengujiList()
-        ]);
+  try {
+    const [mahasiswaResult, sidangResult, pengujiResult] = await Promise.all([
+      koordinatorAPI.getAllMahasiswa(),
+      koordinatorAPI.getAllSidang(),
+      koordinatorAPI.getPengujiList()
+    ]);
 
-        if (mahasiswaResult.ok) mahasiswaList = mahasiswaResult.data || [];
-        if (sidangResult.ok) sidangList = sidangResult.data || [];
-        if (pengujiResult.ok) pengujiList = pengujiResult.data || [];
+    if (mahasiswaResult.ok) mahasiswaList = mahasiswaResult.data || [];
+    if (sidangResult.ok) sidangList = sidangResult.data || [];
+    if (pengujiResult.ok) pengujiList = pengujiResult.data || [];
 
-        renderList();
-        updateStats();
-        populatePengujiDropdown();
-    } catch (err) {
-        console.error("Error loading data:", err);
-        // Use fallback
-        mahasiswaList = [];
-        sidangList = [];
-        pengujiList = [];
-        renderList();
-        updateStats();
-    }
+    renderList();
+    updateStats();
+    populatePengujiDropdown();
+  } catch (err) {
+    console.error("Error loading data:", err);
+    // Use fallback
+    mahasiswaList = [];
+    sidangList = [];
+    pengujiList = [];
+    renderList();
+    updateStats();
+  }
 }
 
 // ---------- RENDERING ----------
 function renderList() {
-    const container = document.getElementById("sidang-list");
+  const container = document.getElementById("sidang-list");
 
-    if (currentFilter === "eligible") {
-        renderEligibleList(container);
-    } else if (currentFilter === "scheduled") {
-        renderScheduledList(container, "scheduled");
-    } else if (currentFilter === "completed") {
-        renderScheduledList(container, "completed");
-    }
+  if (currentFilter === "eligible") {
+    renderEligibleList(container);
+  } else if (currentFilter === "scheduled") {
+    renderScheduledList(container, "scheduled");
+  } else if (currentFilter === "completed") {
+    renderScheduledList(container, "completed");
+  }
 }
 
 function renderEligibleList(container) {
-    // Get mahasiswa with approved laporan but not yet scheduled
-    const scheduledIds = sidangList.map(s => s.mahasiswa_id);
+  // Get mahasiswa with approved laporan but not yet scheduled
+  const scheduledIds = sidangList.map(s => s.mahasiswa_id);
 
-    const eligible = mahasiswaList.filter(m => {
-        // Has 8+ approved bimbingan and not yet scheduled
-        const bimbinganCount = m.bimbingan_count || 0;
-        return bimbinganCount >= 8 && !scheduledIds.includes(m.id);
-    });
+  const eligible = mahasiswaList.filter(m => {
+    // Has 8+ approved bimbingan and not yet scheduled
+    const bimbinganCount = m.bimbingan_count || 0;
+    return bimbinganCount >= 8 && !scheduledIds.includes(m.id);
+  });
 
-    if (eligible.length === 0) {
-        container.innerHTML = renderEmptyState("Tidak ada mahasiswa yang siap sidang");
-        return;
-    }
+  if (eligible.length === 0) {
+    container.innerHTML = renderEmptyState("Tidak ada mahasiswa yang siap sidang");
+    return;
+  }
 
-    container.innerHTML = eligible.map(m => renderEligibleCard(m)).join("");
+  container.innerHTML = eligible.map(m => renderEligibleCard(m)).join("");
 }
 
 function renderScheduledList(container, status) {
-    const filtered = sidangList.filter(s => {
-        if (status === "scheduled") return !s.status || s.status === "scheduled";
-        if (status === "completed") return s.status === "lulus" || s.status === "tidak_lulus";
-        return true;
-    });
+  const filtered = sidangList.filter(s => {
+    if (status === "scheduled") return !s.status || s.status === "scheduled";
+    if (status === "completed") return s.status === "lulus" || s.status === "tidak_lulus";
+    return true;
+  });
 
-    if (filtered.length === 0) {
-        const msg = status === "scheduled" ? "Tidak ada sidang terjadwal" : "Belum ada sidang selesai";
-        container.innerHTML = renderEmptyState(msg);
-        return;
-    }
+  if (filtered.length === 0) {
+    const msg = status === "scheduled" ? "Tidak ada sidang terjadwal" : "Belum ada sidang selesai";
+    container.innerHTML = renderEmptyState(msg);
+    return;
+  }
 
-    container.innerHTML = filtered.map(s => renderSidangCard(s)).join("");
+  container.innerHTML = filtered.map(s => renderSidangCard(s)).join("");
 }
 
 function renderEmptyState(message) {
-    return `
+  return `
     <div class="text-center py-12 bg-white rounded-xl border border-slate-100">
       <span class="material-symbols-outlined text-5xl text-slate-300">inbox</span>
       <h3 class="text-lg font-bold text-text-main mt-4">${message}</h3>
@@ -110,7 +110,7 @@ function renderEmptyState(message) {
 }
 
 function renderEligibleCard(m) {
-    return `
+  return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div class="flex items-center gap-3">
@@ -124,7 +124,7 @@ function renderEligibleCard(m) {
         </div>
         <div class="flex items-center gap-2">
           <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-            ✅ ${m.bimbingan_count || 0}/8 Bimbingan
+            <span class="material-symbols-outlined text-[14px] align-middle">check_circle</span> ${m.bimbingan_count || 0}/8 Bimbingan
           </span>
           <button onclick="openScheduleModal(${m.id}, '${m.nama}')" 
                   class="px-4 py-2 text-xs font-medium bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center gap-1">
@@ -144,9 +144,9 @@ function renderEligibleCard(m) {
 }
 
 function renderSidangCard(s) {
-    const statusConfig = getStatusConfig(s.status);
+  const statusConfig = getStatusConfig(s.status);
 
-    return `
+  return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
       <div class="flex flex-col gap-3">
         <div class="flex items-start justify-between">
@@ -188,122 +188,122 @@ function renderSidangCard(s) {
 }
 
 function getStatusConfig(status) {
-    const configs = {
-        scheduled: { text: "Terjadwal", icon: "📅", badgeClass: "bg-blue-100 text-blue-700" },
-        lulus: { text: "Lulus", icon: "✅", badgeClass: "bg-green-100 text-green-700" },
-        tidak_lulus: { text: "Tidak Lulus", icon: "❌", badgeClass: "bg-red-100 text-red-700" },
-    };
-    return configs[status] || configs.scheduled;
+  const configs = {
+    scheduled: { text: "Terjadwal", icon: '<span class="material-symbols-outlined text-[14px] align-middle">event</span>', badgeClass: "bg-blue-100 text-blue-700" },
+    lulus: { text: "Lulus", icon: '<span class="material-symbols-outlined text-[14px] align-middle">check_circle</span>', badgeClass: "bg-green-100 text-green-700" },
+    tidak_lulus: { text: "Tidak Lulus", icon: '<span class="material-symbols-outlined text-[14px] align-middle">cancel</span>', badgeClass: "bg-red-100 text-red-700" },
+  };
+  return configs[status] || configs.scheduled;
 }
 
 function updateStats() {
-    const scheduledIds = sidangList.map(s => s.mahasiswa_id);
+  const scheduledIds = sidangList.map(s => s.mahasiswa_id);
 
-    const eligible = mahasiswaList.filter(m => {
-        const bimbinganCount = m.bimbingan_count || 0;
-        return bimbinganCount >= 8 && !scheduledIds.includes(m.id);
-    }).length;
+  const eligible = mahasiswaList.filter(m => {
+    const bimbinganCount = m.bimbingan_count || 0;
+    return bimbinganCount >= 8 && !scheduledIds.includes(m.id);
+  }).length;
 
-    const scheduled = sidangList.filter(s => !s.status || s.status === "scheduled").length;
-    const completed = sidangList.filter(s => s.status === "lulus" || s.status === "tidak_lulus").length;
+  const scheduled = sidangList.filter(s => !s.status || s.status === "scheduled").length;
+  const completed = sidangList.filter(s => s.status === "lulus" || s.status === "tidak_lulus").length;
 
-    document.getElementById("stat-eligible").textContent = eligible;
-    document.getElementById("stat-scheduled").textContent = scheduled;
-    document.getElementById("stat-completed").textContent = completed;
-    document.getElementById("stat-total").textContent = sidangList.length;
+  document.getElementById("stat-eligible").textContent = eligible;
+  document.getElementById("stat-scheduled").textContent = scheduled;
+  document.getElementById("stat-completed").textContent = completed;
+  document.getElementById("stat-total").textContent = sidangList.length;
 }
 
 function populatePengujiDropdown() {
-    const select = document.getElementById("penguji-id");
-    select.innerHTML = '<option value="">Pilih Penguji</option>';
+  const select = document.getElementById("penguji-id");
+  select.innerHTML = '<option value="">Pilih Penguji</option>';
 
-    pengujiList.forEach(p => {
-        select.innerHTML += `<option value="${p.id}">${p.nama}</option>`;
-    });
+  pengujiList.forEach(p => {
+    select.innerHTML += `<option value="${p.id}">${p.nama}</option>`;
+  });
 }
 
 // ---------- EVENT HANDLERS ----------
 function setupEventListeners() {
-    // Filter buttons
-    document.querySelectorAll(".filter-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            currentFilter = btn.dataset.filter;
-            renderList();
-        });
+  // Filter buttons
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentFilter = btn.dataset.filter;
+      renderList();
     });
+  });
 
-    // Modal
-    document.getElementById("modal-close")?.addEventListener("click", closeModal);
-    document.getElementById("btn-cancel")?.addEventListener("click", closeModal);
-    document.getElementById("schedule-modal")?.addEventListener("click", (e) => {
-        if (e.target.id === "schedule-modal") closeModal();
-    });
-    document.getElementById("schedule-form")?.addEventListener("submit", handleSchedule);
+  // Modal
+  document.getElementById("modal-close")?.addEventListener("click", closeModal);
+  document.getElementById("btn-cancel")?.addEventListener("click", closeModal);
+  document.getElementById("schedule-modal")?.addEventListener("click", (e) => {
+    if (e.target.id === "schedule-modal") closeModal();
+  });
+  document.getElementById("schedule-form")?.addEventListener("submit", handleSchedule);
 }
 
 // ---------- MODAL ----------
 window.openScheduleModal = function (mahasiswaId, nama) {
-    document.getElementById("mahasiswa-id").value = mahasiswaId;
-    document.getElementById("mahasiswa-nama").textContent = nama;
+  document.getElementById("mahasiswa-id").value = mahasiswaId;
+  document.getElementById("mahasiswa-nama").textContent = nama;
 
-    // Reset form
-    document.getElementById("tanggal").value = "";
-    document.getElementById("waktu").value = "";
-    document.getElementById("ruangan").value = "";
-    document.getElementById("penguji-id").value = "";
+  // Reset form
+  document.getElementById("tanggal").value = "";
+  document.getElementById("waktu").value = "";
+  document.getElementById("ruangan").value = "";
+  document.getElementById("penguji-id").value = "";
 
-    const modal = document.getElementById("schedule-modal");
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    document.body.style.overflow = "hidden";
+  const modal = document.getElementById("schedule-modal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  document.body.style.overflow = "hidden";
 };
 
 function closeModal() {
-    const modal = document.getElementById("schedule-modal");
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-    document.body.style.overflow = "";
+  const modal = document.getElementById("schedule-modal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+  document.body.style.overflow = "";
 }
 
 async function handleSchedule(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const mahasiswa_id = parseInt(document.getElementById("mahasiswa-id").value);
-    const tanggal = document.getElementById("tanggal").value;
-    const waktu = document.getElementById("waktu").value;
-    const ruangan = document.getElementById("ruangan").value;
-    const penguji_id = parseInt(document.getElementById("penguji-id").value);
+  const mahasiswa_id = parseInt(document.getElementById("mahasiswa-id").value);
+  const tanggal = document.getElementById("tanggal").value;
+  const waktu = document.getElementById("waktu").value;
+  const ruangan = document.getElementById("ruangan").value;
+  const penguji_id = parseInt(document.getElementById("penguji-id").value);
 
-    if (!mahasiswa_id || !tanggal || !waktu || !ruangan || !penguji_id) {
-        showToast.error("Semua field wajib diisi");
-        return;
+  if (!mahasiswa_id || !tanggal || !waktu || !ruangan || !penguji_id) {
+    showToast.error("Semua field wajib diisi");
+    return;
+  }
+
+  const submitBtn = document.getElementById("btn-submit");
+  setButtonLoading(submitBtn, "Menjadwalkan...");
+
+  try {
+    const result = await koordinatorAPI.scheduleSidang({
+      mahasiswa_id,
+      tanggal,
+      waktu,
+      ruangan,
+      penguji_id
+    });
+
+    if (result.ok) {
+      closeModal();
+      showToast.success("Sidang berhasil dijadwalkan!");
+      await loadData();
+    } else {
+      showModal.error("Gagal", result.error || "Terjadi kesalahan");
     }
-
-    const submitBtn = document.getElementById("btn-submit");
-    setButtonLoading(submitBtn, "Menjadwalkan...");
-
-    try {
-        const result = await koordinatorAPI.scheduleSidang({
-            mahasiswa_id,
-            tanggal,
-            waktu,
-            ruangan,
-            penguji_id
-        });
-
-        if (result.ok) {
-            closeModal();
-            showToast.success("Sidang berhasil dijadwalkan!");
-            await loadData();
-        } else {
-            showModal.error("Gagal", result.error || "Terjadi kesalahan");
-        }
-    } catch (err) {
-        console.error("Schedule error:", err);
-        showModal.error("Error", "Terjadi kesalahan saat menjadwalkan sidang");
-    } finally {
-        resetButtonLoading(submitBtn);
-    }
+  } catch (err) {
+    console.error("Schedule error:", err);
+    showModal.error("Error", "Terjadi kesalahan saat menjadwalkan sidang");
+  } finally {
+    resetButtonLoading(submitBtn);
+  }
 }

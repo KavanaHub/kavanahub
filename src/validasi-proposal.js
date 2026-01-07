@@ -82,7 +82,7 @@ function renderProposalCard(p) {
     const kelompokNama = p.kelompok_nama || p.nama_kelompok || null;
     const anggota = p.anggota || []; // Array of {nama, npm}
 
-    const statusConfig = { pending: { text: "Pending", icon: "🕐", class: "bg-yellow-100 text-yellow-700" }, approved: { text: "Approved", icon: "✅", class: "bg-green-100 text-green-700" }, rejected: { text: "Rejected", icon: "❌", class: "bg-red-100 text-red-700" } };
+    const statusConfig = { pending: { text: "Pending", icon: '<span class="material-symbols-outlined text-[14px] align-middle">schedule</span>', class: "bg-yellow-100 text-yellow-700" }, approved: { text: "Approved", icon: '<span class="material-symbols-outlined text-[14px] align-middle">check_circle</span>', class: "bg-green-100 text-green-700" }, rejected: { text: "Rejected", icon: '<span class="material-symbols-outlined text-[14px] align-middle">cancel</span>', class: "bg-red-100 text-red-700" } };
     const s = statusConfig[status] || statusConfig.pending;
     const isProyek = track.includes("proyek");
 

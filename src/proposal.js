@@ -219,7 +219,7 @@ function populateDosenDropdowns() {
 function renderNoTrackWarning() {
     return `
     <div class="flex items-center gap-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-      <span class="text-2xl">⚠️</span>
+      <span class="material-symbols-outlined text-2xl text-yellow-600">warning</span>
       <div class="flex-1">
         <p class="font-semibold text-yellow-800 text-sm lg:text-base">Belum ada track yang dipilih</p>
         <p class="text-yellow-700 text-xs lg:text-sm">Silakan pilih track terlebih dahulu sebelum mengupload proposal.</p>
@@ -236,8 +236,8 @@ function renderTrackInfo(track, trackName, isProyek, kelompokName = null) {
 
     return `
     <div class="flex items-center gap-4">
-      <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl ${isProyek ? "bg-blue-100" : "bg-purple-100"} flex items-center justify-center text-2xl lg:text-3xl shrink-0">
-        ${isProyek ? "📋" : "🏢"}
+      <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl ${isProyek ? "bg-blue-100" : "bg-purple-100"} flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-2xl lg:text-3xl ${isProyek ? 'text-blue-600' : 'text-purple-600'}">${isProyek ? "description" : "business"}</span>
       </div>
       <div class="flex-1 min-w-0">
         <p class="font-bold text-text-main text-base lg:text-lg">${trackName}</p>
