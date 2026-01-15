@@ -175,6 +175,16 @@ export function createMenuHandler(currentRole = "mahasiswa") {
             "kelola-koordinator": "/kaprodi/kelola-koordinator.html",
             "daftar-dosen": "/kaprodi/daftar-dosen.html",
             monitoring: "/kaprodi/monitoring.html",
+            // Koordinator pages (kaprodi bisa jadi koordinator)
+            "kelola-periode": "/koordinator/kelola-periode.html",
+            "validasi-proposal": "/koordinator/validasi-proposal.html",
+            "approve-pembimbing": "/koordinator/approve-pembimbing.html",
+            "daftar-mahasiswa": "/koordinator/daftar-mahasiswa.html",
+            "jadwal-sidang": "/koordinator/jadwal-sidang.html",
+            // Dosen pembimbing pages (kaprodi juga dosen)
+            "mahasiswa-bimbingan": "/dosen/mahasiswa-bimbingan.html",
+            "bimbingan-approve": "/dosen/bimbingan-approve.html",
+            "laporan-approve": "/dosen/laporan-approve.html",
         },
         admin: {
             dashboard: "/admin/dashboard.html",
