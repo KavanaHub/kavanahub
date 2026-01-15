@@ -9,6 +9,7 @@ import { getInitials, removeAcademicTitles } from "./utils/formatUtils.js";
 // ---------- STATE ----------
 let stats = null;
 let dosenList = [];
+let isKoordinator = false;
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
@@ -29,6 +30,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
+    // Load profile first to check is_koordinator
+    const profileResult = await kaprodiAPI.getProfile();
+    if (profileResult.ok && profileResult.data) {
+        isKoordinator = profileResult.data.is_koordinator || false;
+        if (profileResult.data.nama) sessionStorage.setItem("userName", profileResult.data.nama);
+        if (profileResult.data.email) sessionStorage.setItem("userEmail", profileResult.data.email);
+    }
+
     const app = document.getElementById("app");
     app.innerHTML = `
         <div id="sidebar-placeholder"></div>
@@ -40,8 +49,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         <main id="main-content" class="flex-1 overflow-y-auto h-full w-full pt-14 lg:pt-0"></main>
     `;
 
+    // Hide koordinator menu items (including separator) if not assigned as koordinator
+    const hiddenMenus = isKoordinator ? [] : [
+        "separator-koordinator", "kelola-periode", "validasi-proposal",
+        "approve-pembimbing", "daftar-mahasiswa", "jadwal-sidang"
+    ];
+
     const sidebarPlaceholder = document.getElementById("sidebar-placeholder");
-    sidebarPlaceholder.outerHTML = getSidebarHTML("kaprodi", "dashboard");
+    sidebarPlaceholder.outerHTML = getSidebarHTML("kaprodi", "dashboard", hiddenMenus);
     bindSidebarEvents(handleMenuClick);
     updateSidebarUser();
     setupMobileSidebar();
@@ -53,20 +68,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ---------- DATA LOADING ----------
 async function loadData() {
     try {
-        const [statsResult, dosenResult, profileResult] = await Promise.all([
+        const [statsResult, dosenResult] = await Promise.all([
             kaprodiAPI.getStats(),
             kaprodiAPI.getDosenList(),
-            kaprodiAPI.getProfile(),
         ]);
         if (statsResult.ok) stats = statsResult.data;
         if (dosenResult.ok) dosenList = dosenResult.data || [];
-
-        // Update sessionStorage with real profile data
-        if (profileResult.ok && profileResult.data) {
-            if (profileResult.data.nama) sessionStorage.setItem("userName", profileResult.data.nama);
-            if (profileResult.data.email) sessionStorage.setItem("userEmail", profileResult.data.email);
-            updateSidebarUser();
-        }
     } catch (err) {
         console.error(err);
         stats = getDummyStats();
@@ -199,6 +206,12 @@ function handleMenuClick(menuId) {
         "kelola-koordinator": "/kaprodi/kelola-koordinator.html",
         "daftar-dosen": "/kaprodi/daftar-dosen.html",
         monitoring: "/kaprodi/monitoring.html",
+        // Koordinator pages (kaprodi bisa jadi koordinator)
+        "kelola-periode": "/koordinator/kelola-periode.html",
+        "validasi-proposal": "/koordinator/validasi-proposal.html",
+        "approve-pembimbing": "/koordinator/approve-pembimbing.html",
+        "daftar-mahasiswa": "/koordinator/daftar-mahasiswa.html",
+        "jadwal-sidang": "/koordinator/jadwal-sidang.html",
         // Dosen pembimbing pages (kaprodi juga dosen)
         "mahasiswa-bimbingan": "/dosen/mahasiswa-bimbingan.html",
         "bimbingan-approve": "/dosen/bimbingan-approve.html",

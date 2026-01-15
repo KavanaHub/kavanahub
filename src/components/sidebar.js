@@ -36,8 +36,8 @@ export function getSidebarHTML(currentRole, activeMenu = "dashboard", hiddenMenu
   // Generate menu items HTML
   const menuHTML = menuItems
     .map((item) => {
-      // Handle separator as section divider
-      if (item.id === "separator") {
+      // Handle separator as section divider (id starts with "separator")
+      if (item.id.startsWith("separator")) {
         return `
         <div class="mt-4 mb-2 px-4">
           <span class="text-white/50 text-xs font-semibold uppercase tracking-wider">${item.label}</span>

@@ -106,8 +106,15 @@ export const MENU_CONFIG = {
         { id: "kelola-koordinator", label: "Kelola Koordinator", icon: "assignment_ind" },
         { id: "daftar-dosen", label: "Daftar Dosen", icon: "group" },
         { id: "monitoring", label: "Monitoring Mahasiswa", icon: "monitoring" },
+        // Koordinator features (kaprodi bisa jadi koordinator)
+        { id: "separator-koordinator", label: "Koordinator", icon: "" },
+        { id: "kelola-periode", label: "Kelola Periode", icon: "event" },
+        { id: "validasi-proposal", label: "Validasi Proposal", icon: "fact_check" },
+        { id: "approve-pembimbing", label: "Assign Pembimbing", icon: "how_to_reg" },
+        { id: "daftar-mahasiswa", label: "Daftar Mahasiswa", icon: "groups" },
+        { id: "jadwal-sidang", label: "Jadwal Sidang", icon: "calendar_month" },
         // Dosen Pembimbing features (kaprodi juga dosen)
-        { id: "separator", label: "Dosen Pembimbing", icon: "" },
+        { id: "separator-dosen", label: "Dosen Pembimbing", icon: "" },
         { id: "mahasiswa-bimbingan", label: "Mahasiswa Bimbingan", icon: "school" },
         { id: "bimbingan-approve", label: "Approve Bimbingan", icon: "task_alt" },
         { id: "laporan-approve", label: "Approve Laporan", icon: "grading" },
