@@ -100,11 +100,11 @@ function updatePrereqCard(element, isComplete, successIcon, failIcon, successCol
 
     const icon = element.querySelector(".prereq-icon");
     if (isComplete) {
-        icon.textContent = successIcon;
+        icon.innerHTML = successIcon;
         element.classList.remove("bg-slate-50", "border-slate-100");
         element.classList.add(`bg-${successColor}-50`, `border-${successColor}-200`);
     } else {
-        icon.textContent = failIcon;
+        icon.innerHTML = failIcon;
         element.classList.remove("bg-slate-50", "border-slate-100");
         element.classList.add(`bg-${failColor}-50`, `border-${failColor}-200`);
     }
