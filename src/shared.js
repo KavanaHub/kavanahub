@@ -106,6 +106,11 @@ export const MENU_CONFIG = {
         { id: "kelola-koordinator", label: "Kelola Koordinator", icon: "assignment_ind" },
         { id: "daftar-dosen", label: "Daftar Dosen", icon: "group" },
         { id: "monitoring", label: "Monitoring Mahasiswa", icon: "monitoring" },
+        // Dosen Pembimbing features (kaprodi juga dosen)
+        { id: "separator", label: "Dosen Pembimbing", icon: "" },
+        { id: "mahasiswa-bimbingan", label: "Mahasiswa Bimbingan", icon: "school" },
+        { id: "bimbingan-approve", label: "Approve Bimbingan", icon: "task_alt" },
+        { id: "laporan-approve", label: "Approve Laporan", icon: "grading" },
         { id: "profile", label: "Profil Saya", icon: "person" },
         { id: "settings", label: "Pengaturan", icon: "settings" },
     ],

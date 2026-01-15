@@ -199,6 +199,10 @@ function handleMenuClick(menuId) {
         "kelola-koordinator": "/kaprodi/kelola-koordinator.html",
         "daftar-dosen": "/kaprodi/daftar-dosen.html",
         monitoring: "/kaprodi/monitoring.html",
+        // Dosen pembimbing pages (kaprodi juga dosen)
+        "mahasiswa-bimbingan": "/dosen/mahasiswa-bimbingan.html",
+        "bimbingan-approve": "/dosen/bimbingan-approve.html",
+        "laporan-approve": "/dosen/laporan-approve.html",
         profile: "/shared/profile.html",
         settings: "/shared/settings.html",
     };
