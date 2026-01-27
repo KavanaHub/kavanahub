@@ -210,7 +210,6 @@ function renderLaporanCard(l) {
     </div>
   `;
 }
-}
 
 function getStatusConfig(status) {
   const configs = {
