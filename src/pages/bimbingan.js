@@ -211,30 +211,7 @@ function renderNoTrackWarning() {
   `;
 }
 
-function renderNoPembimbingWarning(status = 'none') {
-  let message = "Belum ada proposal";
-  let linkText = "Upload Proposal →";
-  let linkUrl = "/mahasiswa/proposal.html";
 
-  if (status === 'pending') {
-    message = "Proposal sedang direview";
-    linkText = "Lihat Status →";
-  } else if (status === 'rejected') {
-    message = "Proposal perlu revisi";
-    linkText = "Perbaiki Proposal →";
-  }
-
-  return `
-    <div class="flex items-center gap-3 mb-3">
-      <div class="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
-        <span class="material-symbols-outlined text-[20px] lg:text-[24px]">warning</span>
-      </div>
-      <h4 class="font-semibold text-text-main text-sm lg:text-base">Dosen Pembimbing</h4>
-    </div>
-    <p class="text-yellow-600 text-sm font-medium">${message}</p>
-    <a href="${linkUrl}" class="text-primary text-xs hover:underline mt-2 inline-block">${linkText}</a>
-  `;
-}
 
 function updateProgress() {
   const count = sessions.length;
