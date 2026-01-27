@@ -2,9 +2,9 @@
 // DAFTAR MAHASISWA PAGE (Koordinator)
 // ========================================
 
-import { koordinatorAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { getInitials, getTrackDisplayName } from "./utils/formatUtils.js";
+import { koordinatorAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { getInitials, getTrackDisplayName } from "../utils/formatUtils.js";
 
 // ---------- STATE ----------
 let mahasiswaList = [];

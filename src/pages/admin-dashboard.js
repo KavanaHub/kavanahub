@@ -2,9 +2,9 @@
 // ADMIN DASHBOARD PAGE
 // ========================================
 
-import { adminAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { formatDateShort } from "./utils/formatUtils.js";
+import { adminAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { formatDateShort } from "../utils/formatUtils.js";
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {

@@ -2,9 +2,9 @@
 // DAFTAR DOSEN PAGE (Kaprodi)
 // ========================================
 
-import { kaprodiAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { getInitials } from "./utils/formatUtils.js";
+import { kaprodiAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { getInitials } from "../utils/formatUtils.js";
 
 // ---------- STATE ----------
 let dosenList = [];

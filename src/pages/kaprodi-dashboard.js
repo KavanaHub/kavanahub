@@ -2,9 +2,9 @@
 // KAPRODI DASHBOARD PAGE
 // ========================================
 
-import { kaprodiAPI, getToken } from "./api.js";
-import { getSidebarHTML, bindSidebarEvents, updateSidebarUser } from "./components/sidebar.js";
-import { getInitials, removeAcademicTitles } from "./utils/formatUtils.js";
+import { kaprodiAPI, getToken } from "../api.js";
+import { getSidebarHTML, bindSidebarEvents, updateSidebarUser } from "../components/sidebar.js";
+import { getInitials, removeAcademicTitles } from "../utils/formatUtils.js";
 
 // ---------- STATE ----------
 let stats = null;

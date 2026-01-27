@@ -2,10 +2,10 @@
 // KELOLA PERIODE - Koordinator
 // ========================================
 
-import { koordinatorAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
-import { showToast, showModal, showLoading, animate, animateList } from "./utils/alerts.js";
+import { koordinatorAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { setButtonLoading, resetButtonLoading } from "../utils/formUtils.js";
+import { showToast, showModal, showLoading, animate, animateList } from "../utils/alerts.js";
 
 // ---------- STATE ----------
 let allPeriodes = [];

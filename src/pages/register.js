@@ -2,10 +2,10 @@
 // REGISTER PAGE (Connected to Backend API)
 // ========================================
 
-import { validateEmail, validateNPM, validateWhatsApp, validatePassword } from "./shared.js";
-import { authAPI } from "./api.js";
-import { showFieldError, clearFieldError, clearAllErrors, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
-import { showToast, showModal } from "./utils/alerts.js";
+import { validateEmail, validateNPM, validateWhatsApp, validatePassword } from "../shared.js";
+import { authAPI } from "../api.js";
+import { showFieldError, clearFieldError, clearAllErrors, setButtonLoading, resetButtonLoading } from "../utils/formUtils.js";
+import { showToast, showModal } from "../utils/alerts.js";
 
 // ---------- REGISTER PAGE INIT ----------
 document.addEventListener("DOMContentLoaded", () => {

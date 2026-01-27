@@ -2,11 +2,11 @@
 // APPROVE PEMBIMBING PAGE (Koordinator)
 // ========================================
 
-import { koordinatorAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { getInitials, getTrackDisplayName } from "./utils/formatUtils.js";
-import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
-import { showToast, showModal } from "./utils/alerts.js";
+import { koordinatorAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { getInitials, getTrackDisplayName } from "../utils/formatUtils.js";
+import { setButtonLoading, resetButtonLoading } from "../utils/formUtils.js";
+import { showToast, showModal } from "../utils/alerts.js";
 
 // ---------- STATE ----------
 let mahasiswaList = [];

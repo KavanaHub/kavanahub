@@ -2,10 +2,10 @@
 // SETTINGS PAGE (Shared - All Roles)
 // ========================================
 
-import { authAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { setButtonLoading, resetButtonLoading, showFieldError, clearFieldError } from "./utils/formUtils.js";
-import { showToast, showModal } from "./utils/alerts.js";
+import { authAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { setButtonLoading, resetButtonLoading, showFieldError, clearFieldError } from "../utils/formUtils.js";
+import { showToast, showModal } from "../utils/alerts.js";
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", () => {

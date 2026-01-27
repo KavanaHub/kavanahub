@@ -3,9 +3,9 @@
 // Fokus pada hasil sidang tanpa nilai
 // ========================================
 
-import { mahasiswaAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { formatDateFull, getStatusDisplay, getInitials } from "./utils/formatUtils.js";
+import { mahasiswaAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { formatDateFull, getStatusDisplay, getInitials } from "../utils/formatUtils.js";
 
 // ---------- STATE ----------
 let profileData = null;

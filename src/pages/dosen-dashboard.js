@@ -2,10 +2,10 @@
 // DOSEN DASHBOARD PAGE
 // ========================================
 
-import { dosenAPI } from "./api.js";
-import { getToken, clearToken } from "./api.js";
-import { getSidebarHTML, bindSidebarEvents, updateSidebarUser } from "./components/sidebar.js";
-import { formatDateShort, getInitials, removeAcademicTitles } from "./utils/formatUtils.js";
+import { dosenAPI } from "../api.js";
+import { getToken, clearToken } from "../api.js";
+import { getSidebarHTML, bindSidebarEvents, updateSidebarUser } from "../components/sidebar.js";
+import { formatDateShort, getInitials, removeAcademicTitles } from "../utils/formatUtils.js";
 
 // ---------- STATE ----------
 let dosenProfile = null;

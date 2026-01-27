@@ -2,9 +2,9 @@
 // PROPOSAL PAGE (Clean Code Refactored)
 // ========================================
 
-import { validateNPM } from "./shared.js";
-import { mahasiswaAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
+import { validateNPM } from "../shared.js";
+import { mahasiswaAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
 import {
     showFieldError,
     clearFieldError,
@@ -12,9 +12,9 @@ import {
     isValidURL,
     setButtonLoading,
     resetButtonLoading,
-} from "./utils/formUtils.js";
-import { getTrackDisplayName } from "./utils/formatUtils.js";
-import { showToast, showModal } from "./utils/alerts.js";
+} from "../utils/formUtils.js";
+import { getTrackDisplayName } from "../utils/formatUtils.js";
+import { showToast, showModal } from "../utils/alerts.js";
 
 // ---------- STATE ----------
 let dosenList = [];

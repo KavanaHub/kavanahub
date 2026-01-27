@@ -2,8 +2,8 @@
 // ADMIN - KELOLA DOSEN PAGE
 // ========================================
 
-import { adminAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
+import { adminAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
 
 // ---------- STATE ----------
 let dosenList = [];

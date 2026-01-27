@@ -2,8 +2,8 @@
 // ADMIN - KELOLA USERS PAGE
 // ========================================
 
-import { adminAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
+import { adminAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
 
 // ---------- STATE ----------
 let currentTab = "mahasiswa";

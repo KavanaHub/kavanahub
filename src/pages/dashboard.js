@@ -2,12 +2,12 @@
 // DASHBOARD - Main Entry Point (Responsive)
 // ========================================
 
-import { MENU_CONFIG, ROLE_LABEL, TITLE_MAP } from "./shared.js";
-import { mahasiswaAPI, dosenAPI, koordinatorAPI, kaprodiAPI, getToken, clearToken } from "./api.js";
-import { getSidebarHTML, getMobileHeaderHTML, bindSidebarEvents, updateSidebarUser, updateBimbinganBadge } from "./components/sidebar.js";
-import { renderMahasiswaDashboard } from "./components/mahasiswaDashboard.js";
-import { renderDosenDashboard } from "./components/dosenDashboard.js";
-import { removeAcademicTitles } from "./utils/formatUtils.js";
+import { MENU_CONFIG, ROLE_LABEL, TITLE_MAP } from "../shared.js";
+import { mahasiswaAPI, dosenAPI, koordinatorAPI, kaprodiAPI, getToken, clearToken } from "../api.js";
+import { getSidebarHTML, getMobileHeaderHTML, bindSidebarEvents, updateSidebarUser, updateBimbinganBadge } from "../components/sidebar.js";
+import { renderMahasiswaDashboard } from "../components/mahasiswaDashboard.js";
+import { renderDosenDashboard } from "../components/dosenDashboard.js";
+import { removeAcademicTitles } from "../utils/formatUtils.js";
 
 // ---------- STATE ----------
 let currentRole = sessionStorage.getItem("userRole") || "mahasiswa";

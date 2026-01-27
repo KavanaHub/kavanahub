@@ -2,11 +2,11 @@
 // KELOMPOK PAGE - Mahasiswa
 // ========================================
 
-import { mahasiswaAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
-import { getInitials } from "./utils/formatUtils.js";
-import { showToast, showModal, animate } from "./utils/alerts.js";
+import { mahasiswaAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { setButtonLoading, resetButtonLoading } from "../utils/formUtils.js";
+import { getInitials } from "../utils/formatUtils.js";
+import { showToast, showModal, animate } from "../utils/alerts.js";
 
 // ---------- STATE ----------
 let myKelompok = null;

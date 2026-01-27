@@ -2,10 +2,10 @@
 // LAPORAN PAGE (Clean Code Refactored)
 // ========================================
 
-import { mahasiswaAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { showFieldError, clearFieldError, isValidURL, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
-import { showToast, showModal } from "./utils/alerts.js";
+import { mahasiswaAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { showFieldError, clearFieldError, isValidURL, setButtonLoading, resetButtonLoading } from "../utils/formUtils.js";
+import { showToast, showModal } from "../utils/alerts.js";
 
 // ---------- CONSTANTS ----------
 const FORM_FIELDS = ["lap-judul", "lap-link"];

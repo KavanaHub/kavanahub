@@ -2,11 +2,11 @@
 // PROFILE PAGE (Shared - All Roles)
 // ========================================
 
-import { authAPI, mahasiswaAPI, dosenAPI, koordinatorAPI, kaprodiAPI, getToken, clearToken } from "./api.js";
-import { initPage, closeSidebar, getDashboardURL } from "./utils/pageInit.js";
-import { getInitials } from "./utils/formatUtils.js";
-import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
-import { showToast, showModal, animate } from "./utils/alerts.js";
+import { authAPI, mahasiswaAPI, dosenAPI, koordinatorAPI, kaprodiAPI, getToken, clearToken } from "../api.js";
+import { initPage, closeSidebar, getDashboardURL } from "../utils/pageInit.js";
+import { getInitials } from "../utils/formatUtils.js";
+import { setButtonLoading, resetButtonLoading } from "../utils/formUtils.js";
+import { showToast, showModal, animate } from "../utils/alerts.js";
 
 // ---------- STATE ----------
 let profile = null;

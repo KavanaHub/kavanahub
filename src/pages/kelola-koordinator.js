@@ -3,9 +3,9 @@
 // Assign koordinator ke semester proyek/internship
 // ========================================
 
-import { kaprodiAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { showToast, showModal, showLoading, animate } from "./utils/alerts.js";
+import { kaprodiAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { showToast, showModal, showLoading, animate } from "../utils/alerts.js";
 
 // ---------- STATE ----------
 let allKoordinators = [];

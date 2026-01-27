@@ -2,10 +2,10 @@
 // LOGIN PAGE (Clean Code with Backend API)
 // ========================================
 
-import { validateEmail, validateNPM } from "./shared.js";
-import { authAPI } from "./api.js";
-import { showFieldError, clearFieldError, setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
-import { showToast, showModal, showLoading, animate } from "./utils/alerts.js";
+import { validateEmail, validateNPM } from "../shared.js";
+import { authAPI } from "../api.js";
+import { showFieldError, clearFieldError, setButtonLoading, resetButtonLoading } from "../utils/formUtils.js";
+import { showToast, showModal, showLoading, animate } from "../utils/alerts.js";
 
 // ---------- LOGIN PAGE INIT ----------
 document.addEventListener("DOMContentLoaded", () => {

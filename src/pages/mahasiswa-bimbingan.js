@@ -2,9 +2,9 @@
 // MAHASISWA BIMBINGAN PAGE (Dosen)
 // ========================================
 
-import { dosenAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { formatDateShort, getStatusDisplay, getInitials, getTrackDisplayName } from "./utils/formatUtils.js";
+import { dosenAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { formatDateShort, getStatusDisplay, getInitials, getTrackDisplayName } from "../utils/formatUtils.js";
 
 // ---------- STATE ----------
 let mahasiswaList = [];

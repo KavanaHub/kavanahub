@@ -2,11 +2,11 @@
 // APPROVE LAPORAN PAGE (Dosen)
 // ========================================
 
-import { dosenAPI } from "./api.js";
-import { initPage, closeSidebar } from "./utils/pageInit.js";
-import { formatDateShort, getInitials, getTrackDisplayName } from "./utils/formatUtils.js";
-import { setButtonLoading, resetButtonLoading } from "./utils/formUtils.js";
-import { showToast, showModal } from "./utils/alerts.js";
+import { dosenAPI } from "../api.js";
+import { initPage, closeSidebar } from "../utils/pageInit.js";
+import { formatDateShort, getInitials, getTrackDisplayName } from "../utils/formatUtils.js";
+import { setButtonLoading, resetButtonLoading } from "../utils/formUtils.js";
+import { showToast, showModal } from "../utils/alerts.js";
 
 // ---------- STATE ----------
 let laporanList = [];
