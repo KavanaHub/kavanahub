@@ -4,7 +4,7 @@
 // ========================================
 
 import { getToken, clearToken } from "../api.js";
-import { getSidebarHTML, bindSidebarEvents, updateSidebarUser } from "../components/sidebar.js";
+import { getSidebarHTML, bindSidebarEvents, updateSidebarUser, startNotificationPolling } from "../components/sidebar.js";
 
 /**
  * Initialize a page with authentication check and sidebar
@@ -33,6 +33,7 @@ export function initPage(options = {}) {
         sidebarPlaceholder.outerHTML = getSidebarHTML(currentRole, activeMenu, hiddenMenus);
         bindSidebarEvents(createMenuHandler(currentRole));
         updateSidebarUser();
+        startNotificationPolling(); // Start realtime notifications
     }
 
     // Setup mobile sidebar toggle
@@ -96,6 +97,7 @@ export async function initPageWithPeriode(options = {}) {
         sidebarPlaceholder.outerHTML = getSidebarHTML(currentRole, activeMenu, hiddenMenus);
         bindSidebarEvents(createMenuHandler(currentRole));
         updateSidebarUser();
+        startNotificationPolling();
     }
 
     // Setup mobile sidebar toggle

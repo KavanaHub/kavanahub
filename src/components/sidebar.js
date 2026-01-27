@@ -51,12 +51,13 @@ export function getSidebarHTML(currentRole, activeMenu = "dashboard", hiddenMenu
       return `
       <a href="#" 
          data-menu="${item.id}"
-         class="sidebar-menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
+         class="sidebar-menu-item relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
           ? "bg-white/20 text-white font-semibold shadow-lg backdrop-blur-sm"
           : "text-white/80 hover:bg-white/10 hover:text-white"
         }">
         <span class="material-symbols-outlined text-[22px]">${icon}</span>
         <span class="text-sm flex-1">${item.label}</span>
+        <span class="sidebar-badge hidden absolute right-2 top-1/2 -translate-y-1/2 min-w-[20px] h-5 px-1.5 flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full shadow-sm border border-white/20" data-menu="${item.id}"></span>
       </a>
     `;
     })
@@ -216,4 +217,59 @@ export function updateBimbinganBadge(count) {
       badge.classList.add("hidden");
     }
   }
+}
+
+// ---------- NOTIFICATION POLLING ----------
+let pollingInterval = null;
+
+export function startNotificationPolling() {
+  // Clear existing interval if any
+  if (pollingInterval) clearInterval(pollingInterval);
+
+  // Initial fetch
+  fetchNotifications();
+
+  // Poll every 15 seconds
+  pollingInterval = setInterval(fetchNotifications, 15000);
+}
+
+export function stopNotificationPolling() {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+    pollingInterval = null;
+  }
+}
+
+async function fetchNotifications() {
+  const token = sessionStorage.getItem('authToken');
+  if (!token) return;
+
+  try {
+    const response = await fetch('https://asia-southeast2-renzip-478811.cloudfunctions.net/kavana/api/notifications/stats', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (response.ok) {
+      const stats = await response.json();
+      updateSidebarBadges(stats);
+    }
+  } catch (err) {
+    console.error('Notification poll error:', err);
+  }
+}
+
+function updateSidebarBadges(stats) {
+  // Reset all badges first
+  document.querySelectorAll('.sidebar-badge').forEach(el => el.classList.add('hidden'));
+
+  // Update specific badges
+  Object.keys(stats).forEach(key => {
+    const count = stats[key];
+    const badge = document.querySelector(`.sidebar-badge[data-menu="${key}"]`);
+
+    if (badge && count > 0) {
+      badge.textContent = count > 99 ? '99+' : count;
+      badge.classList.remove('hidden');
+    }
+  });
 }
