@@ -132,21 +132,22 @@ function renderEmptyState() {
   `;
 }
 
-function renderLaporanCard(l) {
-  const statusConfig = getStatusConfig(l.status);
+// Display Logic: Use Group Name if available
+const displayName = l.kelompok_nama ? `Kelompok: ${l.kelompok_nama}` : l.mahasiswa_nama;
+const displaySub = l.kelompok_nama ? `${l.mahasiswa_nama} (${l.mahasiswa_npm})` : `${l.mahasiswa_npm} • ${getTrackDisplayName(l.track)}`;
 
-  return `
+return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
       <div class="flex flex-col gap-4">
         <!-- Header -->
         <div class="flex items-start justify-between gap-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shrink-0">
-              ${getInitials(l.mahasiswa_nama)}
+              ${getInitials(displayName)}
             </div>
             <div>
-              <p class="font-semibold text-text-main text-sm lg:text-base">${l.mahasiswa_nama}</p>
-              <p class="text-text-secondary text-xs">${l.mahasiswa_npm} • ${getTrackDisplayName(l.track)}</p>
+              <p class="font-semibold text-text-main text-sm lg:text-base">${displayName}</p>
+              <p class="text-text-secondary text-xs">${displaySub}</p>
             </div>
           </div>
           <span class="px-2 py-1 text-xs font-medium rounded-full ${statusConfig.badgeClass}">
@@ -166,6 +167,12 @@ function renderLaporanCard(l) {
               <span class="material-symbols-outlined text-[16px]">chat</span>
               ${l.bimbingan_count}/8 bimbingan
             </span>
+            ${l.kelompok_nama ? `
+            <span class="flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+              <span class="material-symbols-outlined text-[16px]">groups</span>
+              Group Submission
+            </span>
+            ` : ''}
           </div>
         </div>
 
@@ -254,10 +261,13 @@ window.openApproveModal = function (id) {
   const laporan = laporanList.find((l) => l.id === id);
   if (!laporan) return;
 
+  const subjectName = laporan.kelompok_nama ? `Kelompok ${laporan.kelompok_nama}` : laporan.mahasiswa_nama;
+  const warningText = laporan.kelompok_nama ? `(Akan meng-approve untuk SELURUH anggota kelompok)` : '';
+
   document.getElementById("action-id").value = id;
   document.getElementById("action-type").value = "approved";
   document.getElementById("modal-title").textContent = "Approve Laporan";
-  document.getElementById("modal-desc").textContent = `Approve laporan "${laporan.judul}" oleh ${laporan.mahasiswa_nama}?`;
+  document.getElementById("modal-desc").textContent = `Approve laporan "${laporan.judul}" oleh ${subjectName}? ${warningText}`;
   document.getElementById("action-catatan").value = "";
   document.getElementById("error-catatan").classList.add("hidden");
 
