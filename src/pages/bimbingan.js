@@ -110,10 +110,26 @@ async function loadPembimbingInfo(container) {
 
     const profile = result.data;
 
-    // Check if proposal is approved and has dosen
-    if (profile.status_proposal !== 'approved' || !profile.dosen_nama) {
+    // Check status proposal
+    if (profile.status_proposal !== 'approved') {
       hasPembimbing = false;
-      container.innerHTML = renderNoPembimbingWarning();
+      container.innerHTML = renderNoPembimbingWarning(profile.status_proposal);
+      return;
+    }
+
+    // Check if approved but no dosen yet
+    if (!profile.dosen_nama) {
+      hasPembimbing = false;
+      container.innerHTML = `
+        <div class="flex items-center gap-3 mb-3">
+          <div class="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
+            <span class="material-symbols-outlined text-[20px] lg:text-[24px]">hourglass_top</span>
+          </div>
+          <h4 class="font-semibold text-text-main text-sm lg:text-base">Dosen Pembimbing</h4>
+        </div>
+        <p class="text-yellow-600 text-sm font-medium">Bapak/Ibu Dosen belum ditentukan</p>
+        <p class="text-text-secondary text-xs mt-1">Harap tunggu penetapan dari Koordinator</p>
+      `;
       return;
     }
 
@@ -133,6 +149,31 @@ async function loadPembimbingInfo(container) {
     console.error("Error loading pembimbing info:", err);
     container.innerHTML = renderNoPembimbingWarning();
   }
+}
+
+function renderNoPembimbingWarning(status = 'none') {
+  let message = "Belum ada proposal";
+  let linkText = "Upload Proposal →";
+  let linkUrl = "/mahasiswa/proposal.html";
+
+  if (status === 'pending') {
+    message = "Proposal sedang direview";
+    linkText = "Lihat Status →";
+  } else if (status === 'rejected') {
+    message = "Proposal perlu revisi";
+    linkText = "Perbaiki Proposal →";
+  }
+
+  return `
+    <div class="flex items-center gap-3 mb-3">
+      <div class="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
+        <span class="material-symbols-outlined text-[20px] lg:text-[24px]">warning</span>
+      </div>
+      <h4 class="font-semibold text-text-main text-sm lg:text-base">Dosen Pembimbing</h4>
+    </div>
+    <p class="text-yellow-600 text-sm font-medium">${message}</p>
+    <a href="${linkUrl}" class="text-primary text-xs hover:underline mt-2 inline-block">${linkText}</a>
+  `;
 }
 
 async function loadBimbinganFromAPI() {
@@ -170,7 +211,19 @@ function renderNoTrackWarning() {
   `;
 }
 
-function renderNoPembimbingWarning() {
+function renderNoPembimbingWarning(status = 'none') {
+  let message = "Belum ada proposal";
+  let linkText = "Upload Proposal →";
+  let linkUrl = "/mahasiswa/proposal.html";
+
+  if (status === 'pending') {
+    message = "Proposal sedang direview";
+    linkText = "Lihat Status →";
+  } else if (status === 'rejected') {
+    message = "Proposal perlu revisi";
+    linkText = "Perbaiki Proposal →";
+  }
+
   return `
     <div class="flex items-center gap-3 mb-3">
       <div class="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
@@ -178,8 +231,8 @@ function renderNoPembimbingWarning() {
       </div>
       <h4 class="font-semibold text-text-main text-sm lg:text-base">Dosen Pembimbing</h4>
     </div>
-    <p class="text-yellow-600 text-sm font-medium">Belum ada proposal</p>
-    <a href="/mahasiswa/proposal.html" class="text-primary text-xs hover:underline mt-2 inline-block">Upload Proposal →</a>
+    <p class="text-yellow-600 text-sm font-medium">${message}</p>
+    <a href="${linkUrl}" class="text-primary text-xs hover:underline mt-2 inline-block">${linkText}</a>
   `;
 }
 
