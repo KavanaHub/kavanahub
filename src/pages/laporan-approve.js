@@ -132,11 +132,14 @@ function renderEmptyState() {
   `;
 }
 
-// Display Logic: Use Group Name if available
-const displayName = l.kelompok_nama ? `Kelompok: ${l.kelompok_nama}` : l.mahasiswa_nama;
-const displaySub = l.kelompok_nama ? `${l.mahasiswa_nama} (${l.mahasiswa_npm})` : `${l.mahasiswa_npm} • ${getTrackDisplayName(l.track)}`;
+function renderLaporanCard(l) {
+  const statusConfig = getStatusConfig(l.status);
 
-return `
+  // Display Logic: Use Group Name if available
+  const displayName = l.kelompok_nama ? `Kelompok: ${l.kelompok_nama}` : l.mahasiswa_nama;
+  const displaySub = l.kelompok_nama ? `${l.mahasiswa_nama} (${l.mahasiswa_npm})` : `${l.mahasiswa_npm} • ${getTrackDisplayName(l.track)}`;
+
+  return `
     <div class="bg-white p-4 lg:p-5 rounded-xl shadow-sm border border-slate-100">
       <div class="flex flex-col gap-4">
         <!-- Header -->
@@ -206,6 +209,7 @@ return `
       </div>
     </div>
   `;
+}
 }
 
 function getStatusConfig(status) {
