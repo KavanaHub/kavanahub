@@ -65,7 +65,7 @@ function getDummyProfile() {
             email: sessionStorage.getItem("userEmail") || "mahasiswa@email.com",
             npm: "2023010001",
             angkatan: "2023",
-            whatsapp: "081234567890",
+            no_wa: "081234567890",
         };
     } else if (role === "dosen") {
         return {
@@ -107,7 +107,7 @@ function renderProfile() {
 
     // Mahasiswa-specific fields
     if (isMahasiswa) {
-        document.getElementById("profile-whatsapp").textContent = p.whatsapp || "-";
+        document.getElementById("profile-whatsapp").textContent = p.no_wa || p.whatsapp || "-";
         document.getElementById("profile-angkatan").textContent = p.angkatan || "-";
         document.getElementById("whatsapp-section").classList.remove("hidden");
         document.getElementById("angkatan-section").classList.remove("hidden");
@@ -122,7 +122,7 @@ function renderProfile() {
     document.getElementById("edit-nama").value = p.nama || "";
     document.getElementById("edit-email").value = p.email || "";
     if (isMahasiswa) {
-        document.getElementById("edit-whatsapp").value = p.whatsapp || "";
+        document.getElementById("edit-whatsapp").value = p.no_wa || p.whatsapp || "";
     }
 }
 
