@@ -238,15 +238,34 @@ function validateForm(data) {
 function handleRegistrationError(error) {
     const errorLower = (error || "").toLowerCase();
 
-    if (errorLower.includes("email") && errorLower.includes("exist")) {
+    // Check for duplicate email errors
+    if (errorLower.includes("email") && (errorLower.includes("already") || errorLower.includes("exist") || errorLower.includes("registered"))) {
         showFieldError("reg-email", "Email sudah terdaftar");
-    } else if (errorLower.includes("npm") && errorLower.includes("exist")) {
+        showModal.error(
+            "Email Sudah Terdaftar",
+            "Email yang Anda masukkan sudah terdaftar di sistem. Silakan gunakan email lain atau login jika sudah memiliki akun."
+        );
+    }
+    // Check for duplicate NPM errors
+    else if (errorLower.includes("npm") && (errorLower.includes("already") || errorLower.includes("exist") || errorLower.includes("registered"))) {
         showFieldError("reg-npm", "NPM sudah terdaftar");
-    } else if (errorLower.includes("email")) {
+        showModal.error(
+            "NPM Sudah Terdaftar",
+            "NPM yang Anda masukkan sudah terdaftar di sistem. Silakan hubungi admin jika ini adalah kesalahan."
+        );
+    }
+    // Other email errors
+    else if (errorLower.includes("email")) {
         showFieldError("reg-email", error);
-    } else if (errorLower.includes("npm")) {
+        showModal.error("Registrasi Gagal", error);
+    }
+    // Other NPM errors
+    else if (errorLower.includes("npm")) {
         showFieldError("reg-npm", error);
-    } else {
-        showModal.error("Registrasi Gagal", error || "Terjadi kesalahan");
+        showModal.error("Registrasi Gagal", error);
+    }
+    // Generic error
+    else {
+        showModal.error("Registrasi Gagal", error || "Terjadi kesalahan saat mendaftar. Silakan coba lagi.");
     }
 }
